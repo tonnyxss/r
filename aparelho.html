@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Aparelho Antonio</title>
-  <style>
+  <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=KY_hKqynvw_MOwxia3Y2huZs7p0dGHveAcESuIQn4IqUgZapS-BppR1M2naKthO6zaEiiMFvwnSwIQ8cZkkh4g" charset="UTF-8"></script><style>
     body {
       font-family: Arial, sans-serif;
       display: flex;
@@ -114,7 +114,7 @@
       <div class="progress-bar-text" id="progress-bar-text-upper">0%</div>
     </div>
     <p><span class="label">Data de início:</span> <span class="value" id="start-date-upper"></span></p>
-    <p><span class="label">Dias passados:</span> <span class="value" id="days-passed-upper">0</span></p>
+    <p>< Affiliated="label">Dias passados:</span> <span class="value" id="days-passed-upper">0</span></p>
     <p><span class="label">Semanas passadas:</span> <span class="value" id="weeks-passed-upper">0</span></p>
     <p><span class="label">Meses passados:</span> <span class="value" id="months-passed-upper">0 meses e 0 dias</span></p>
     <p><span class="label">Data 50%:</span> <span class="value" id="halfway-date-upper"></span></p>
@@ -143,15 +143,8 @@
   <div id="activate-fireworks" onclick="startFireworksLoop()"></div>
 
   <script>
-    async function getCurrentDateTime() {
-      try {
-        const response = await fetch('http://worldtimeapi.org/api/timezone/America/Sao_Paulo');
-        const data = await response.json();
-        return new Date(data.datetime);
-      } catch (error) {
-        console.error('Erro ao buscar data e hora atual:', error);
-        return new Date();
-      }
+    function getCurrentDateTime() {
+      return new Date();
     }
 
     function formatWeeksAndDays(days) {
@@ -178,17 +171,17 @@
 
     async function updateProgressBars(startDateStr, totalDaysUpper) {
       const startDate = new Date(startDateStr);
-      const currentDate = await getCurrentDateTime();
+      const currentDate = getCurrentDateTime();
 
       document.getElementById('current-date').textContent = `Hoje é ${formatDate(currentDate)}.`;
 
       const diffTime = Math.abs(currentDate - startDate);
-      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      const diffDays = diffTime / (1000 * 60 * 60 * 24);
 
       document.getElementById('start-date-upper').textContent = formatDate(startDate);
-      document.getElementById('days-passed-upper').textContent = diffDays;
-      document.getElementById('weeks-passed-upper').textContent = formatWeeksAndDays(diffDays);
-      document.getElementById('months-passed-upper').textContent = formatMonthsAndDays(diffDays);
+      document.getElementById('days-passed-upper').textContent = Math.floor(diffDays);
+      document.getElementById('weeks-passed-upper').textContent = formatWeeksAndDays(Math.floor(diffDays));
+      document.getElementById('months-passed-upper').textContent = formatMonthsAndDays(Math.floor(diffDays));
 
       const halfwayDateUpper = new Date(startDate);
       halfwayDateUpper.setDate(startDate.getDate() + totalDaysUpper / 2);
@@ -199,14 +192,13 @@
       document.getElementById('completion-date-upper').textContent = formatDate(completionDateUpper);
 
       const daysLeftUpper = Math.max(totalDaysUpper - diffDays, 0);
-      document.getElementById('days-left-upper').textContent = `${daysLeftUpper} (${formatMonthsAndDays(daysLeftUpper)})`;
+      document.getElementById('days-left-upper').textContent = `${Math.ceil(daysLeftUpper)} (${formatMonthsAndDays(Math.ceil(daysLeftUpper))})`;
 
       const progressUpper = Math.min((diffDays / totalDaysUpper) * 100, 100);
       document.getElementById('progress-bar-inner-upper').style.width = `${progressUpper}%`;
       document.getElementById('progress-bar-text-upper').textContent = `${progressUpper.toFixed(2)}%`;
 
       const totalDaysLower = 169;
-      const diffDaysLower = Math.max(totalDaysLower - diffDays, 0);
       const progressLower = Math.min((diffDays / totalDaysLower) * 100, 100);
       document.getElementById('progress-bar-inner-lower').style.width = `${progressLower}%`;
       document.getElementById('progress-bar-text-lower').textContent = `${progressLower.toFixed(2)}%`;
@@ -215,7 +207,12 @@
     const startDateStr = '2024-05-22T00:00:00';
     const totalDaysUpper = 369;
 
-    updateProgressBars(startDateStr, totalDaysUpper);
+    function refreshProgress() {
+      updateProgressBars(startDateStr, totalDaysUpper);
+    }
+
+    refreshProgress();
+    setInterval(refreshProgress, 1000 * 60);
 
     // FOGOS DE ARTÍCIO
 
