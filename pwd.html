@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antonio PWD</title>
+    <style>
+        body {
+            background-color: #213448;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 70vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+            width: 350px;
+            text-align: left;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .options {
+            margin-bottom: 20px;
+        }
+        .options label {
+            display: block;
+            margin: 10px 0;
+        }
+        input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        input[type="range"] {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        #password {
+            background-color: #2c2c2c;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            word-wrap: break-word;
+        }
+        #strength {
+            height: 5px;
+            border-radius: 3px;
+            margin-bottom: 10px;
+        }
+        #strength-text, #bruteforce-cpu, #bruteforce-gpu, #effort {
+            font-size: 14px;
+            color: #bbbbbb;
+            margin-bottom: 10px;
+        }
+        .very-weak { background-color: #d32f2f; }
+        .weak { background-color: #f44336; }
+        .medium { background-color: #ffeb3b; }
+        .strong { background-color: #4caf50; }
+        .very-strong { background-color: #388e3c; }
+        #pwned-warning {
+            font-size: 12px;
+            color: #f44336;
+            margin-bottom: 10px;
+            display: none;
+        }
+        #pattern-warning {
+            font-size: 12px;
+            color: #ffeb3b;
+            margin-bottom: 10px;
+            display: none;
+        }
+        hr {
+            border: 0;
+            height: 1px;
+            background: #444;
+            margin: 15px 0;
+        }
+        .button-container {
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            flex: 1;
+            box-sizing: border-box;
+            transition: transform 0.5s;
+        }
+        button:hover {
+            background-color: #66bb6a;
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+    </style>
+
+  <style>
+
+
+    h1 {
+      font-size: 2rem;
+      font-family: Arial;
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+
+    }
+
+    .letra {
+      animation: onda 5s ease-in-out infinite;
+    }
+
+    /* Atrasos diferentes para criar o efeito de onda */
+    .letra:nth-child(1) { animation-delay: 0s; }
+    .letra:nth-child(2) { animation-delay: 0.3s; }
+    .letra:nth-child(3) { animation-delay: 0.6s; }
+    .letra:nth-child(4) { animation-delay: 0.9s; }
+    .letra:nth-child(5) { animation-delay: 1.2s; }
+    .letra:nth-child(6) { animation-delay: 1.5s; }
+    .letra:nth-child(7) { animation-delay: 1.8s; }
+    .letra:nth-child(8) { animation-delay: 2.1s; }
+    .letra:nth-child(9) { animation-delay: 2.4s; }
+    .letra:nth-child(10) { animation-delay: 2.7s; }
+    .letra:nth-child(11) { animation-delay: 3.0s; }
+
+    /* Animação com as cores desejadas */
+    @keyframes onda {
+      0%   { color: #ff007f; }  /* rosa neon */
+      25%  { color: #8a2be2; }  /* roxo */
+      50%  { color: #1e90ff; }  /* azul */
+      75%  { color: #ff0000; }  /* vermelho */
+      100% { color: #ff007f; }  /* volta pro rosa */
+    }
+  </style>
+
+  <script>
+    // Desativa o clique com o botão direito do mouse
+    document.addEventListener('contextmenu', function(event) {
+      event.preventDefault();
+    });
+  </script>
+
+
+</head>
+<body>
+    <div class="container">
+        
+		<body>
+  <h1>
+    [ 
+    <span class="letra">A</span>
+    <span class="letra">n</span>
+    <span class="letra">t</span>
+    <span class="letra">o</span>
+    <span class="letra">n</span>
+    <span class="letra">i</span>
+    <span class="letra">o</span>
+    <span class="letra"></span>
+    <span class="letra">P</span>
+    <span class="letra">W</span>
+    <span class="letra">D</span>
+    ]
+  </h1>
+  <hr>
+</body>
+        <div id="password">Clique em Gerar</div>
+        <div id="strength"></div>
+        <div id="strength-text">Força: -</div>
+        <div id="bruteforce-cpu">Bruteforce CPU: -</div>
+        <div id="bruteforce-gpu">Bruteforce GPU: -</div>
+        <div id="pwned-warning">Senha encontrada em vazamentos!</div>
+        <div id="pattern-warning">Senha contém padrões previsíveis!</div>
+        <div id="effort">Esforço: 0 bits</div>
+        <hr>
+        <div class="options">
+            <label><input type="checkbox" id="lowercase" checked> Letras minúsculas</label>
+            <label><input type="checkbox" id="uppercase"> Letras maiúsculas</label>
+            <label><input type="checkbox" id="numbers"> Números</label>
+            <label><input type="checkbox" id="special"> Caracteres especiais</label>
+            <label><input type="checkbox" id="extra-large"> Senha extra grande</label>
+        </div>
+        <label for="length">Tamanho da senha: <span id="lengthValue">8</span></label>
+        <input type="range" id="length" min="6" max="30" value="8">
+        <div class="button-container">
+            <button onclick="generatePassword()">Gerar</button>
+            <button onclick="copyPassword()">Copiar</button>
+			
+        </div>
+
+<hr>
+<center><font size="1">by Antonio - 2025</center></font size>
+
+    </div>
+
+    <script>
+        const commonPatterns = [/123/, /abc/, /qwe/, /aaa/, /111/, /password/, /admin/, /login/];
+        const commonWords = ['senha', 'password', 'admin', 'login', 'user', 'teste', '123456'];
+
+        function calculateEntropy(length, charSetSize) {
+            return Math.log2(charSetSize) * length;
+        }
+
+        function formatBruteforceTime(entropy) {
+            const attemptsPerSecondBasic = 1e11; // 100 bilhões de tentativas/s (CPU)
+            const attemptsPerSecondGPU = 1e14; // 100 trilhões de tentativas/s (GPU)
+            // Reduz a entropia efetiva em 30% para simular ataques híbridos/máscaras
+            const effectiveEntropy = entropy * 0.7;
+            const secondsToBreakBasic = Math.pow(2, effectiveEntropy) / attemptsPerSecondBasic;
+            const secondsToBreakGPU = Math.pow(2, effectiveEntropy) / attemptsPerSecondGPU;
+
+            function formatTime(seconds) {
+                if (seconds < 60) return `${seconds.toFixed(2)} segundos`;
+                if (seconds < 3600) return `${(seconds / 60).toFixed(2)} minutos`;
+                if (seconds < 86400) return `${(seconds / 3600).toFixed(2)} horas`;
+                if (seconds < 604800) return `${(seconds / 86400).toFixed(2)} dias`;
+                if (seconds < 2592000) return `${(seconds / 604800).toFixed(2)} semanas`;
+                if (seconds < 31536000) return `${(seconds / 2592000).toFixed(2)} meses`;
+                if (seconds < 315360000) return `${(seconds / 31536000).toFixed(2)} anos`;
+                if (seconds < 3153600000) return `${(seconds / 315360000).toFixed(2)} séculos`;
+                if (seconds < 3153600000000) return `${(seconds / 3153600000).toFixed(2)} milênios`;
+                return `+9999 milênios`;
+            }
+
+            return {
+                cpu: formatTime(secondsToBreakBasic),
+                gpu: formatTime(secondsToBreakGPU)
+            };
+        }
+
+        function updateStrength(length, charSetSize) {
+            const entropy = calculateEntropy(length, charSetSize);
+            const strengthBar = document.getElementById('strength');
+            const strengthText = document.getElementById('strength-text');
+            const bruteforceTimes = formatBruteforceTime(entropy);
+            document.getElementById('effort').textContent = `Esforço: ${entropy.toFixed(2)} bits`;
+            document.getElementById('bruteforce-cpu').textContent = `Bruteforce CPU: ${bruteforceTimes.cpu}`;
+            document.getElementById('bruteforce-gpu').textContent = `Bruteforce GPU: ${bruteforceTimes.gpu}`;
+
+            if (entropy < 30) {
+                strengthBar.className = 'very-weak';
+                strengthText.textContent = 'Força: Muito fraca';
+            } else if (entropy < 50) {
+                strengthBar.className = 'weak';
+                strengthText.textContent = 'Força: Fraca';
+            } else if (entropy < 80) {
+                strengthBar.className = 'medium';
+                strengthText.textContent = 'Força: Média';
+            } else if (entropy < 100) {
+                strengthBar.className = 'strong';
+                strengthText.textContent = 'Força: Forte';
+            } else {
+                strengthBar.className = 'very-strong';
+                strengthText.textContent = 'Força: Muito forte';
+            }
+        }
+
+        function checkPatterns(password) {
+            const lowercasePassword = password.toLowerCase();
+            for (let pattern of commonPatterns) {
+                if (pattern.test(lowercasePassword)) return true;
+            }
+            for (let word of commonWords) {
+                if (lowercasePassword.includes(word)) return true;
+            }
+            return false;
+        }
+
+        async function checkPwned(password) {
+            const pwnedWarning = document.getElementById('pwned-warning');
+            try {
+                const encoder = new TextEncoder();
+                const hash = await crypto.subtle.digest('SHA-1', encoder.encode(password));
+                const hashArray = Array.from(new Uint8Array(hash));
+                const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                const prefix = hashHex.slice(0, 5).toUpperCase();
+                const suffix = hashHex.slice(5).toUpperCase();
+
+                const response = await fetch(`https://api.pwnedpasswords.com/range/${prefix}`);
+                const text = await response.text();
+                return text.includes(suffix);
+            } catch {
+                pwnedWarning.textContent = 'Erro ao verificar vazamentos';
+                pwnedWarning.style.display = 'block';
+                return false;
+            }
+        }
+
+        async function generatePassword() {
+            const lowercase = document.getElementById('lowercase').checked;
+            const uppercase = document.getElementById('uppercase').checked;
+            const numbers = document.getElementById('numbers').checked;
+            const special = document.getElementById('special').checked;
+            const length = parseInt(document.getElementById('length').value);
+
+            const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz';
+            const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const numberChars = '0123456789';
+            const specialChars = '!@#$%^&*()_+[]{}|;:,.<>?';
+            let chars = '';
+
+            if (lowercase) chars += lowercaseChars;
+            if (uppercase) chars += uppercaseChars;
+            if (numbers) chars += numberChars;
+            if (special) chars += specialChars;
+
+            const pwnedWarning = document.getElementById('pwned-warning');
+            const patternWarning = document.getElementById('pattern-warning');
+            pwnedWarning.style.display = 'none';
+            patternWarning.style.display = 'none';
+
+            if (chars === '') {
+                document.getElementById('password').textContent = 'Selecione pelo menos uma opção';
+                document.getElementById('strength').className = '';
+                document.getElementById('strength-text').textContent = 'Força: -';
+                document.getElementById('effort').textContent = 'Esforço: 0 bits';
+                document.getElementById('bruteforce-cpu').textContent = 'Bruteforce CPU: -';
+                document.getElementById('bruteforce-gpu').textContent = 'Bruteforce GPU: -';
+                return;
+            }
+
+            let password = '';
+            let lastChar = '';
+            let attempts = 0;
+            const maxAttempts = 10;
+
+            do {
+                password = '';
+                lastChar = '';
+                for (let i = 0; i < length; i++) {
+                    let randomChar;
+                    do {
+                        const randomIndex = Math.floor(Math.random() * chars.length);
+                        randomChar = chars[randomIndex];
+                    } while (randomChar === lastChar);
+                    password += randomChar;
+                    lastChar = randomChar;
+                }
+                attempts++;
+            } while (checkPatterns(password) && attempts < maxAttempts);
+
+            document.getElementById('password').textContent = password;
+            updateStrength(length, chars.length);
+
+            if (checkPatterns(password)) {
+                patternWarning.style.display = 'block';
+            }
+
+            const isPwned = await checkPwned(password);
+            if (isPwned) {
+                pwnedWarning.style.display = 'block';
+            }
+        }
+
+        function copyPassword() {
+            const password = document.getElementById('password').textContent;
+            if (password === 'Clique em Gerar' || password === 'Selecione pelo menos uma opção') return;
+            navigator.clipboard.writeText(password).then(() => {
+                alert('Senha copiada!');
+            });
+        }
+
+        document.getElementById('length').addEventListener('input', function() {
+            document.getElementById('lengthValue').textContent = this.value;
+            generatePassword();
+        });
+
+        document.getElementById('extra-large').addEventListener('change', function() {
+            const lengthInput = document.getElementById('length');
+            if (this.checked) {
+                lengthInput.max = 50;
+                if (parseInt(lengthInput.value) > 30) {
+                    lengthInput.value = 30;
+                    document.getElementById('lengthValue').textContent = lengthInput.value;
+                }
+            } else {
+                lengthInput.max = 30;
+                if (parseInt(lengthInput.value) > 30) {
+                    lengthInput.value = 30;
+                    document.getElementById('lengthValue').textContent = lengthInput.value;
+                    generatePassword();
+                }
+            }
+        });
+
+        // Generate initial password on page load
+        generatePassword();
+    </script>
+
+</body>
+
+</html>
