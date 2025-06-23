@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Senhas Vazadas v1.0</title>
+    <style>
+        /* CSS Antonio */
+        body {
+            margin: 0;
+            font-family: 'Courier New', monospace;
+            background: #1c2526;
+            color: #d9d9d9;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        /* Tela de loading inicial */
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #1c2526;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+        }
+        .loading p {
+            font-size: 1.2rem;
+            color: #red;
+        }
+        /* Cabeçalho fixo */
+        .cabecalho {
+            background: #2a3436;
+            padding: 0.5rem;
+            border-bottom: 1px solid #4a5c5e;
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+        }
+        .cabecalho input {
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            background: #1c2526;
+            color: #d9d9d9;
+            border: 1px solid #4a5c5e;
+            outline: none;
+            padding: 0.25rem;
+            width: 250px;
+            border-radius: 2px;
+        }
+        .cabecalho input::placeholder {
+            color: #7a8a8c;
+        }
+        .cabecalho button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+        }
+        .cabecalho button:hover {
+            background: #4a5c5e;
+            border-radius: 2px;
+        }
+        /* Área da lista */
+        .lista-container {
+            height: calc(100vh - 3rem);
+            overflow-y: hidden;
+            padding: 3.5rem 0.25rem 0.5rem;
+        }
+        /* Barra de rolagem extremamente fina */
+        .lista-container::-webkit-scrollbar {
+            width: 4px;
+        }
+        .lista-container::-webkit-scrollbar-track {
+            background: #2a3436;
+        }
+        .lista-container::-webkit-scrollbar-thumb {
+            background: #4a5c5e;
+            border-radius: 2px;
+        }
+        .lista-container::-webkit-scrollbar-thumb:hover {
+            background: #5a6c6e;
+        }
+        .lista-container {
+            scrollbar-width: thin;
+            scrollbar-color: #4a5c5e #2a3436;
+        }
+        .lista-senhas {
+            width: 100%;
+        }
+        .item-senha {
+            display: grid;
+            grid-template-columns: 100px 1fr 30px 50px; /* Índice, senha, chars, copiar */
+            gap: 0.5rem;
+            align-items: center;
+            padding: 0.25rem 0.5rem;
+            border-bottom: 1px solid #2a3436;
+            font-size: 0.85rem;
+        }
+        .item-senha span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: hidden;
+        }
+        .caracteres {
+            font-size: 0.75rem;
+            color: #d9d9d9;
+            background: #2a3436;
+            text-align: center;
+            border-radius: 2px;
+        }
+        .item-senha button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .item-senha button:hover {
+            background: #4a5c5e;
+            border-radius: 2px;
+        }
+        .copiado {
+            color: #d9d9d9;
+            font-size: 0.75rem;
+        }
+        .sentinela {
+            height: 10px;
+        }
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .item-senha {
+                grid-template-columns: 80px 1fr 50px;
+                font-size: 0.75rem;
+            }
+            .caracteres {
+                display: none;
+            }
+            .cabecalho input {
+                width: 150px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Tela de loading inicial -->
+    <div class="loading" id="loading">
+        <p>Carregando...</p>
+    </div>
+    <!-- Cabeçalho com busca sempre visível -->
+    <div class="cabecalho">
+        Buscador de senhas vazadas | by Antonio ~ 2025<input type="text" placeholder="Buscar senha..." maxlength="32" id="entrada-busca">
+        <button id="botao-anterior" title="Anterior">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d9d9d9" stroke-width="2">
+                <path d="m18 15-6-6-6 6"/>
+            </svg>
+        </button>
+        <button id="botao-proximo" title="Próximo">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d9d9d9" stroke-width="2">
+                <path d="m6 9 6 6 6-6"/>
+            </svg>
+        </button>
+        <button id="botao-limpar" title="Limpar">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d9d9d9" stroke-width="2">
+                <path d="M18 6 6 18"/>
+                <path d="m6 6 12 12"/>
+            </svg>
+        </button>
+    </div>
+    <!-- Área da lista -->
+    <div class="lista-container">
+        <div class="lista-senhas" id="lista-senhas"></div>
+        <div class="sentinela" id="sentinela"></div>
+    </div>
+
+<script>
+
+const _0x151a6f=_0x5085;(function(_0xeb432f,_0x5104de){const _0x146958=_0x5085,_0x51d9e5=_0xeb432f();while(!![]){try{const _0x489cc8=parseInt(_0x146958(0xc1))/0x1*(parseInt(_0x146958(0xce))/0x2)+parseInt(_0x146958(0xd2))/0x3+-parseInt(_0x146958(0xd1))/0x4*(-parseInt(_0x146958(0xc0))/0x5)+-parseInt(_0x146958(0xc2))/0x6*(parseInt(_0x146958(0xc6))/0x7)+parseInt(_0x146958(0xcc))/0x8*(-parseInt(_0x146958(0xd3))/0x9)+-parseInt(_0x146958(0xca))/0xa+parseInt(_0x146958(0xcd))/0xb*(-parseInt(_0x146958(0xc3))/0xc);if(_0x489cc8===_0x5104de)break;else _0x51d9e5['push'](_0x51d9e5['shift']());}catch(_0x3bf83b){_0x51d9e5['push'](_0x51d9e5['shift']());}}}(_0xc22b,0x7726e));function _0x1460(_0x1b9862,_0x2f84fb){const _0x14b47e=_0x39c3();return _0x1460=function(_0x175c1f,_0x52175f){_0x175c1f=_0x175c1f-0x19c;let _0x4cd07d=_0x14b47e[_0x175c1f];return _0x4cd07d;},_0x1460(_0x1b9862,_0x2f84fb);}const _0x40bfcb=_0x1460;(function(_0x349b77,_0x2bb17f){const _0x4a14e2=_0x5085,_0x2933ad=_0x1460,_0x10e5f7=_0x349b77();while(!![]){try{const _0x4813a0=parseInt(_0x2933ad(0x19f))/0x1+-parseInt(_0x2933ad(0x1a0))/0x2+-parseInt(_0x2933ad(0x19d))/0x3*(-parseInt(_0x2933ad(0x1a1))/0x4)+-parseInt(_0x2933ad(0x1a7))/0x5*(parseInt(_0x2933ad(0x1a5))/0x6)+-parseInt(_0x2933ad(0x1a6))/0x7+-parseInt(_0x2933ad(0x1a8))/0x8*(-parseInt(_0x2933ad(0x19e))/0x9)+parseInt(_0x2933ad(0x1a2))/0xa;if(_0x4813a0===_0x2bb17f)break;else _0x10e5f7['push'](_0x10e5f7[_0x4a14e2(0xcb)]());}catch(_0x2aaf82){_0x10e5f7[_0x4a14e2(0xbd)](_0x10e5f7['shift']());}}}(_0x39c3,0xbc31f));function _0x39c3(){const _0x266ecc=_0x5085,_0x58a0fc=[_0x266ecc(0xcf),_0x266ecc(0xbe),_0x266ecc(0xbf),_0x266ecc(0xc5),_0x266ecc(0xc9),_0x266ecc(0xc4),_0x266ecc(0xba),'19194370UKQUQc',_0x266ecc(0xbc),'body',_0x266ecc(0xc7),'7288288xIDVck','11255NrVRju',_0x266ecc(0xc8)];return _0x39c3=function(){return _0x58a0fc;},_0x39c3();}function _0x5085(_0x24247f,_0x570cdf){const _0xc22b13=_0xc22b();return _0x5085=function(_0x50853c,_0x587ca0){_0x50853c=_0x50853c-0xba;let _0x64cf62=_0xc22b13[_0x50853c];return _0x64cf62;},_0x5085(_0x24247f,_0x570cdf);}let s=document[_0x40bfcb(0x1a3)](_0x40bfcb(0x19c));s[_0x151a6f(0xbb)]=_0x40bfcb(0x1a9),document[_0x40bfcb(0x1a4)][_0x151a6f(0xd0)](s);function _0xc22b(){const _0x5b8aa4=['loading.js','appendChild','409756ULmWSW','1474143DAqpDa','45oEjiET','4LowQzx','src','createElement','push','script','534537jfSCpL','35fMWtEu','7vAsyoL','16782lJVeyZ','12LKlOxa','2290976QFwnyG','24669PXBRhs','1043zxRNnW','1866gRdYSB','2504xRBZUy','702031neMuXe','666840ShjKtI','shift','235880OAqPfr','8013643otgJoc','182562CGtjgQ'];_0xc22b=function(){return _0x5b8aa4;};return _0xc22b();}
+</script>
+
+
+
+</body>
+</html>
