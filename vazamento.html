@@ -3,160 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Senhas Vazadas v1.0</title>
-    <style>
-        /* CSS Antonio */
-        body {
-            margin: 0;
-            font-family: 'Courier New', monospace;
-            background: #1c2526;
-            color: #d9d9d9;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-        /* Tela de loading inicial */
-        .loading {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: #1c2526;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 20;
-        }
-        .loading p {
-            font-size: 1.2rem;
-            color: #red;
-        }
-        /* Cabeçalho fixo */
-        .cabecalho {
-            background: #2a3436;
-            padding: 0.5rem;
-            border-bottom: 1px solid #4a5c5e;
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 10;
-        }
-        .cabecalho input {
-            font-family: 'Courier New', monospace;
-            font-size: 0.85rem;
-            background: #1c2526;
-            color: #d9d9d9;
-            border: 1px solid #4a5c5e;
-            outline: none;
-            padding: 0.25rem;
-            width: 250px;
-            border-radius: 2px;
-        }
-        .cabecalho input::placeholder {
-            color: #7a8a8c;
-        }
-        .cabecalho button {
-            background: none;
-            border: none;
-            cursor: pointer;
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-        }
-        .cabecalho button:hover {
-            background: #4a5c5e;
-            border-radius: 2px;
-        }
-        /* Área da lista */
-        .lista-container {
-            height: calc(100vh - 3rem);
-            overflow-y: hidden;
-            padding: 3.5rem 0.25rem 0.5rem;
-        }
-        /* Barra de rolagem extremamente fina */
-        .lista-container::-webkit-scrollbar {
-            width: 4px;
-        }
-        .lista-container::-webkit-scrollbar-track {
-            background: #2a3436;
-        }
-        .lista-container::-webkit-scrollbar-thumb {
-            background: #4a5c5e;
-            border-radius: 2px;
-        }
-        .lista-container::-webkit-scrollbar-thumb:hover {
-            background: #5a6c6e;
-        }
-        .lista-container {
-            scrollbar-width: thin;
-            scrollbar-color: #4a5c5e #2a3436;
-        }
-        .lista-senhas {
-            width: 100%;
-        }
+    <title>Lista de Senhas</title>
+<style>
+    /* CSS Antonio */
+    body {
+        margin: 0;
+        font-family: 'Courier New', monospace;
+        background: #000000;
+        color: #ff0000;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+    /* Tela de loading inicial */
+    .loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: #000000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 20;
+    }
+    .loading p {
+        font-size: 1.2rem;
+        color: #ff0000;
+    }
+    /* Cabeçalho fixo */
+    .cabecalho {
+        background: black;
+        padding: 0.5rem;
+        border-bottom: 1px solid #ff0000;
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 10;
+    }
+    .cabecalho input {
+        font-family: 'Courier New', monospace;
+        font-size: 0.85rem;
+        background: #1a0000;
+        color: #ff0000;
+        border: 1px solid #ff3333;
+        outline: none;
+        padding: 0.25rem;
+        width: 250px;
+        border-radius: 2px;
+    }
+    .cabecalho input::placeholder {
+        color: #cc0000;
+    }
+    .cabecalho button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+    }
+    .cabecalho button:hover {
+        background: #ff3333;
+        border-radius: 2px;
+    }
+    /* Área da lista */
+    .lista-container {
+        height: calc(100vh - 3rem);
+        overflow-y: hidden;
+        padding: 3.5rem 0.25rem 0.5rem;
+    }
+    /* Barra de rolagem extremamente fina */
+    .lista-container::-webkit-scrollbar {
+        width: 4px;
+    }
+    .lista-container::-webkit-scrollbar-track {
+        background: #1a0000;
+    }
+    .lista-container::-webkit-scrollbar-thumb {
+        background: #ff3333;
+        border-radius: 2px;
+    }
+    .lista-container::-webkit-scrollbar-thumb:hover {
+        background: #ff6666;
+    }
+    .lista-container {
+        scrollbar-width: thin;
+        scrollbar-color: #ff3333 #1a0000;
+    }
+    .lista-senhas {
+        width: 100%;
+    }
+    .item-senha {
+        display: grid;
+        grid-template-columns: 100px 1fr 30px 50px; /* Índice, senha, chars, copiar */
+        gap: 0.5rem;
+        align-items: center;
+        padding: 0.25rem 0.5rem;
+        border-bottom: 1px solid #1a0000;
+        font-size: 0.85rem;
+    }
+    .item-senha span {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: hidden;
+    }
+    .caracteres {
+        font-size: 0.75rem;
+        color: #ff0000;
+        background: #1a0000;
+        text-align: center;
+        border-radius: 2px;
+    }
+    .item-senha button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .item-senha button:hover {
+        background: #ff3333;
+        border-radius: 2px;
+    }
+    .copiado {
+        color: #ff0000;
+        font-size: 0.75rem;
+    }
+    .sentinela {
+        height: 10px;
+    }
+    /* Responsividade */
+    @media (max-width: 768px) {
         .item-senha {
-            display: grid;
-            grid-template-columns: 100px 1fr 30px 50px; /* Índice, senha, chars, copiar */
-            gap: 0.5rem;
-            align-items: center;
-            padding: 0.25rem 0.5rem;
-            border-bottom: 1px solid #2a3436;
-            font-size: 0.85rem;
-        }
-        .item-senha span {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: hidden;
+            grid-template-columns: 80px 1fr 50px;
+            font-size: 0.75rem;
         }
         .caracteres {
-            font-size: 0.75rem;
-            color: #d9d9d9;
-            background: #2a3436;
-            text-align: center;
-            border-radius: 2px;
+            display: none;
         }
-        .item-senha button {
-            background: none;
-            border: none;
-            cursor: pointer;
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .cabecalho input {
+            width: 150px;
         }
-        .item-senha button:hover {
-            background: #4a5c5e;
-            border-radius: 2px;
-        }
-        .copiado {
-            color: #d9d9d9;
-            font-size: 0.75rem;
-        }
-        .sentinela {
-            height: 10px;
-        }
-        /* Responsividade */
-        @media (max-width: 768px) {
-            .item-senha {
-                grid-template-columns: 80px 1fr 50px;
-                font-size: 0.75rem;
-            }
-            .caracteres {
-                display: none;
-            }
-            .cabecalho input {
-                width: 150px;
-            }
-        }
-    </style>
+    }
+</style>
 </head>
 
 <body>
@@ -166,7 +166,7 @@
     </div>
     <!-- Cabeçalho com busca sempre visível -->
     <div class="cabecalho">
-        Buscador de senhas vazadas | by Antonio ~ 2025<input type="text" placeholder="Buscar senha..." maxlength="32" id="entrada-busca">
+        Lista de Senhas | by Antonio ~ 2025<input type="text" placeholder="Buscar senha..." maxlength="32" id="entrada-busca">
         <button id="botao-anterior" title="Anterior">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d9d9d9" stroke-width="2">
                 <path d="m18 15-6-6-6 6"/>
