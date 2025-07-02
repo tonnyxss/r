@@ -1,7 +1,7 @@
  // Configuração do alfabeto e tamanhos
         const ALFABETO = 'abcdefghijklmnopqrstuvwxyzçABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?`~';
         const TAMANHO_ALFABETO = BigInt(ALFABETO.length); // 93 caracteres
-        const COMPRIMENTO_MIN = 8;
+        const COMPRIMENTO_MIN = 6;
         const COMPRIMENTO_MAX = 32;
         const ITENS_POR_LOTE = 100; // Carrega 100 senhas por vez
         const MAX_RESULTADOS_BUSCA = 3000; // Limite de resultados da busca
