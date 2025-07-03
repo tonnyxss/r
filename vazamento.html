@@ -12,9 +12,9 @@
       background: #333333; /* Cinza escuro para o fundo principal */
       color: #add8e6; /* Azul claro para o texto principal */
       height: 100vh;
-      display: flex;
+      display: flex; /* Usamos flexbox para organizar as seções verticalmente */
       flex-direction: column;
-      overflow: hidden;
+      overflow: hidden; /* Oculta a barra de rolagem principal do body */
       /* Esconde a barra de rolagem para navegadores baseados em WebKit (Chrome, Safari) */
       -ms-overflow-style: none;  /* Esconde a barra de rolagem para IE e Edge */
       scrollbar-width: none;  /* Esconde a barra de rolagem para Firefox */
@@ -27,62 +27,61 @@
 
     /* Tela de Carregamento */
     .loading {
-      position: fixed;
+      position: fixed; /* Mantém fixo sobre todo o conteúdo */
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background: #2; /* Cinza escuro para o fundo da tela de carregamento */
+      background: #333333; /* Cinza escuro para o fundo da tela de carregamento */
       display: flex;
       justify-content: center;
       align-items: center;
+      flex-direction: column; /* Para alinhar texto e número um abaixo do outro */
       z-index: 20;
     }
     .loading p {
       font-size: 1.2rem;
       color: #add8e6; /* Azul claro para o texto de carregamento */
+      margin-bottom: 5px; /* Espaço entre o texto e o número */
+    }
+    .loading #loading-progress { /* Estilo para o progresso do loading em porcentagem */
+        font-size: 1.5rem;
+        color: #add8e6;
+        font-weight: bold;
     }
 
     /* Cabeçalho */
     .cabecalho {
-      background: #111111;
+      background: #111111; /* Cinza bem escuro para o fundo do cabeçalho */
       padding: 0.75rem;
-      border-bottom: 1px solid black;
+      border-bottom: 1px solid #555555; /* Cinza mais claro para a borda do cabeçalho */
       display: flex;
       gap: 1rem;
       align-items: center;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 15;
+      z-index: 15; /* Mantém o z-index caso outros elementos sejam posicionados */
       color: #d3d3d3;
+      box-sizing: border-box; /* Garante que padding e border sejam incluídos na largura/altura */
+      flex-wrap: wrap; /* Permite que os itens quebrem a linha */
+      width: 100%; /* Garante que ocupe a largura total */
     }
     .cabecalho input {
       font-family: 'Courier New', monospace;
       font-size: 0.9rem;
-      background: #111111;
+      background: #444444; /* Cinza para o fundo do input */
       color: #ffffff;
       border: 1px solid #d3d3d3;
       outline: none;
       padding: 0.3rem;
-      width: 300px;
+      width: 300px; /* Largura padrão para desktop */
       border-radius: 4px;
     }
-    .cabecalho button {
-      background: none;
-      border: none;
-      cursor: pointer;
-      width: 28px;
-      height: 28px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    /* Estilo para ocultar os botões removidos, caso o JS ainda os referencie (boa prática de segurança) */
+    .cabecalho button#botao-anterior,
+    .cabecalho button#botao-proximo,
+    .cabecalho button#botao-limpar {
+        display: none;
     }
-    .cabecalho button:hover {
-      background: #ffffff;
-      border-radius: 4px;
-    }
+
 
     /* Colunas do Cabeçalho da Lista */
     .colunas-cabecalho {
@@ -90,28 +89,28 @@
       grid-template-columns: 120px 3fr 60px 70px;
       gap: 1rem;
       padding: 0.75rem;
-      background: #111111;
-      border-bottom: 1px solid white;
-      position: fixed;
-      top: 2.75rem;
-      left: 0;
-      right: 0;
+      background: #111111; /* Cinza bem escuro para o fundo das colunas */
+      border-bottom: 1px solid #ffffff; /* Branco para a borda das colunas */
       z-index: 12;
       font-size: 0.9rem;
       font-weight: bold;
       text-align: center;
+      box-sizing: border-box; /* Garante que padding e border sejam incluídos na largura/altura */
+      width: 100%; /* Garante que ocupe a largura total */
     }
 
     /* Container da Lista de Senhas */
     .lista-container {
-      height: calc(100vh - 5.5rem);
-      overflow-y: auto;
-      padding: 5.5rem 0.75rem 0.75rem;
+      flex-grow: 1; /* Faz com que o container da lista ocupe todo o espaço restante */
+      overflow-y: auto; /* A barra de rolagem estará AQUI, e não no body */
+      padding: 0.75rem; /* Padding em todas as direções para o conteúdo da lista */
       background: #333333; /* Cinza escuro para o fundo da lista */
-      position: relative;
-      /* Esconde a barra de rolagem para navegadores baseados em WebKit (Chrome, Safari) */
-      -ms-overflow-style: none;  /* Esconde a barra de rolagem para IE e Edge */
-      scrollbar-width: none;  /* Esconde a barra de rolagem para Firefox */
+      position: relative; /* Mantém relative para elementos internos se basearem nele */
+      box-sizing: border-box; /* Garante que padding seja incluído na altura */
+
+      /* Esconde a barra de rolagem apenas para este container */
+      -ms-overflow-style: none;
+      scrollbar-width: none;
     }
 
     /* Esconde a barra de rolagem para navegadores baseados em WebKit (Chrome, Safari) */
@@ -131,7 +130,7 @@
       gap: 1rem;
       align-items: center;
       padding: 6px 12px;
-      border-bottom: 1px solid black; /* Azul claro para a borda entre as senhas */
+      border-bottom: 1px solid #add8e6; /* Azul claro para a borda entre as senhas */
       font-size: 0.9rem;
       text-align: center;
       margin-bottom: 0px; /* Espaçamento entre as senhas diminuído para 0px */
@@ -157,8 +156,8 @@
     /* Estilo para os caracteres da senha */
     .caracteres {
       font-size: 0.8rem;
-      color: #add8e6; /* Azul claro para o texto de caracteres */
-      background: #000080; /* Azul escuro para o fundo de caracteres */
+      color: white; /* Branco para o texto de caracteres */
+      background: black; /* Preto escuro para o fundo de caracteres */
       text-align: center;
       border-radius: 4px;
       padding: 0.3rem;
@@ -188,38 +187,98 @@
     .sentinela {
       height: 10px;
     }
+
+    /* --- Media Queries para Responsividade --- */
+
+    /* Para telas de até 768px (tablets e celulares grandes) */
+    @media (max-width: 768px) {
+      /* Estilos para o cabeçalho no mobile */
+      .cabecalho {
+        flex-direction: column; /* Coloca os itens do cabeçalho em coluna */
+        align-items: flex-start; /* Alinha os itens à esquerda */
+        padding: 0.5rem; /* Reduz o padding */
+      }
+
+      .cabecalho input {
+        width: calc(100% - 1rem); /* Ocupa quase 100% da largura, descontando padding */
+        margin-top: 0.5rem; /* Adiciona espaço acima do input */
+        margin-bottom: 0.5rem; /* Adiciona espaço abaixo do input */
+      }
+
+      /* Colunas da lista */
+      .colunas-cabecalho {
+        grid-template-columns: 1fr 2fr 0.8fr 1fr; /* Ajusta as colunas para telas menores */
+        font-size: 0.8rem;
+        padding: 0.5rem; /* Reduz o padding */
+      }
+
+      /* Item Individual da Senha */
+      .item-senha {
+        grid-template-columns: 1fr 2fr 0.8fr 1fr; /* Ajusta as colunas para telas menores */
+        padding: 4px 8px; /* Reduz o padding */
+        font-size: 0.85rem;
+      }
+    }
+
+    /* Para telas de até 480px (celulares pequenos) */
+    @media (max-width: 480px) {
+      body {
+        font-size: 0.8rem;
+      }
+
+      .cabecalho {
+        padding: 0.4rem;
+      }
+
+      .cabecalho input {
+        font-size: 0.8rem;
+      }
+
+      .colunas-cabecalho {
+        grid-template-columns: 1fr 1.5fr 0.5fr 0.8fr; /* Ajusta ainda mais para telas muito pequenas */
+        gap: 0.5rem; /* Reduz o gap */
+        font-size: 0.75rem;
+      }
+
+      .item-senha {
+        grid-template-columns: 1fr 1.5fr 0.5fr 0.8fr; /* Ajusta ainda mais para telas muito pequenas */
+        gap: 0.5rem; /* Reduz o gap */
+        font-size: 0.75rem;
+      }
+
+      .item-senha button {
+        width: 20px;
+        height: 20px;
+      }
+      .item-senha button svg {
+        width: 14px;
+        height: 14px;
+      }
+
+      .caracteres {
+        font-size: 0.7rem;
+        padding: 0.2rem;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="loading" id="loading">
-    <p>Carregando...</p>
+    <p>Carregando senhas... <span id="loading-progress">[0%]</span></p>
   </div>
+
   <div class="cabecalho">
     Lista de Senhas | by Antonio Pedro ~ 2025
     <input type="text" placeholder="Buscar senha..." maxlength="32" id="entrada-busca">
-    <button id="botao-anterior" title="Anterior">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d3d3d3" stroke-width="2">
-        <path d="m18 15-6-6-6 6"/>
-      </svg>
-    </button>
-    <button id="botao-proximo" title="Próximo">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d3d3d3" stroke-width="2">
-        <path d="m6 9 6 6 6-6"/>
-      </svg>
-    </button>
-    <button id="botao-limpar" title="Limpar">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d3d3d3" stroke-width="2">
-        <path d="M18 6 6 18"/>
-        <path d="m6 6 12 12"/>
-      </svg>
-    </button>
   </div>
+
   <div class="colunas-cabecalho">
     <span class="coluna-id">Id</span>
     <span class="coluna-senha">Senha</span>
-    <span class="coluna-caracteres">Chars</span>
+    <span class="coluna-caracteres">Num</span>
     <span class="coluna-copiar">Copiar</span>
   </div>
+
   <div class="lista-container">
     <div class="lista-senhas" id="lista-senhas"></div>
     <div class="sentinela" id="sentinela"></div>

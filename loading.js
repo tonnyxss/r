@@ -1,10 +1,11 @@
+// Mover todo este bloco de script para o final do <body>
 // Configuração do alfabeto e tamanhos
 const ALFABETO = 'abcdefghijklmnopqrstuvwxyzçABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?`~';
 const TAMANHO_ALFABETO = BigInt(ALFABETO.length);
 const COMPRIMENTO_MIN = 6;
 const COMPRIMENTO_MAX = 32;
 const ITENS_POR_LOTE = 100;
-const MAX_RESULTADOS_BUSCA = 3000;
+const MAX_RESULTS_BUSCA = 3000;
 let posicaoVirtual = BigInt(1);
 let consultaBusca = '';
 let resultadosBusca = [];
@@ -61,15 +62,15 @@ function senhaParaIndice(senha) {
 function gerarSenhasComTermo(termo) {
     const resultados = [];
     const seen = new Set();
-    for (let comprimento = COMPRIMENTO_MIN; comprimento <= COMPRIMENTO_MAX && resultados.length < MAX_RESULTADOS_BUSCA; comprimento++) {
-        for (let posicao = 0; posicao <= comprimento - termo.length && resultados.length < MAX_RESULTADOS_BUSCA; posicao++) {
+    for (let comprimento = COMPRIMENTO_MIN; comprimento <= COMPRIMENTO_MAX && resultados.length < MAX_RESULTS_BUSCA; comprimento++) {
+        for (let posicao = 0; posicao <= comprimento - termo.length && resultados.length < MAX_RESULTS_BUSCA; posicao++) {
             const prefixo = 'a'.repeat(posicao);
             const sufixo = 'a'.repeat(comprimento - posicao - termo.length);
             const base = prefixo + termo + sufixo;
             const variar = (str, pos) => {
-                if (resultados.length >= MAX_RESULTADOS_BUSCA) return;
+                if (resultados.length >= MAX_RESULTS_BUSCA) return;
                 if (pos >= str.length) {
-                    if (str.includes(termo) && !seen.has(str)) {
+                    if (str.includes(termo) && !seen.has(str)) { // Garante que a senha gerada contém o termo
                         const indice = senhaParaIndice(str);
                         if (indice) {
                             resultados.push({ indice, senha: str });
@@ -78,12 +79,12 @@ function gerarSenhasComTermo(termo) {
                     }
                     return;
                 }
-                if (pos < posicao || pos >= posicao + termo.length) {
+                if (pos < posicao || pos >= posicao + termo.length) { // Varia apenas fora do termo
                     for (let c of ALFABETO) {
                         const novaStr = str.substring(0, pos) + c + str.substring(pos + 1);
                         variar(novaStr, pos + 1);
                     }
-                } else {
+                } else { // Não varia caracteres que fazem parte do termo
                     variar(str, pos + 1);
                 }
             };
@@ -110,11 +111,13 @@ function copiarSenha(senhaEscapada, indice) {
         .replace(/&#39;/g, "'");
     navigator.clipboard.writeText(senha).then(() => {
         const item = document.querySelectorAll('.item-senha')[indice];
-        const span = item.querySelector('.senha');
-        span.innerHTML = '<span class="copiado">Copiado!</span>';
-        setTimeout(() => {
-            span.innerHTML = destacarBusca(senha);
-        }, 1000);
+        if (item) {
+            const span = item.querySelector('.senha');
+            span.innerHTML = '<span class="copiado">Copiado!</span>';
+            setTimeout(() => {
+                span.innerHTML = destacarBusca(senha);
+            }, 1000);
+        }
     });
 }
 
@@ -159,30 +162,31 @@ function atualizarLista(append = false) {
     });
 
     itensCarregados += itens.length;
-    document.getElementById('loading').style.display = 'none';
-
     setTimeout(destacarSenhasEncontradas, 0);
 }
 
 function destacarSenhasEncontradas() {
-    const busca = document.getElementById('entrada-busca').value.trim();
-    const senhas = document.querySelectorAll('.item-senha');
-    senhas.forEach(senha => {
-        const senhaSpan = senha.querySelector('.coluna-senha');
-        if (senhaSpan && senhaSpan.dataset.valor === busca && busca !== '') {
-            senha.classList.add('senha-encontrada');
-        } else {
-            senha.classList.remove('senha-encontrada');
+    const entradaBusca = document.getElementById('entrada-busca');
+    const busca = entradaBusca.value.trim();
+
+    const senhasVisiveis = document.querySelectorAll('.item-senha');
+
+    senhasVisiveis.forEach(itemSenhaDiv => {
+        const senhaSpan = itemSenhaDiv.querySelector('.coluna-senha');
+        if (senhaSpan) {
+            const senhaCompletaOriginal = senhaSpan.dataset.valor;
+            
+            itemSenhaDiv.classList.remove('senha-encontrada');
+
+            if (busca !== '' && senhaCompletaOriginal === busca) {
+                itemSenhaDiv.classList.add('senha-encontrada');
+            }
         }
     });
 }
 
 function configurarBusca() {
     const entrada = document.getElementById('entrada-busca');
-    const botaoAnterior = document.getElementById('botao-anterior');
-    const botaoProximo = document.getElementById('botao-proximo');
-    const botaoLimpar = document.getElementById('botao-limpar');
-
     entrada.oninput = () => {
         clearTimeout(debounceTimeout);
         debounceTimeout = setTimeout(() => {
@@ -195,31 +199,6 @@ function configurarBusca() {
             posicaoVirtual = resultadosBusca.length ? resultadosBusca[0].indice : 1n;
             atualizarLista();
         }, 300);
-    };
-
-    botaoAnterior.onclick = () => {
-        if (resultadosBusca.length) {
-            indiceBuscaAtual = (indiceBuscaAtual - 1 + resultadosBusca.length) % resultadosBusca.length;
-            posicaoVirtual = resultadosBusca[indiceBuscaAtual].indice;
-            atualizarLista();
-        }
-    };
-
-    botaoProximo.onclick = () => {
-        if (resultadosBusca.length) {
-            indiceBuscaAtual = (indiceBuscaAtual + 1) % resultadosBusca.length;
-            posicaoVirtual = resultadosBusca[indiceBuscaAtual].indice;
-            atualizarLista();
-        }
-    };
-
-    botaoLimpar.onclick = () => {
-        entrada.value = '';
-        consultaBusca = '';
-        resultadosBusca = [];
-        posicaoVirtual = 1n;
-        indiceBuscaAtual = 0;
-        atualizarLista();
     };
 }
 
@@ -248,17 +227,72 @@ function configurarRolagem() {
     const container = document.querySelector('.lista-container');
     container.onwheel = (e) => {
         if (consultaBusca) return;
-        posicaoVirtual += BigInt(e.deltaY > 0 ? 10 : -10);
+        posicaoVirtual += BigInt(e.deltaY > 0 ? 1 : -1);
         if (posicaoVirtual < 1n) posicaoVirtual = 1n;
-        if (posicaoVirtual > indiceMaximo - BigInt(ITENS_POR_LOTE)) {
-            posicaoVirtual = indiceMaximo - BigInt(ITENS_POR_LOTE);
+        if (posicaoVirtual > indiceMaximo) {
+            posicaoVirtual = indiceMaximo;
         }
         atualizarLista();
+        e.preventDefault();
     };
 }
 
-// Inicialização
-configurarBusca();
-configurarTeclado();
-configurarRolagem();
-atualizarLista();
+// === Funções para o Loading Animado (AGORA PURAMENTE VISUAL E SEPARADA) ===
+let visualLoadingInterval;
+const VISUAL_LOADING_DURATION_MS = 5000; // 5 segundos
+const VISUAL_UPDATE_INTERVAL_MS = 100; // Atualiza a cada 50ms para suavidade
+
+function startVisualLoadingAnimation() {
+    const loadingProgressSpan = document.getElementById('loading-progress');
+    const loadingOverlay = document.getElementById('loading');
+
+    // Depuração: Verifique se os elementos são encontrados
+    console.log("--> startVisualLoadingAnimation chamada.");
+    console.log("--> Elemento loading-progress:", loadingProgressSpan);
+    console.log("--> Elemento loading-overlay:", loadingOverlay);
+
+    if (!loadingProgressSpan || !loadingOverlay) {
+        console.error("ERRO GRAVE: Elemento(s) de loading não encontrado(s). Iniciando site imediatamente.");
+        initializeSiteLogic(); // Fallback imediato
+        return;
+    }
+
+    let startTime = Date.now();
+    loadingProgressSpan.textContent = '[0%]'; // Garante o estado inicial
+
+    visualLoadingInterval = setInterval(() => {
+        const elapsedTime = Date.now() - startTime;
+        let progress = Math.min(1, elapsedTime / VISUAL_LOADING_DURATION_MS);
+        
+        let percentage = Math.floor(progress * 100);
+        percentage = Math.max(0, Math.min(100, percentage)); // Clampa entre 0 e 100
+
+        loadingProgressSpan.textContent = `[${percentage}%]`;
+
+        // Depuração: Veja o progresso no console
+        // console.log(`Progress: ${percentage}%`); 
+
+        if (elapsedTime >= VISUAL_LOADING_DURATION_MS) {
+            clearInterval(visualLoadingInterval);
+            loadingProgressSpan.textContent = '[100%]'; // Garante o 100% final
+            console.log("--> Animação de loading visual concluída. Escondendo overlay e iniciando lógica.");
+            
+            loadingOverlay.style.display = 'none'; 
+            initializeSiteLogic(); // Chama a função que inicia o resto do seu script
+        }
+    }, VISUAL_UPDATE_INTERVAL_MS);
+}
+
+// Esta função agora contém toda a lógica de inicialização do seu site
+function initializeSiteLogic() {
+    console.log("--> Iniciando a lógica principal do site...");
+    configurarBusca();
+    configurarTeclado();
+    configurarRolagem();
+    atualizarLista(); // Esta chamada vai carregar os primeiros itens na lista
+}
+
+// A execução da animação de loading agora é controlada diretamente
+// sem depender do 'DOMContentLoaded' aqui, pois o script já está no final do body.
+// Isso garante que o DOM completo já está disponível.
+startVisualLoadingAnimation(); // Chame a função diretamente aqui.
