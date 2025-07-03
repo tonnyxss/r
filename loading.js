@@ -1,8 +1,8 @@
 // Mover todo este bloco de script para o final do <body>
 // Configuração do alfabeto e tamanhos
-const ALFABETO = 'abcdefghijklmnopqrstuvwxyzçABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?`~';
+const ALFABETO = '0123456789abcdefghijklmnopqrstuvwxyzçABCDEFGHIJKLMNOPQRSTUVWXYZãáõóéíú!@#$%^&*()_+-=[]{}|;:,.<>?`~';
 const TAMANHO_ALFABETO = BigInt(ALFABETO.length);
-const COMPRIMENTO_MIN = 6;
+const COMPRIMENTO_MIN = 4;
 const COMPRIMENTO_MAX = 32;
 const ITENS_POR_LOTE = 100;
 const MAX_RESULTS_BUSCA = 3000;
@@ -198,7 +198,7 @@ function configurarBusca() {
             indiceBuscaAtual = 0;
             posicaoVirtual = resultadosBusca.length ? resultadosBusca[0].indice : 1n;
             atualizarLista();
-        }, 300);
+        }, 600); // tempo pra localizar senha
     };
 }
 
@@ -239,8 +239,8 @@ function configurarRolagem() {
 
 // === Funções para o Loading Animado (AGORA PURAMENTE VISUAL E SEPARADA) ===
 let visualLoadingInterval;
-const VISUAL_LOADING_DURATION_MS = 5000; // 5 segundos
-const VISUAL_UPDATE_INTERVAL_MS = 100; // Atualiza a cada 100ms para suavidade
+const VISUAL_LOADING_DURATION_MS = 1829; // 2 segundos
+const VISUAL_UPDATE_INTERVAL_MS = 121; // Suavidade
 
 function startVisualLoadingAnimation() {
     const loadingProgressSpan = document.getElementById('loading-progress');

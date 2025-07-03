@@ -8,9 +8,10 @@
     /* Estilos Gerais do Corpo da Página */
     body {
       margin: 0;
-      font-family: 'Courier New', monospace;
+      font-family: Verdana;
+	  font-size: 11px;
       background: #333333; /* Cinza escuro para o fundo principal */
-      color: #add8e6; /* Azul claro para o texto principal */
+      color: #add8e6; /* Cor do texto principal */
       height: 100vh;
       display: flex; /* Usamos flexbox para organizar as seções verticalmente */
       flex-direction: column;
@@ -54,19 +55,19 @@
     .cabecalho {
       background: #111111; /* Cinza bem escuro para o fundo do cabeçalho */
       padding: 0.75rem;
-      border-bottom: 1px solid #555555; /* Cinza mais claro para a borda do cabeçalho */
+      border-bottom: 1px solid #212121; /* Cinza mais claro para a borda do cabeçalho de cima */
       display: flex;
       gap: 1rem;
       align-items: center;
       z-index: 15; /* Mantém o z-index caso outros elementos sejam posicionados */
-      color: #d3d3d3;
+      color: #d3d3d3; /* Cor do texto de cima */
       box-sizing: border-box; /* Garante que padding e border sejam incluídos na largura/altura */
       flex-wrap: wrap; /* Permite que os itens quebrem a linha */
       width: 100%; /* Garante que ocupe a largura total */
     }
     .cabecalho input {
       font-family: 'Courier New', monospace;
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       background: #444444; /* Cinza para o fundo do input */
       color: #ffffff;
       border: 1px solid #d3d3d3;
@@ -90,9 +91,9 @@
       gap: 1rem;
       padding: 0.75rem;
       background: #111111; /* Cinza bem escuro para o fundo das colunas */
-      border-bottom: 1px solid #ffffff; /* Branco para a borda das colunas */
+      border-bottom: 1px solid #111111; /* Branco para a borda das colunas */
       z-index: 12;
-      font-size: 0.9rem;
+      font-size: 11px;
       font-weight: bold;
       text-align: center;
       box-sizing: border-box; /* Garante que padding e border sejam incluídos na largura/altura */
@@ -130,18 +131,19 @@
       gap: 1rem;
       align-items: center;
       padding: 6px 12px;
-      border-bottom: 1px solid #add8e6; /* Azul claro para a borda entre as senhas */
-      font-size: 0.9rem;
+      border-bottom: 1px solid black; /* Borda entre as senhas */
+      font-size: 11px;
       text-align: center;
       margin-bottom: 0px; /* Espaçamento entre as senhas diminuído para 0px */
       background-color: #333333; /* Cinza escuro para o fundo do item da senha */
-      transition: background-color 0.3s ease;
+      transition: background-color 0.5s ease;
     }
     .item-senha.senha-encontrada {
-      background: green !important;
+      background: red !important;
       color: white !important;
       border-radius: 4px;
       font-weight: bold;
+	  font-size: 13px;
     }
     .item-senha span {
       white-space: nowrap;
@@ -155,7 +157,7 @@
 
     /* Estilo para os caracteres da senha */
     .caracteres {
-      font-size: 0.8rem;
+      font-size: 11px;
       color: white; /* Branco para o texto de caracteres */
       background: black; /* Preto escuro para o fundo de caracteres */
       text-align: center;
@@ -268,15 +270,16 @@
   </div>
 
   <div class="cabecalho">
-    Lista de Senhas | by Antonio Pedro ~ 2025
+    Sua senha está aqui. | by Antonio Pedro ~ 2025
     <input type="text" placeholder="Buscar senha..." maxlength="32" id="entrada-busca">
+	
   </div>
 
   <div class="colunas-cabecalho">
-    <span class="coluna-id">Id</span>
+    <span class="coluna-id">id</span>
     <span class="coluna-senha">Senha</span>
-    <span class="coluna-caracteres">Num</span>
-    <span class="coluna-copiar">Copiar</span>
+    <span class="coluna-caracteres"></span>
+    <span class="coluna-copiar"></span>
   </div>
 
   <div class="lista-container">
