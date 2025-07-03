@@ -240,7 +240,7 @@ function configurarRolagem() {
 // === Funções para o Loading Animado (AGORA PURAMENTE VISUAL E SEPARADA) ===
 let visualLoadingInterval;
 const VISUAL_LOADING_DURATION_MS = 5000; // 5 segundos
-const VISUAL_UPDATE_INTERVAL_MS = 100; // Atualiza a cada 50ms para suavidade
+const VISUAL_UPDATE_INTERVAL_MS = 100; // Atualiza a cada 100ms para suavidade
 
 function startVisualLoadingAnimation() {
     const loadingProgressSpan = document.getElementById('loading-progress');
