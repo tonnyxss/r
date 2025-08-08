@@ -101,6 +101,7 @@
             max-width: 600px;
             margin: 0 auto;
             overflow: hidden;
+            padding: 0 40px; /* Espaço para os botões */
         }
         .slides {
             display: flex;
@@ -110,11 +111,13 @@
             min-width: 100%;
             box-sizing: border-box;
             text-align: center;
+            padding: 10px;
         }
         .slide img {
             max-width: 80%;
             border-radius: 5px;
             margin: 10px auto;
+            cursor: pointer;
         }
         .slide h3 {
             color: #ffbc00;
@@ -132,21 +135,22 @@
             background-color: #ffbc00;
             color: #000;
             border: none;
-            padding: 10px;
+            padding: 10px 15px;
             cursor: pointer;
             font-size: 16px;
             border-radius: 5px;
+            z-index: 10;
         }
         .slider-btn:hover {
             background-color: #e0a700;
         }
         .prev {
-            left: 10px;
+            left: 0;
         }
         .next {
-            right: 10px;
+            right: 0;
         }
-        .modal {
+        .modal, .image-modal {
             display: none;
             position: fixed;
             top: 0;
@@ -171,6 +175,33 @@
         .modal-content p {
             font-size: 16px;
             margin: 0 0 15px;
+        }
+        .image-modal-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            text-align: center;
+        }
+        .image-modal-content img {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 5px;
+        }
+        .close-image {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            background-color: #ffbc00;
+            color: #000;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 50%;
+            line-height: 1;
+        }
+        .close-image:hover {
+            background-color: #e0a700;
         }
         .modal-button {
             background-color: #ffbc00;
@@ -205,21 +236,21 @@
             <div class="slides">
                 <div class="slide">
                     <h3>Quarto Público: Picnic</h3>
-                    <img src="https://pbs.twimg.com/media/CLzXNn_WUAAqTPJ.png" alt="Picnic">
+                    <img src="https://i.imgur.com/vvxGfAN.gif" alt="Picnic" onclick="openImageModal(this.src)">
                     <p>
                         O icônico quarto público Picnic era um dos points mais populares do Habbo Hotel nos anos 2000. Com sua vibe ao ar livre, árvores pixeladas e mesas de piquenique, era o lugar perfeito para encontrar amigos, paquerar ou simplesmente curtir a atmosfera descontraída. Muitos jogadores passavam horas ali, participando de conversas animadas ou organizando eventos improvisados. Uma verdadeira lenda do hotel!
                     </p>
                 </div>
                 <div class="slide">
                     <h3>Página Principal do Grand Habbo Hotel</h3>
-                    <img src="https://i.imgur.com/590rJHO.gif" alt="Grand Habbo Hotel">
+                    <img src="https://i.imgur.com/590rJHO.gif" alt="Grand Habbo Hotel" onclick="openImageModal(this.src)">
                     <p>
                         Esta imagem se trata da Página Principal do Habbo Hotel, ainda chamada de Grand Habbo Hotel, marcando os primeiros passos do jogo que se tornaria um ícone dos anos 2000.
                     </p>
                 </div>
                 <div class="slide">
                     <h3>Evolução do Habbo em 2001</h3>
-                    <img src="https://i.imgur.com/Eyyedrw.gif" alt="Evolução do Habbo">
+                    <img src="https://i.imgur.com/Eyyedrw.gif" alt="Evolução do Habbo" onclick="openImageModal(this.src)">
                     <p>
                         O Habbo teve um rápido desenvolvimento durante o primeiro ano, à medida que muitos dos recursos hoje considerados "básicos" foram adicionados. Em março, foram adicionados quartos de hóspedes privados e o catálogo e, em junho, os primeiros raros, o Trono, o Samovar Russo e o Holoboy foram entregues como presentes para comemorar o aniversário de Ione (Primeira Staff) - cada usuário ativo recebeu um desses presentes. Em outubro, a mobília do Habboween foi lançada no catálogo, mas depois foi excluída do hotel, inclusive dos quartos dos usuários. No Natal, foram adicionadas mobílias festivas, e dessa vez permaneceram no hotel após a saída do catálogo. Também no final de 2001, no catálogo foi lançado o raro Hologirl. O Hologirl foi um teste para verificar se os usuários estariam dispostos a pagar 25 créditos por uma peça de mobiliário exclusiva. O teste foi um sucesso e o Habbo começou a lançar móveis raros regulares, que se tornaram uma parte central da experiência do Habbo. Tendo trazido ainda em 2002 novas categorias como a Páscoa entre outros e até a famosa Câmera.
                     </p>
@@ -253,6 +284,13 @@
         </div>
     </div>
 
+    <div class="image-modal" id="imageModal">
+        <div class="image-modal-content">
+            <img id="modalImage" src="" alt="Imagem Ampliada">
+            <button class="close-image" onclick="closeImageModal()">X</button>
+        </div>
+    </div>
+
     <script>
         let currentSlide = 0;
         const slides = document.querySelectorAll('.slide');
@@ -279,6 +317,13 @@
             if (currentSlide >= totalSlides) currentSlide = 0;
             if (currentSlide < 0) currentSlide = totalSlides - 1;
             document.querySelector('.slides').style.transform = `translateX(-${currentSlide * 100}%)`;
+        }
+        function openImageModal(src) {
+            document.getElementById('modalImage').src = src;
+            document.getElementById('imageModal').style.display = 'flex';
+        }
+        function closeImageModal() {
+            document.getElementById('imageModal').style.display = 'none';
         }
         window.onload = showModal;
     </script>
