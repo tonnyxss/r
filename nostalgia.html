@@ -5,26 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Habbo Nostalgia</title>
     <style>
-        body {
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
             background-color: #1c2526;
             color: #ffffff;
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
         h1 {
-            font-size: 48px;
+            font-size: 36px;
             color: #ffbc00;
-            text-shadow: 2px 2px #000;
+            text-shadow: 1px 1px #000;
             text-align: center;
-            margin: 20px 0;
+            margin: 15px 0;
         }
         .nav-menu {
             background-color: #ffbc00;
-            padding: 15px;
+            padding: 10px;
             text-align: center;
             width: 100%;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
@@ -32,9 +33,9 @@
         .nav-menu a {
             color: #000;
             text-decoration: none;
-            padding: 10px 30px;
-            font-size: 18px;
-            margin: 0 15px;
+            padding: 8px 20px;
+            font-size: 14px;
+            margin: 0 10px;
             font-weight: bold;
             cursor: pointer;
         }
@@ -48,78 +49,97 @@
         }
         .section {
             display: none;
-            padding: 40px;
+            padding: 15px;
             background-color: #2a3f54;
             width: 100%;
             box-sizing: border-box;
             flex-grow: 1;
+            overflow-y: auto;
+            height: calc(100vh - 80px);
         }
         .section.active {
             display: block;
         }
         .welcome-text {
-            font-size: 20px;
-            line-height: 1.6;
+            font-size: 16px;
+            line-height: 1.5;
             text-align: center;
+            padding: 15px;
         }
         .pixel-font {
             font-family: 'Verdana', sans-serif;
             letter-spacing: 1px;
         }
-        .imager-section {
-            padding: 40px;
-            margin: 20px 0;
+        .forum-section {
+            padding: 15px;
             width: 100%;
             box-sizing: border-box;
         }
-        .imager-section input {
-            padding: 12px;
-            font-size: 16px;
-            border-radius: 5px;
-            border: none;
-            margin-right: 15px;
-            width: 200px;
-        }
-        .imager-section button {
-            background-color: #ffbc00;
-            color: #000;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        .imager-section button:hover {
-            background-color: #e0a700;
-        }
-        .imager-result {
-            margin-top: 20px;
-            text-align: center;
-        }
-        .imager-result img {
-            max-width: 150px;
-        }
-        .blog-section {
-            padding: 40px;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        .blog-post {
+        .forum-post {
             background-color: #3a506b;
-            padding: 30px;
+            padding: 15px;
             border-radius: 5px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             max-width: 100%;
         }
-        .blog-post h3 {
+        .forum-post h3 {
             color: #ffbc00;
             margin-top: 0;
-            font-size: 24px;
+            font-size: 18px;
         }
-        .blog-post img {
-            max-width: 100%;
+        .forum-post p {
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        .slider {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+        .slides {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+        .slide {
+            min-width: 100%;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        .slide img {
+            max-width: 80%;
             border-radius: 5px;
-            margin: 15px 0;
+            margin: 10px auto;
+        }
+        .slide h3 {
+            color: #ffbc00;
+            font-size: 18px;
+            margin: 10px 0;
+        }
+        .slide p {
+            font-size: 14px;
+            margin: 0 20px 20px;
+        }
+        .slider-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #ffbc00;
+            color: #000;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+        .slider-btn:hover {
+            background-color: #e0a700;
+        }
+        .prev {
+            left: 10px;
+        }
+        .next {
+            right: 10px;
         }
         .modal {
             display: none;
@@ -136,25 +156,25 @@
         }
         .modal-content {
             background-color: #2a3f54;
-            padding: 30px;
+            padding: 20px;
             border-radius: 10px;
             text-align: center;
-            max-width: 500px;
+            max-width: 400px;
             width: 90%;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
         .modal-content p {
-            font-size: 18px;
-            margin: 0 0 20px;
+            font-size: 16px;
+            margin: 0 0 15px;
         }
         .modal-button {
             background-color: #ffbc00;
             color: #000;
-            padding: 12px 25px;
+            padding: 8px 20px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 14px;
         }
         .modal-button:hover {
             background-color: #e0a700;
@@ -166,49 +186,68 @@
     <div class="nav-menu pixel-font">
         <a class="nav-link active" onclick="showSection('home')">Home</a>
         <a class="nav-link" onclick="showSection('curiosidades')">Curiosidades</a>
-        <a class="nav-link" onclick="showSection('imager')">Habbo Imager</a>
+        <a class="nav-link" onclick="showSection('forum')">Fórum</a>
     </div>
 
     <div id="home" class="section active pixel-font">
         <p class="welcome-text">
-            Relembre os velhos tempos do Habbo Hotel! Aqui você vai encontrar tudo sobre os clássicos quartos, mobis, eventos e aquela vibe única dos anos 2000. Junte-se à comunidade e reviva a nostalgia! Clique nos menus acima para explorar!
+            Bem-vindo ao Habbo Nostalgia! Aqui você vai reviver os melhores momentos do Habbo Hotel com curiosidades, imagens e memórias dos anos 2000. Explore quartos clássicos, mobis raros e eventos épicos da comunidade. Clique nos menus acima para mergulhar na nostalgia!
         </p>
     </div>
 
-    <div id="imager" class="section imager-section pixel-font">
-        <h3>Habbo Imager</h3>
-        <p>Digite seu username para gerar seu avatar Habbo!</p>
-        <input type="text" id="usernameInput" placeholder="Seu username" />
-        <button onclick="generateAvatar()">Gerar Avatar</button>
-        <div class="imager-result" id="imagerResult"></div>
+    <div id="curiosidades" class="section pixel-font">
+        <h2>Curiosidades do Habbo Hotel</h2>
+        <div class="slider">
+            <div class="slides">
+                <div class="slide">
+                    <h3>Trono Dourado</h3>
+                    <img src="https://via.placeholder.com/300x200?text=Trono+Dourado" alt="Trono Dourado">
+                    <p>O icônico Trono Dourado, um dos mobis mais cobiçados do Habbo. Uma lenda no hotel!</p>
+                </div>
+                <div class="slide">
+                    <h3>Holoboy</h3>
+                    <img src="https://via.placeholder.com/300x200?text=Holoboy" alt="Holoboy">
+                    <p>O Holoboy era o sonho de qualquer fã de tecnologia no Habbo. Sua luz brilhava em qualquer quarto!</p>
+                </div>
+                <div class="slide">
+                    <h3>Eventos Cai-Cai</h3>
+                    <img src="https://via.placeholder.com/300x200?text=Cai-Cai" alt="Cai-Cai">
+                    <p>Os eventos de "Cai-Cai" lotavam quartos e eram pura diversão. Quem nunca tentou sobreviver até o final?</p>
+                </div>
+            </div>
+            <button class="slider-btn prev" onclick="moveSlide(-1)">&#10094;</button>
+            <button class="slider-btn next" onclick="moveSlide(1)">&#10095;</button>
+        </div>
     </div>
 
-    <div id="curiosidades" class="section blog-section pixel-font">
-        <h2>Curiosidades do Habbo Hotel</h2>
-        <div class="blog-post">
-            <h3>O lendário Mobis Raros</h3>
+    <div id="forum" class="section forum-section pixel-font">
+        <h2>Fórum Nostálgico</h2>
+        <div class="forum-post">
+            <h3>Discussões sobre o Habbo Clássico</h3>
             <p>
-                Lembra do Trono Dourado ou do Holoboy? Esses mobis eram o sonho de consumo de qualquer habbo nos anos 2000. Conseguir um era sinônimo de status no hotel!
+                Relembre as conversas épicas nos fóruns do Habbo! Compartilhe suas histórias, como aquela troca de mobi raro ou um evento lendário.
             </p>
-            <img src="https://www.habbo.com.br/habbo-imaging/avatarimage?user=Antonio&action=std&direction=4&head_direction=3&gesture=sml&size=l" alt="Habbo com mobi raro">
         </div>
-        <div class="blog-post">
-            <h3>Eventos Épicos do Passado</h3>
+        <div class="forum-post">
+            <h3>Suas Memórias Favoritas</h3>
             <p>
-                Quem não se lembra das competições de quartos ou dos eventos de "Cai-Cai"? Os eventos comunitários eram o coração do Habbo, reunindo jogadores em quartos lotados.
+                Qual foi o seu quarto favorito? Ou aquele jogo de "Não pise no chão de lava"? Compartilhe suas memórias aqui!
             </p>
-            <img src="https://www.habbo.com.br/habbo-imaging/avatarimage?user=Antonio&action=wav&direction=4&head_direction=3&gesture=sml&size=l" alt="Habbo em evento">
         </div>
     </div>
 
     <div class="modal" id="habboModal">
         <div class="modal-content">
-            <p>Bem-vindo ao Habbo Nostalgia! O hotel está em construção, mas já dá pra sentir a vibe! 😎</p>
+            <p>Bem-vindo ao Habbo Nostalgia! Reviva a magia do Habbo Hotel com curiosidades, mobis e memórias dos anos 2000! 😎</p>
             <button class="modal-button" onclick="closeModal()">Fechar</button>
         </div>
     </div>
 
     <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
         function showModal() {
             document.getElementById('habboModal').style.display = 'flex';
         }
@@ -216,28 +255,21 @@
             document.getElementById('habboModal').style.display = 'none';
         }
         function showSection(sectionId) {
-            // Hide all sections
             document.querySelectorAll('.section').forEach(section => {
                 section.classList.remove('active');
             });
-            // Show selected section
             document.getElementById(sectionId).classList.add('active');
-            // Update active menu link
             document.querySelectorAll('.nav-link').forEach(link => {
                 link.classList.remove('active');
             });
             event.target.classList.add('active');
         }
-        function generateAvatar() {
-            const username = document.getElementById('usernameInput').value.trim();
-            if (username) {
-                const avatarUrl = `https://www.habbo.com.br/habbo-imaging/avatarimage?user=${encodeURIComponent(username)}&action=std&direction=4&head_direction=3&gesture=sml&size=l`;
-                document.getElementById('imagerResult').innerHTML = `<img src="${avatarUrl}" alt="Avatar de ${username}" />`;
-            } else {
-                document.getElementById('imagerResult').innerHTML = '<p style="color: #ffbc00;">Por favor, insira um username!</p>';
-            }
+        function moveSlide(direction) {
+            currentSlide += direction;
+            if (currentSlide >= totalSlides) currentSlide = 0;
+            if (currentSlide < 0) currentSlide = totalSlides - 1;
+            document.querySelector('.slides').style.transform = `translateX(-${currentSlide * 100}%)`;
         }
-        // Show modal on page load
         window.onload = showModal;
     </script>
 </body>
