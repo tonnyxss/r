@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TonnyTube</title>
+    <style>
+        body {
+            background-color: #0d0d0d;
+            color: #e0e0e0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Estilos da barra superior */
+        .header-main {
+            background-color: #121212;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+            border-bottom: 1px solid #333;
+            gap: 20px;
+        }
+
+        .header-main .back-button {
+            background-color: #ff4444;
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s;
+            display: none;
+        }
+
+        .header-main .back-button:hover {
+            background-color: #cc3333;
+        }
+
+        .header-main .main-title, .header-main .video-title {
+            margin: 0;
+            font-size: 1.5em;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .header-main .main-title {
+            display: block;
+        }
+
+        .header-main .video-title {
+            display: none;
+        }
+        
+        .header-main .search-box {
+            margin-left: auto;
+            flex-grow: 1;
+            max-width: 500px;
+        }
+        
+        .header-main #search {
+            padding: 12px 20px;
+            width: 100%;
+            box-sizing: border-box;
+            border-radius: 25px;
+            border: 1px solid #333;
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .header-main #search::placeholder {
+            color: #777;
+        }
+
+        /* Seção da lista de vídeos */
+        .grid-page {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .grid {
+            display: grid;
+            /* Definição para 6 colunas de tamanho igual */
+            grid-template-columns: repeat(6, 1fr);
+            gap: 15px;
+            justify-content: center;
+            padding: 0 5%;
+        }
+
+        .item {
+            background-color: #1a1a1a;
+            border-radius: 10px;
+            overflow: hidden;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+        }
+        
+        .thumbnail-container {
+            width: 100%;
+            height: 100px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .thumbnail-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .item-title {
+            padding: 10px 5px;
+            font-size: 0.9em;
+            font-weight: bold;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Seção do player (oculta por padrão) */
+        .player-page {
+            display: none;
+            flex-grow: 1;
+            align-items: center;
+            justify-content: center;
+            background-color: black;
+            padding: 20px;
+        }
+
+        .video-wrapper {
+            width: 80%;
+            max-width: 1000px;
+            aspect-ratio: 16 / 9;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <header class="header-main">
+        <button class="back-button" id="back-button">Voltar</button>
+        <h1 class="main-title" id="main-title">TonnyTube</h1>
+        <h2 class="video-title" id="video-title"></h2>
+        <div class="search-box" id="search-box">
+            <input type="text" id="search" placeholder="Buscar filme ou série...">
+        </div>
+    </header>
+
+    <div class="grid-page" id="list-page">
+        <div class="grid" id="grid">
+            </div>
+    </div>
+
+    <div class="player-page" id="player-page">
+        <div class="video-wrapper">
+            <video id="videoPlayer" controls></video>
+        </div>
+    </div>
+
+    <script>
+        const videos = [
+            {
+                id: "1",
+                title: "Toy Story 1",
+                thumb: "https://i.imgur.com/Y13O5uv.jpeg",
+                url: "https://cdnst68.tokyvideo.com/videos/578/578605/mp4/46b7df782b9d1f079d7d7f9fe2a298ab6101849feb05f4885d4317a6943fcd51.mp4?secure=WhrgoWCDdh6jMUgnSepVPA%3D%3D%2C1754777450"
+            },
+            {
+                id: "2",
+                title: "Toy Story 2",
+                thumb: "https://is1-ssl.mzstatic.com/image/thumb/wa9hab0hzTa8vs3ozH3OxQ/1200x675.jpg",
+                url: "https://cdnst24.tokyvideo.com/videos/318/318419/mp4/d850f5032df0c743d2d5edfff3b6a91ee1382e2132e657902992b8e3e6a925ac.mp4?secure=WbZvpOn1HWK4OZvozkRGSg%3D%3D%2C1754779560"
+            },
+            {
+                id: "3",
+                title: "Filme 3",
+                thumb: "https://via.placeholder.com/150x150",
+                url: "https://www.w3schools.com/html/movie.mp4"
+            },
+            {
+                id: "4",
+                title: "Filme 4",
+                thumb: "https://via.placeholder.com/150x150",
+                url: "https://www.w3schools.com/html/movie.mp4"
+            },
+            {
+                id: "5",
+                title: "Filme 5",
+                thumb: "https://via.placeholder.com/150x150",
+                url: "https://www.w3schools.com/html/movie.mp4"
+            },
+            {
+                id: "6",
+                title: "Filme 6",
+                thumb: "https://via.placeholder.com/150x150",
+                url: "https://www.w3schools.com/html/movie.mp4"
+            },
+            {
+                id: "7",
+                title: "Filme 7",
+                thumb: "https://via.placeholder.com/150x150",
+                url: "https://www.w3schools.com/html/movie.mp4"
+            },
+            {
+                id: "8",
+                title: "Filme 8",
+                thumb: "https://via.placeholder.com/150x150",
+                url: "https://www.w3schools.com/html/movie.mp4"
+            },
+            {
+                id: "9",
+                title: "Filme 9",
+                thumb: "https://via.placeholder.com/150x150",
+                url: "https://www.w3schools.com/html/movie.mp4"
+            },
+            {
+                id: "10",
+                title: "Filme 10",
+                thumb: "https://via.placeholder.com/150x150",
+                url: "https://www.w3schools.com/html/movie.mp4"
+            },
+            {
+                id: "11",
+                title: "Filme 11",
+                thumb: "https://via.placeholder.com/150x150",
+                url: "https://www.w3schools.com/html/movie.mp4"
+            },
+            {
+                id: "12",
+                title: "Filme 12",
+                thumb: "https://via.placeholder.com/150x150",
+                url: "https://www.w3schools.com/html/movie.mp4"
+            },
+        ];
+
+        const videoMap = videos.reduce((map, video) => {
+            map[video.id] = video;
+            return map;
+        }, {});
+
+        const listPage = document.getElementById("list-page");
+        const playerPage = document.getElementById("player-page");
+        const videoPlayer = document.getElementById("videoPlayer");
+        const mainTitle = document.getElementById("main-title");
+        const videoTitle = document.getElementById("video-title");
+        const searchBox = document.getElementById("search-box");
+        const backButton = document.getElementById("back-button");
+        const grid = document.getElementById("grid");
+
+        function renderVideos() {
+            grid.innerHTML = videos.map(video => `
+                <div class="item" data-id="${video.id}" data-title="${video.title}">
+                    <div class="thumbnail-container">
+                        <img src="${video.thumb}" alt="${video.title}">
+                    </div>
+                    <div class="item-title">${video.title}</div>
+                </div>
+            `).join('');
+
+            document.querySelectorAll('.item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const videoId = item.getAttribute('data-id');
+                    const video = videoMap[videoId];
+                    if (video) {
+                        showPlayer(video.title, video.url);
+                    }
+                });
+            });
+        }
+
+        function showPlayer(title, url) {
+            listPage.style.display = "none";
+            playerPage.style.display = "flex";
+            mainTitle.style.display = "none";
+            videoTitle.textContent = title;
+            videoTitle.style.display = "block";
+            searchBox.style.display = "none";
+            backButton.style.display = "block";
+
+            videoPlayer.src = url;
+            videoPlayer.play().catch(error => {
+                console.log("Autoplay bloqueado. Inicie o vídeo manualmente.");
+            });
+        }
+
+        function showListPage() {
+            listPage.style.display = "block";
+            playerPage.style.display = "none";
+            mainTitle.style.display = "block";
+            videoTitle.textContent = "";
+            videoTitle.style.display = "none";
+            searchBox.style.display = "block";
+            backButton.style.display = "none";
+            
+            videoPlayer.pause();
+            videoPlayer.src = "";
+        }
+        
+        document.getElementById("search").addEventListener("input", function() {
+            const term = this.value.toLowerCase();
+            document.querySelectorAll(".item").forEach(item => {
+                const title = item.getAttribute('data-title').toLowerCase();
+                if (title.includes(term)) {
+                    item.style.display = "block";
+                } else {
+                    item.style.display = "none";
+                }
+            });
+        });
+        
+        backButton.addEventListener('click', showListPage);
+
+        renderVideos();
+    </script>
+</body>
+</html>
