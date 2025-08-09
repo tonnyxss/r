@@ -92,8 +92,7 @@
 
         .grid {
             display: grid;
-            /* Definição para 6 colunas de tamanho igual */
-            grid-template-columns: repeat(6, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
             gap: 15px;
             justify-content: center;
             padding: 0 5%;
@@ -116,7 +115,7 @@
         
         .thumbnail-container {
             width: 100%;
-            height: 100px;
+            height: 100px; /* Altura fixa reduzida para as thumbnails */
             overflow: hidden;
             display: flex;
             align-items: center;
@@ -197,67 +196,7 @@
                 title: "Toy Story 2",
                 thumb: "https://is1-ssl.mzstatic.com/image/thumb/wa9hab0hzTa8vs3ozH3OxQ/1200x675.jpg",
                 url: "https://cdnst24.tokyvideo.com/videos/318/318419/mp4/d850f5032df0c743d2d5edfff3b6a91ee1382e2132e657902992b8e3e6a925ac.mp4?secure=WbZvpOn1HWK4OZvozkRGSg%3D%3D%2C1754779560"
-            },
-            {
-                id: "3",
-                title: "Filme 3",
-                thumb: "https://via.placeholder.com/150x150",
-                url: "https://www.w3schools.com/html/movie.mp4"
-            },
-            {
-                id: "4",
-                title: "Filme 4",
-                thumb: "https://via.placeholder.com/150x150",
-                url: "https://www.w3schools.com/html/movie.mp4"
-            },
-            {
-                id: "5",
-                title: "Filme 5",
-                thumb: "https://via.placeholder.com/150x150",
-                url: "https://www.w3schools.com/html/movie.mp4"
-            },
-            {
-                id: "6",
-                title: "Filme 6",
-                thumb: "https://via.placeholder.com/150x150",
-                url: "https://www.w3schools.com/html/movie.mp4"
-            },
-            {
-                id: "7",
-                title: "Filme 7",
-                thumb: "https://via.placeholder.com/150x150",
-                url: "https://www.w3schools.com/html/movie.mp4"
-            },
-            {
-                id: "8",
-                title: "Filme 8",
-                thumb: "https://via.placeholder.com/150x150",
-                url: "https://www.w3schools.com/html/movie.mp4"
-            },
-            {
-                id: "9",
-                title: "Filme 9",
-                thumb: "https://via.placeholder.com/150x150",
-                url: "https://www.w3schools.com/html/movie.mp4"
-            },
-            {
-                id: "10",
-                title: "Filme 10",
-                thumb: "https://via.placeholder.com/150x150",
-                url: "https://www.w3schools.com/html/movie.mp4"
-            },
-            {
-                id: "11",
-                title: "Filme 11",
-                thumb: "https://via.placeholder.com/150x150",
-                url: "https://www.w3schools.com/html/movie.mp4"
-            },
-            {
-                id: "12",
-                title: "Filme 12",
-                thumb: "https://via.placeholder.com/150x150",
-                url: "https://www.w3schools.com/html/movie.mp4"
-            },
+            }
         ];
 
         const videoMap = videos.reduce((map, video) => {
