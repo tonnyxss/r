@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador de Notícias sem JavaScript</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        #content { height: calc(100vh - 4rem); }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div id="top-bar" class="fixed top-0 left-0 w-full bg-white shadow-lg p-4 z-10 flex items-center space-x-4">
+        <label for="url" class="text-gray-700 font-semibold">Digite a URL:</label>
+        <input type="text" id="url" placeholder="https://exemplo.com/noticia" class="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500">
+        <button onclick="carregarPagina()" class="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-900 transition">Carregar</button>
+        <button onclick="recarregar()" class="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-900 transition">Recarregar</button>
+        <button onclick="copiarURL()" class="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-900 transition">Copiar URL</button>
+        <button onclick="limpar()" class="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-900 transition">Limpar</button>
+    </div>
+    <div id="content" class="mt-16 p-6 overflow-auto">
+        <div id="share-link" class="hidden mb-4 text-sm text-gray-700">Link para compartilhar: <a id="share-url" href="#" class="text-blue-600 underline" target="_blank"></a></div>
+        <iframe id="frame" sandbox="" class="w-full h-full"></iframe>
+    </div>
+    <script>
+        let currentURL = '';
+
+        function carregarPagina() {
+            const url = document.getElementById('url').value.trim();
+            if (!url) {
+                alert('Por favor, digite um URL válido.');
+                return;
+            }
+            currentURL = url;
+            document.getElementById('frame').src = url;
+            gerarLinkCompartilhavel(url);
+        }
+
+        function recarregar() {
+            if (currentURL) {
+                document.getElementById('url').value = currentURL;
+                carregarPagina();
+            }
+        }
+
+        function copiarURL() {
+            if (currentURL) {
+                navigator.clipboard.writeText(currentURL).then(() => alert('URL copiada!'));
+            } else {
+                alert('Nenhuma URL carregada.');
+            }
+        }
+
+        function limpar() {
+            document.getElementById('url').value = '';
+            document.getElementById('frame').src = 'about:blank';
+            document.getElementById('share-link').classList.add('hidden');
+            currentURL = '';
+        }
+
+        function gerarLinkCompartilhavel(url) {
+            const encodedURL = btoa(url); // Codifica URL em Base64
+            const shareLink = `${window.location.origin}${window.location.pathname}?id=${encodedURL}`;
+            const shareElement = document.getElementById('share-url');
+            shareElement.href = shareLink;
+            shareElement.textContent = shareLink;
+            document.getElementById('share-link').classList.remove('hidden');
+        }
+
+        // Carrega URL da query string, se presente
+        window.onload = function() {
+            const params = new URLSearchParams(window.location.search);
+            const encodedURL = params.get('id');
+            if (encodedURL) {
+                try {
+                    const url = atob(encodedURL); // Decodifica URL
+                    document.getElementById('url').value = url;
+                    carregarPagina();
+                } catch (error) {
+                    alert('URL inválida na query string.');
+                }
+            }
+        };
+    </script>
+</body>
+</html>
