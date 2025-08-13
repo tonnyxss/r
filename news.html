@@ -22,28 +22,8 @@
         <iframe id="frame" sandbox="" class="w-full h-full"></iframe>
     </div>
     <script>
-        let currentURL = '';
-        let currentId = '';
-
-        function gerarIdCurto() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            let id = '';
-            for (let i = 0; i < 12; i++) {
-                id += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            return id;
-        }
-
-        function salvarURL(id, url) {
-            const urls = JSON.parse(localStorage.getItem('urlMap') || '{}');
-            urls[id] = url;
-            localStorage.setItem('urlMap', JSON.stringify(urls));
-        }
-
-        function obterURL(id) {
-            const urls = JSON.parse(localStorage.getItem('urlMap') || '{}');
-            return urls[id] || null;
-        }
+        let currentURL = ''; // URL original da notícia
+        let shareLink = ''; // Link compartilhável com ?id=
 
         function carregarPagina() {
             const url = document.getElementById('tonny_url').value.trim();
@@ -51,26 +31,23 @@
                 alert('Por favor, digite um URL válido.');
                 return;
             }
-            const id = gerarIdCurto();
-            salvarURL(id, url);
+            const encoded = btoa(url); // Codifica a URL em Base64
             currentURL = url;
-            currentId = id;
+            shareLink = `${window.location.origin}${window.location.pathname}?id=${encoded}`;
             document.getElementById('frame').src = url;
-            const shareLink = `${window.location.origin}${window.location.pathname}?id=${id}`;
-            window.history.pushState({ id }, '', `?id=${id}`); // Muda a URL do navegador para noticia.html?id=<id-curto>
-            currentURL = shareLink; // Para copiar o link compartilhável
+            window.history.pushState({ encoded }, '', `?id=${encoded}`); // Muda a URL do navegador para ?id=<base64>
         }
 
         function recarregar() {
-            if (currentURL && currentId) {
+            if (currentURL) {
                 document.getElementById('tonny_url').value = currentURL;
                 carregarPagina();
             }
         }
 
         function copiarURL() {
-            if (currentURL) {
-                navigator.clipboard.writeText(currentURL).then(() => alert('Link copiado!'));
+            if (shareLink) {
+                navigator.clipboard.writeText(shareLink).then(() => alert('Link copiado!'));
             } else {
                 alert('Nenhuma URL carregada.');
             }
@@ -80,25 +57,23 @@
             document.getElementById('tonny_url').value = '';
             document.getElementById('frame').src = 'about:blank';
             currentURL = '';
-            currentId = '';
+            shareLink = '';
             window.history.pushState({}, '', window.location.pathname); // Reseta a URL do navegador
         }
 
         // Carrega URL da query string, se presente
         window.onload = function() {
             const params = new URLSearchParams(window.location.search);
-            const id = params.get('id');
-            if (id) {
-                const url = obterURL(id);
-                if (url) {
+            const encoded = params.get('id');
+            if (encoded) {
+                try {
+                    const url = atob(encoded); // Decodifica a URL
                     document.getElementById('tonny_url').value = url;
                     currentURL = url;
-                    currentId = id;
+                    shareLink = `${window.location.origin}${window.location.pathname}?id=${encoded}`;
                     document.getElementById('frame').src = url;
-                    const shareLink = `${window.location.origin}${window.location.pathname}?id=${id}`;
-                    currentURL = shareLink; // Para copiar o link compartilhável
-                    window.history.pushState({ id }, '', `?id=${id}`); // Garante que a URL do navegador seja noticia.html?id=<id-curto>
-                } else {
+                    window.history.pushState({ encoded }, '', `?id=${encoded}`); // Mantém a URL do navegador com ?id=<base64>
+                } catch (error) {
                     alert('ID inválido ou URL não encontrada.');
                 }
             }
