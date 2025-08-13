@@ -112,38 +112,3 @@ window.onload = function() {
     });
 };
 
-/* ===== Proteção contra inspeção ===== */
-
-document.addEventListener('contextmenu', function(e) {
-    e.preventDefault();
-});
-
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'F12' ||
-        (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) ||
-        (e.ctrlKey && e.key.toUpperCase() === 'U')) {
-        e.preventDefault();
-    }
-});
-
-let devToolsDetectado = false;
-const verificador = setInterval(function() {
-    if (devToolsDetectado) {
-        clearInterval(verificador);
-        return;
-    }
-
-    const devToolsAberto = window.outerWidth - window.innerWidth > 160 || window.outerHeight - window.innerHeight > 160;
-
-    if (devToolsAberto) {
-        devToolsDetectado = true;
-        
-        document.body.innerHTML = `
-            <div style="width:100%; height:100vh; display:flex; align-items:center; justify-content:center; background-color:#111;">
-                <h1 style="color:red; font-size:40px; text-align:center; font-family:sans-serif;">
-                    <b>Tá caçando problema?<br><br>Vai acabar encontrando! :D</b>
-                </h1>
-            </div>
-        `;
-    }
-}, 500);
