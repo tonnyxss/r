@@ -69,19 +69,41 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// Detectar abertura do DevTools
-setInterval(function() {
-    if (window.outerWidth - window.innerWidth > 200 || window.outerHeight - window.innerHeight > 200) {
-        document.head.innerHTML = '';
-        document.body.innerHTML = `
-            <h1 style="
-                color:red;
-                font-size:40px;
-                text-align:center;
-                margin-top:50px;
-                font-family:sans-serif;">
-                <b>Tá caçando problema?<br><br>Vai acabar encontrando! :D</b>
-            </h1>
-        `;
-    }
-}, 500);
+    // Variável para garantir que o código rode apenas uma vez
+    let devToolsDetectado = false;
+
+    // Inicia o intervalo para verificar a cada 500ms
+    const verificador = setInterval(function() {
+        
+        // Condição para detectar o DevTools aberto
+        const devToolsAberto = window.outerWidth - window.innerWidth > 200 || window.outerHeight - window.innerHeight > 200;
+
+        // Se o DevTools estiver aberto E ainda não tiver sido detectado antes
+        if (devToolsAberto && !devToolsDetectado) {
+            
+            // 1. Marca como detectado para não executar de novo
+            devToolsDetectado = true;
+            
+            // 2. Limpa a página e exibe a mensagem de aviso
+            document.head.innerHTML = '';
+            document.body.innerHTML = `
+                <h1 style="
+                    color:red;
+                    font-size:40px;
+                    text-align:center;
+                    margin-top:50px;
+                    font-family:sans-serif;">
+                    <b>Tá caçando problema?<br><br>Vai acabar encontrando! :D</b>
+                </h1>
+            `;
+
+            // 3. Inicia o contador de 3 segundos para fechar a página
+            setTimeout(function() {
+                window.close();
+            }, 3000);
+            
+            // Opcional: para a verificação, já que o trabalho foi feito
+            clearInterval(verificador);
+        }
+    }, 500);
+
