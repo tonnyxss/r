@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Antonio - Anti JS</title>
+    <title>Antonio - Leitor Simplificado</title>
     <script src="https://cdn.tailwindcss.com"></script>
     
     <style>
@@ -11,11 +11,11 @@
             box-sizing: border-box;
         }
         body {
-            background-color: #f3f4f6; /* bg-gray-100 */
+            background-color: #f3f4f6;
         }
         #antonio-content {
-            height: calc(100vh - 4.5rem); /* Ajustado para a barra */
-            margin-top: 4.5rem; /* Ajustado para a barra */
+            height: calc(100vh - 4.5rem);
+            margin-top: 4.5rem;
             padding: 0.5rem;
         }
         #antonio-frame {
@@ -77,45 +77,19 @@
                 margin-bottom: 0.5rem;
             }
         }
-
-        /* Mensagens */
-        #antonio-message {
-            position: fixed;
-            bottom: 1rem;
-            right: 1rem;
-            color: #ffffff;
-            padding: 0.75rem 1.25rem;
-            border-radius: 0.375rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-            z-index: 1000;
-            font-weight: bold;
-            transform: translateY(20px);
-        }
-        #antonio-message.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .antonio-success {
-            background-color: #28a745;
-        }
-        .antonio-error {
-            background-color: #dc3545;
-        }
     </style>
 </head>
 <body>
     <div id="antonio-bar">
         <label for="antonio_url">Digite a URL:</label>
-        <input type="text" id="antonio_url" placeholder="https://exemplo.com">
+        <input type="text" id="antonio_url" placeholder="https://exemplo.com/noticia">
         <button onclick="carregarPagina()" class="custom-button">Carregar</button>
         <button onclick="recarregar()" class="custom-button">Atualizar</button>
         <button onclick="copiarURL()" class="custom-button">Copiar URL</button>
         <button onclick="limpar()" class="custom-button">Limpar</button>
     </div>
     <div id="antonio-content">
-        <iframe id="antonio-frame" sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation" class="w-full h-full"></iframe>
+        <iframe id="antonio-frame" sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-top-navigation-by-user-activation"></iframe>
     </div>
     <div id="antonio-message"></div>
 

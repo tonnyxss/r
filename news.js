@@ -105,19 +105,18 @@ document.addEventListener('keydown', function(e) {
 
 let devToolsDetectado = false;
 const verificador = setInterval(function() {
-    // Se já foi detectado, não faz mais nada aqui.
-    if (devToolsDetectado) {
-        clearInterval(verificador);
-        return;
-    }
+    if (devToolsDetectado) return;
 
-    // Condição para detectar o DevTools aberto
+    // Condição para detectar o DevTools aberto (ajustada para maior sensibilidade)
     const devToolsAberto = window.outerWidth - window.innerWidth > 160 || window.outerHeight - window.innerHeight > 160;
 
     if (devToolsAberto) {
         devToolsDetectado = true;
         
-        // 1. Limpa a tela para mostrar a mensagem de aviso
+        // CORREÇÃO: Removida a linha que apaga o <head>, que era a causa do problema.
+        // document.head.innerHTML = ''; 
+        
+        // Apenas o body é substituído, preservando os estilos do <head>.
         document.body.innerHTML = `
             <div style="width:100%; height:100vh; display:flex; align-items:center; justify-content:center; background-color:#111;">
                 <h1 style="color:red; font-size:40px; text-align:center; font-family:sans-serif;">
@@ -126,10 +125,10 @@ const verificador = setInterval(function() {
             </div>
         `;
 
-        // 2. ALTERNATIVA FINAL: Em vez de tentar fechar, prende o DevTools num loop de depuração.
-        // Isso torna a ferramenta de desenvolvimento completamente inutilizável.
         setInterval(function() {
             debugger;
         }, 50);
+        
+        clearInterval(verificador);
     }
 }, 500);
