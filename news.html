@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TonnyNews ~ Anti JS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        #content { height: calc(100vh - 4rem); }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div id="top-bar" class="fixed top-0 left-0 w-full bg-white shadow-lg p-4 z-10 flex items-center space-x-4">
+        <label for="url" class="text-gray-700 font-semibold">Digite a URL:</label>
+        <input type="text" id="tonny_url" placeholder="https://exemplo.com/noticia" class="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500">
+        <button onclick="carregarPagina()" class="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-900 transition">Carregar</button>
+        <button onclick="recarregar()" class="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-900 transition">Atualizar</button>
+        <button onclick="copiarURL()" class="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-900 transition">Copiar URL</button>
+        <button onclick="limpar()" class="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-900 transition">Limpar</button>
+    </div>
+    <div id="content" class="mt-16 p-6 overflow-auto">
+        <iframe id="frame" sandbox="" class="w-full h-full"></iframe>
+    </div>
+    <script>
+        let currentURL = '';
+        let currentId = '';
+
+        function gerarIdCurto() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let id = '';
+            for (let i = 0; i < 22; i++) {
+                id += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return id;
+        }
+
+        function salvarURL(id, url) {
+            const urls = JSON.parse(localStorage.getItem('urlMap') || '{}');
+            urls[id] = url;
+            localStorage.setItem('urlMap', JSON.stringify(urls));
+        }
+
+        function obterURL(id) {
+            const urls = JSON.parse(localStorage.getItem('urlMap') || '{}');
+            return urls[id] || null;
+        }
+
+        function carregarPagina() {
+            const url = document.getElementById('url').value.trim();
+            if (!url) {
+                alert('Por favor, digite um URL válido.');
+                return;
+            }
+            const id = gerarIdCurto();
+            salvarURL(id, url);
+            currentURL = url;
+            currentId = id;
+            document.getElementById('frame').src = url;
+            const shareLink = `${window.location.origin}${window.location.pathname}?id=${id}`;
+            window.history.pushState({ id }, '', `?id=${id}`); // Muda a URL do navegador para noticia.html?id=<id-curto>
+            currentURL = shareLink; // Para copiar o link compartilhável
+        }
+
+        function recarregar() {
+            if (currentURL && currentId) {
+                document.getElementById('url').value = currentURL;
+                carregarPagina();
+            }
+        }
+
+        function copiarURL() {
+            if (currentURL) {
+                navigator.clipboard.writeText(currentURL).then(() => alert('Link copiado!'));
+            } else {
+                alert('Nenhuma URL carregada.');
+            }
+        }
+
+        function limpar() {
+            document.getElementById('url').value = '';
+            document.getElementById('frame').src = 'about:blank';
+            currentURL = '';
+            currentId = '';
+            window.history.pushState({}, '', window.location.pathname); // Reseta a URL do navegador
+        }
+
+        // Carrega URL da query string, se presente
+        window.onload = function() {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+            if (id) {
+                const url = obterURL(id);
+                if (url) {
+                    document.getElementById('url').value = url;
+                    currentURL = url;
+                    currentId = id;
+                    document.getElementById('frame').src = url;
+                    const shareLink = `${window.location.origin}${window.location.pathname}?id=${id}`;
+                    currentURL = shareLink; // Para copiar o link compartilhável
+                    window.history.pushState({ id }, '', `?id=${id}`); // Garante que a URL do navegador seja noticia.html?id=<id-curto>
+                } else {
+                    alert('ID inválido ou URL não encontrada.');
+                }
+            }
+        };
+    </script>
+</body>
+</html>
