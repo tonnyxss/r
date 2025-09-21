@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steam URL Gen</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+            background: #000;
+            color: #ffffff;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px;
+            background: #121212;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            color: #ffffff;
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .input-field, .output-field {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #444;
+            border-radius: 5px;
+            background: #333;
+            color: #fff;
+            font-size: 14px;
+            font-family: monospace;
+        }
+
+        .input-field:focus {
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-field::placeholder {
+            color: #666;
+            transition: color 1s ease;
+        }
+
+        .output-field {
+            background: #222;
+            cursor: text;
+            word-break: break-all;
+        }
+
+        .output-field::placeholder {
+            color: #666;
+            transition: color 1s ease;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            transition: all 1s ease;
+        }
+
+        /* REMOVIDO: ::before com brilho branco */
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        button:disabled {
+            background: #666 !important;
+            cursor: not-allowed;
+            color: #999 !important;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .result-row {
+            display: none;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .link-info {
+            font-size: 12px;
+            color: #ccc;
+            text-align: center;
+            margin-top: 10px;
+            transition: color 1s ease;
+        }
+
+        .link-info.valid {
+            transition: color 1s ease;
+        }
+
+        .link-info.invalid {
+            color: #ff4444;
+        }
+
+        /* Overlay para background MONOCROMÁTICO */
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            transition: all 0.1s ease;
+        }
+
+        /* Classes para delay do conteúdo */
+        .content-delay {
+            transition: all 1.5s ease;
+        }
+
+        /* Erro container */
+        .error-container {
+            text-align: center;
+            padding: 40px;
+            background: #121212;
+            border-radius: 10px;
+            max-width: 400px;
+            margin: 50px auto;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            color: #ffffff;
+            transition: color 1s ease;
+        }
+
+        .error-container h2 {
+            transition: color 1s ease;
+            margin-bottom: 20px;
+        }
+
+        .error-container p {
+            color: #ccc;
+            transition: color 1s ease;
+            margin-bottom: 30px;
+        }
+
+        .error-container a {
+            color: inherit;
+            text-decoration: underline;
+            transition: color 1s ease;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .input-row, .result-row {
+                flex-direction: column;
+            }
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-overlay" id="bgOverlay"></div>
+    
+    <div class="container content-delay">
+        <h1 class="content-delay">Steam URL Gen</h1>
+        
+        <div class="input-row">
+            <input type="text" class="input-field content-delay" id="inputLink" placeholder="Cole o link aqui" />
+            <button class="content-delay" id="gerarBtn" onclick="gerar()">Gerar</button>
+        </div>
+
+        <div class="result-row" id="resultado" style="display: none;">
+            <input type="text" class="output-field content-delay" id="linkGerado" readonly placeholder="Link gerado aparecerá aqui..." />
+            <button class="content-delay" id="copiarBtn" onclick="copiar()">Copiar</button>
+        </div>
+
+        <div id="linkInfo" class="link-info content-delay" style="display: none;"></div>
+    </div>
+
+    <script>
+        // Chave para criptografia
+        var CRYPTO_KEY = 'SteamLinkTransformer2025';
+        
+        // Variáveis para o efeito de cores fluidas
+        let hue = 0;
+        let time = 0;
+        let velocidade = 1.5; // mudança na velocidade 1 [até velocidade 10 que é a máxima]
+        
+        // Elementos do conteúdo
+        const contentElements = {
+            title: document.querySelector('h1'),
+            inputs: document.querySelectorAll('.input-field, .output-field'),
+            buttons: document.querySelectorAll('button'),
+            linkInfo: document.getElementById('linkInfo'),
+            container: document.querySelector('.container'),
+            errorElements: null
+        };
+
+        // Armazena as cores atuais para o delay
+        let currentColors = {
+            text: '#ffffff',
+            border: '#444',
+            buttonBg: '#00c3db',
+            buttonText: '#000',
+            placeholder: '#666'
+        };
+
+        function atualizarBackground() {
+            // Background MONOCROMÁTICO - EVITANDO AMARELO/LARANJA/MARROM
+            // Cores permitidas: Azul, Roxo, Verde, Ciano, Magenta, Turquesa
+            const coresPermitidas = [
+                {start: 180, end: 240}, // Ciano → Azul
+                {start: 240, end: 300}, // Azul → Roxo
+                {start: 300, end: 360}, // Roxo → Magenta
+                {start: 0, end: 60},    // Magenta → Rosa (pula laranja)
+                {start: 120, end: 180}, // Verde → Ciano
+                {start: 60, end: 120}   // Rosa → Verde (pula amarelo)
+            ];
+            
+            // Mapeia o hue para as faixas permitidas
+            let mappedHue = hue % 360;
+            let faixaEncontrada = false;
+            
+            for (let faixa of coresPermitidas) {
+                if (mappedHue >= faixa.start && mappedHue < faixa.end) {
+                    // Mantém na faixa
+                    mappedHue = faixa.start + (mappedHue - faixa.start) % (faixa.end - faixa.start);
+                    faixaEncontrada = true;
+                    break;
+                } else if (mappedHue >= 0 && mappedHue < faixa.start && faixa.start === 0) {
+                    // Para a faixa que cruza 0-360
+                    mappedHue = faixa.start + (mappedHue + 360 - faixa.start) % (faixa.end - faixa.start);
+                    faixaEncontrada = true;
+                    break;
+                }
+            }
+            
+            // Se não encontrou faixa, vai para a primeira
+            if (!faixaEncontrada) {
+                mappedHue = coresPermitidas[0].start;
+            }
+            
+            const mainHue = mappedHue;
+            const saturation = 20;
+            const lightness1 = 30; // Cor principal
+            const lightness2 = 40; // Cor secundária mais clara
+            const lightness3 = 25; // Cor mais escura para profundidade
+            
+            // Cria um gradiente sutil da MESMA cor com diferentes luminosidades
+            const mainColor = `hsl(${mainHue}, ${saturation}%, ${lightness1}%)`;
+            const lightColor = `hsl(${mainHue}, ${saturation}%, ${lightness2}%)`;
+            const darkColor = `hsl(${mainHue}, ${saturation}%, ${lightness3}%)`;
+            
+            // Background limpo e monocromático com gradiente suave
+            document.getElementById('bgOverlay').style.background = `
+                linear-gradient(135deg, ${darkColor} 0%, ${mainColor} 50%, ${lightColor} 100%),
+                radial-gradient(circle at 30% 70%, ${lightColor} 0%, ${mainColor} 70%, transparent 100%),
+                radial-gradient(circle at 70% 30%, ${mainColor} 0%, ${darkColor} 70%, transparent 100%)
+            `;
+        }
+
+        function calcularNovasCores() {
+            // Cores para o conteúdo baseadas na cor principal do background
+            const textHue = (hue + 180) % 360; // Complementar
+            const buttonHue = (hue + 90) % 360; // 90° de diferença
+            
+            // Mantém as cores mais claras
+            const newTextColor = `hsl(${textHue}, 70%, 95%)`;
+            const newBorderColor = `hsl(${buttonHue}, 60%, 70%)`;
+            const newButtonColor = `hsl(${buttonHue}, 60%, 80%)`;
+            const newButtonTextColor = `hsl(${(buttonHue + 180) % 360}, 20%, 15%)`;
+            const newPlaceholderColor = `hsl(${textHue}, 40%, 85%)`;
+            
+            return {
+                text: newTextColor,
+                border: newBorderColor,
+                buttonBg: newButtonColor,
+                buttonText: newButtonTextColor,
+                placeholder: newPlaceholderColor
+            };
+        }
+
+        function aplicarCoresAtrasadas(novasCores) {
+            // Aplica as novas cores com delay de 1.5s
+            setTimeout(() => {
+                currentColors = novasCores;
+                
+                // Título
+                contentElements.title.style.color = currentColors.text;
+                contentElements.title.style.textShadow = `0 0 10px ${currentColors.text}`;
+                
+                // Inputs e bordas
+                contentElements.inputs.forEach(input => {
+                    input.style.borderColor = currentColors.border;
+                    input.style.color = currentColors.text;
+                    input.style.boxShadow = `0 0 5px ${currentColors.border}`;
+                });
+                
+                // Botões SEM BRILHO BRANCO - só cor sólida
+                contentElements.buttons.forEach(button => {
+                    if (!button.disabled) {
+                        // Cor sólida sem gradiente nem brilho
+                        button.style.background = currentColors.buttonBg;
+                        button.style.color = currentColors.buttonText;
+                        button.style.boxShadow = `0 4px 15px ${currentColors.border}`;
+                    }
+                });
+                
+                // Link info
+                if (contentElements.linkInfo.style.display !== 'none') {
+                    contentElements.linkInfo.style.color = currentColors.text;
+                }
+                
+                // Placeholders
+                contentElements.inputs.forEach(input => {
+                    if (input.placeholder) {
+                        input.style.setProperty('--placeholder-color', currentColors.placeholder);
+                    }
+                });
+                
+                // Container de erro se existir
+                if (contentElements.errorElements) {
+                    contentElements.errorElements.forEach(el => {
+                        if (el.tagName === 'H2' || el.tagName === 'A') {
+                            el.style.color = currentColors.text;
+                            el.style.textShadow = `0 0 5px ${currentColors.text}`;
+                        } else if (el.tagName === 'P') {
+                            el.style.color = currentColors.placeholder;
+                        }
+                    });
+                }
+            }, 1500); // 1.5 segundos de delay
+        }
+
+        function animarTudo() {
+            time += 0.02;
+            // mudança na velocidade 1 [até velocidade 10 que é a máxima]
+            // Velocidade 1 = 0.5 graus por frame (bem devagar)
+            // Velocidade 10 = 5.0 graus por frame (rápido)
+            hue = (hue + (0.5 * velocidade)) % 360; // MUITO mais devagar!
+            
+            atualizarBackground();
+            
+            // Calcula as novas cores para o próximo ciclo
+            const novasCores = calcularNovasCores();
+            aplicarCoresAtrasadas(novasCores);
+        }
+
+        // Inicia a animação suave (24 FPS para performance)
+        setInterval(animarTudo, 42); // ~24 FPS - suave e eficiente
+
+        // Configura os placeholders
+        document.addEventListener('DOMContentLoaded', function() {
+            contentElements.inputs.forEach(input => {
+                input.setAttribute('data-original-placeholder', input.placeholder);
+            });
+            
+            // Foco inicial
+            setTimeout(() => {
+                document.getElementById('inputLink').focus();
+            }, 100);
+        });
+
+        // CSS dinâmico para placeholders
+        const style = document.createElement('style');
+        style.textContent = `
+            .input-field::placeholder,
+            .output-field::placeholder {
+                color: var(--placeholder-color, #b3b3b3);
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Event listeners para foco nos inputs
+        contentElements.inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                const borderHue = ((hue + 90) % 360);
+                const focusColor = `hsl(${borderHue}, 70%, 75%)`;
+                this.style.boxShadow = `0 0 0 3px ${focusColor}`;
+                this.style.borderColor = focusColor;
+            });
+            
+            input.addEventListener('blur', function() {
+                this.style.boxShadow = `0 0 5px ${currentColors.border}`;
+                this.style.borderColor = currentColors.border;
+            });
+        });
+
+        function gerar() {
+            var input = document.getElementById('inputLink');
+            var resultado = document.getElementById('resultado');
+            var linkGerado = document.getElementById('linkGerado');
+            var linkInfo = document.getElementById('linkInfo');
+            
+            var texto = input.value.trim();
+            
+            if (texto === '') {
+                alert('Cole um link primeiro!');
+                return;
+            }
+            
+            var steamLink = 'steam://openurl/' + texto;
+            
+            if (!steamLink.startsWith('steam://openurl/')) {
+                alert('Erro: Link Steam malformado!');
+                return;
+            }
+            
+            console.log('Link Steam gerado:', steamLink);
+            
+            var encryptedLink = criptografar(steamLink);
+            var linkBase = window.location.href.split('?')[0];
+            var shareableLink = linkBase + '?steam=' + encryptedLink;
+            
+            console.log('Link criptografado:', shareableLink);
+            
+            linkGerado.value = shareableLink;
+            resultado.style.display = 'flex';
+            linkInfo.style.display = 'block';
+            linkInfo.className = 'link-info valid';
+            linkInfo.innerHTML = '✅ Link Steam válido - abre no cliente Steam';
+            
+            input.value = '';
+            input.focus();
+        }
+        
+        function criptografar(texto) {
+            var encrypted = '';
+            for (var i = 0; i < texto.length; i++) {
+                encrypted += String.fromCharCode(texto.charCodeAt(i) ^ CRYPTO_KEY.charCodeAt(i % CRYPTO_KEY.length));
+            }
+            return btoa(encrypted).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+        }
+        
+        function descriptografar(encrypted) {
+            try {
+                encrypted = encrypted.replace(/-/g, '+').replace(/_/g, '/');
+                while (encrypted.length % 4) {
+                    encrypted += '=';
+                }
+                var decoded = atob(encrypted);
+                var decrypted = '';
+                for (var i = 0; i < decoded.length; i++) {
+                    decrypted += String.fromCharCode(decoded.charCodeAt(i) ^ CRYPTO_KEY.charCodeAt(i % CRYPTO_KEY.length));
+                }
+                
+                if (decrypted && decrypted.startsWith('steam://openurl/')) {
+                    console.log('Link descriptografado com sucesso:', decrypted);
+                    return decrypted;
+                } else {
+                    console.log('Link descriptografado inválido:', decrypted);
+                    return null;
+                }
+            } catch (e) {
+                console.log('Erro na descriptografia:', e);
+                return null;
+            }
+        }
+        
+        function copiar() {
+            var linkGerado = document.getElementById('linkGerado');
+            var texto = linkGerado.value;
+            
+            if (texto === '') {
+                alert('Nenhum link para copiar!');
+                return;
+            }
+            
+            var temp = document.createElement('textarea');
+            temp.value = texto;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+            
+            // Feedback visual especial
+            var btn = event.target;
+            var textoOriginal = btn.innerHTML;
+            
+            btn.innerHTML = '✅ Copiado!';
+            
+            // Efeito de pulso sincronizado com as cores atuais
+            let scale = 1;
+            const pulseInterval = setInterval(() => {
+                scale += 0.05;
+                btn.style.transform = `scale(${scale})`;
+                if (scale > 1.05) {
+                    clearInterval(pulseInterval);
+                    btn.style.transform = 'translateY(0) scale(1)';
+                }
+            }, 30);
+            
+            // Restaura após 1.5s (mesmo tempo do delay)
+            setTimeout(function() {
+                btn.innerHTML = textoOriginal;
+                // SEM GRADIENTE - cor sólida limpa
+                btn.style.background = currentColors.buttonBg;
+                btn.style.color = currentColors.buttonText;
+            }, 1500);
+        }
+        
+        // Verifica parâmetro na URL
+        if (window.location.search.indexOf('steam=') > -1) {
+            console.log('Parâmetro steam detectado, iniciando descriptografia...');
+            
+            var params = window.location.search.substring(1).split('&');
+            var encryptedParam = null;
+            
+            for (var i = 0; i < params.length; i++) {
+                if (params[i].indexOf('steam=') === 0) {
+                    encryptedParam = params[i].substring(6);
+                    break;
+                }
+            }
+            
+            if (encryptedParam) {
+                var decryptedLink = descriptografar(decodeURIComponent(encryptedParam));
+                if (decryptedLink && decryptedLink.startsWith('steam://openurl/')) {
+                    console.log('Redirecionando para Steam:', decryptedLink);
+                    window.location.href = decryptedLink;
+                } else {
+                    console.log('Falha na validação do link Steam');
+                    document.body.innerHTML = `
+                        <div class="error-container content-delay">
+                            <h2 class="content-delay">Link inválido</h2>
+                            <p class="content-delay">O link não pôde ser processado.</p>
+                            <a href="steam.html" class="content-delay">← Voltar ao gerador</a>
+                        </div>
+                    `;
+                    
+                    contentElements.errorElements = document.querySelectorAll('.error-container, .error-container h2, .error-container p, .error-container a');
+                    contentElements.errorElements.forEach(el => el.classList.add('content-delay'));
+                }
+            }
+        }
+        
+        // Enter para gerar
+        document.getElementById('inputLink').addEventListener('keypress', function(e) {
+            if (e.keyCode === 13) {
+                gerar();
+            }
+        });
+
+        // Inicializa com as primeiras cores após um pequeno delay
+        setTimeout(() => {
+            const initialColors = calcularNovasCores();
+            aplicarCoresAtrasadas(initialColors);
+        }, 500);
+    </script>
+</body>
+</html>
