@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClearList Habbo</title>
+    <style>
+        body {
+            background: #2d2d2d;
+            color: #e0e0e0;
+            font-family: 'Courier New', monospace;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #b0b0b0;
+            margin-bottom: 20px;
+        }
+
+        .inputs {
+            display: flex;
+            gap: 30px; /* Aumentei de 20px para 30px para mais espaço */
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            flex: 1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #999;
+        }
+
+        textarea {
+            width: 100%;
+            height: 400px;
+            padding: 10px;
+            border: 1px solid #555;
+            border-radius: 5px;
+            background: #2a2a2a;
+            color: #e0e0e0;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            resize: vertical;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #666;
+        }
+
+        .result-info {
+            color: #999;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            background: #666;
+            color: white;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+
+        button:hover {
+            background: #555;
+        }
+
+        @media (max-width: 768px) {
+            .inputs {
+                flex-direction: column;
+                gap: 15px; /* Espaçamento maior no mobile quando empilhado */
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Limpeza de Lista Habbo</h1>
+        
+        <div class="inputs">
+            <div class="input-group">
+                <label for="inputText">Entrada - Cole a lista do Habbo:</label>
+                <textarea 
+                    id="inputText" 
+                    placeholder="Cole aqui a lista copiada do Habbo..."
+                ></textarea>
+            </div>
+            
+            <div class="input-group">
+                <label for="resultArea">Saída - Nicks únicos:</label>
+                <textarea 
+                    id="resultArea" 
+                    readonly
+                    placeholder="O resultado aparecerá aqui..."
+                ></textarea>
+            </div>
+        </div>
+
+        <div class="buttons">
+            <button onclick="processList()">Processar</button>
+            <button onclick="clearAll()">Limpar</button>
+            <button onclick="copyResult()">Copiar Resultado</button>
+        </div>
+    </div>
+
+    <script>
+        function processList() {
+            const inputText = document.getElementById('inputText').value.trim();
+            const resultArea = document.getElementById('resultArea');
+            const resultInfo = document.getElementById('resultInfo');
+
+            if (!inputText) {
+                alert('Cole uma lista no campo de entrada primeiro!');
+                return;
+            }
+
+            // Dividir o texto em linhas
+            const lines = inputText.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+            
+            // Filtrar linhas desnecessárias
+            const filteredLines = lines.filter(line => {
+                const lowerLine = line.toLowerCase();
+                return !lowerLine.includes('selecionar') && 
+                       !lowerLine.includes('último login') && 
+                       !lowerLine.includes('há') &&
+                       !lowerLine.match(/^\d+$/) &&
+                       !lowerLine.includes('function') &&
+                       !lowerLine.includes('#!/usr/bin/env') &&
+                       !lowerLine.includes('conta:') &&
+                       !lowerLine.includes('em amsterdã') &&
+                       !lowerLine.includes('bonnie here') &&
+                       !lowerLine.includes('sou gay') &&
+                       !lowerLine.includes('bonnie hackings') &&
+                       !lowerLine.includes('-confiance');
+            });
+
+            // Extrair nicks únicos
+            const uniqueNicks = [...new Set(filteredLines)]
+                .map(nick => nick.trim())
+                .filter(nick => nick.length > 0 && nick.length <= 20)
+                .sort();
+
+            // Mostrar resultado
+            if (uniqueNicks.length > 0) {
+                resultArea.value = uniqueNicks.join('\n');
+                resultInfo.textContent = `${uniqueNicks.length} nicks únicos extraídos de ${lines.length} linhas`;
+            } else {
+                resultArea.value = 'Nenhum nick válido encontrado...';
+                resultInfo.textContent = 'Nenhum nick válido encontrado na lista';
+            }
+        }
+
+        function clearAll() {
+            document.getElementById('inputText').value = '';
+            document.getElementById('resultArea').value = '';
+            document.getElementById('resultInfo').textContent = 'Cole algo na entrada e clique em Processar';
+        }
+
+        function copyResult() {
+            const resultArea = document.getElementById('resultArea');
+            const textToCopy = resultArea.value;
+            
+            if (textToCopy && !textToCopy.includes('O resultado') && !textToCopy.includes('Nenhum nick')) {
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    const btn = document.querySelector('button[onclick="copyResult()"]');
+                    const originalText = btn.textContent;
+                    btn.textContent = 'Copiado!';
+                    btn.style.background = '#555';
+                    
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                        btn.style.background = '#666';
+                    }, 1500);
+                }).catch(err => {
+                    alert('Erro ao copiar. Selecione manualmente.');
+                });
+            } else {
+                alert('Processar a lista primeiro!');
+            }
+        }
+
+        // Ctrl + Enter para processar
+        document.getElementById('inputText').addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                processList();
+            }
+        });
+    </script>
+</body>
+</html>
