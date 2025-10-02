@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Habbo Info</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        input[type="text"] {
+            padding: 10px;
+            background-color: #333;
+            color: #fff;
+            border: 1px solid #555;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #444;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        button:hover {
+            background-color: #555;
+        }
+        #results {
+            margin-top: 20px;
+            display: none;
+        }
+        .info {
+            margin-bottom: 10px;
+        }
+        #avatar {
+            max-width: 200px;
+            height: auto;
+        }
+        #badges img {
+            width: 40px;
+            height: 40px;
+            margin: 5px;
+        }
+        #loading {
+            display: none;
+            margin-top: 10px;
+            width: 100%;
+            height: 4px;
+            background: #333;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        #loading-bar {
+            width: 0;
+            height: 100%;
+            background: #4caf50;
+            animation: loading 1.5s infinite linear;
+        }
+        @keyframes loading {
+            0% { width: 0; }
+            50% { width: 100%; }
+            100% { width: 0; }
+        }
+        .list {
+            margin-top: 5px;
+            padding-left: 20px;
+        }
+        .item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            margin-right: 20px;
+        }
+        .item img {
+            width: 50px;
+            height: auto;
+            margin-right: 10px;
+        }
+        #friends.list {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        details {
+            margin-bottom: 10px;
+        }
+        summary {
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Habbo Info</h1>
+        <input type="text" id="username" placeholder="Digite o nome de usuário" onkeypress="if(event.key === 'Enter') fetchData()">
+        <button onclick="fetchData()">Buscar</button>
+        <div id="loading">
+            <div id="loading-bar"></div>
+        </div>
+        
+        <div id="results">
+            <div class="info">
+                <strong>Nome de usuário:</strong> <span id="name"></span>
+            </div>
+            <div class="info">
+                <strong>Unique ID:</strong> <span id="uniqueId"></span>
+            </div>
+            <details>
+                <summary>Visual</summary>
+                <img id="avatar" alt="Avatar">
+            </details>
+            <div class="info">
+                <strong>Perfil:</strong> <span id="profile"></span>
+            </div>
+            <div class="info">
+                <strong>Missão:</strong> <span id="motto"></span>
+            </div>
+            <div class="info">
+                <strong>Último acesso:</strong> <span id="lastAccess"></span>
+            </div>
+            <div class="info">
+                <strong>Emblemas:</strong>
+                <div id="badges"></div>
+            </div>
+            <div class="info">
+                <strong>Nível:</strong> <span id="level"></span>
+            </div>
+            <div class="info">
+                <strong>Progresso de Nível:</strong> <span id="currentLevelCompletePercent"></span>
+            </div>
+            <div class="info">
+                <strong>Gemas:</strong> <span id="starGemCount"></span>
+            </div>
+            <div class="info">
+                <strong>Experiência Total:</strong> <span id="experience"></span>
+            </div>
+            <div class="info">
+                <strong>Membro Desde:</strong> <span id="memberSince"></span>
+            </div>
+            <details>
+                <summary id="groupSummary">Grupos: 0</summary>
+                <div id="groups" class="list"></div>
+            </details>
+            <details>
+                <summary id="friendSummary">Amigos: 0</summary>
+                <div id="friends" class="list"></div>
+            </details>
+            <details>
+                <summary id="roomSummary">Quartos: 0</summary>
+                <div id="rooms" class="list"></div>
+            </details>
+        </div>
+    </div>
+
+    <script>
+        // Função para formatar data ISO para DD/MM/YYYY às HHhMM
+        function formatDate(isoString) {
+            if (!isoString) return 'N/A';
+            const date = new Date(isoString);
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            return `${day}/${month}/${year} às ${hours}h${minutes}`;
+        }
+
+        async function fetchData() {
+            const username = document.getElementById('username').value.trim();
+            if (!username) {
+                alert('Digite um nome de usuário.');
+                return;
+            }
+
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+
+            try {
+                // Buscar o uniqueId e dados básicos pelo nome de usuário
+                const userResponse = await fetch(`https://www.habbo.com.br/api/public/users?name=${encodeURIComponent(username)}`);
+                if (!userResponse.ok) {
+                    throw new Error('Usuário não encontrado ou erro na API de usuário.');
+                }
+                const userData = await userResponse.json();
+                const uniqueId = userData.uniqueId;
+
+                // Atualizar informações básicas do usuário
+                const setText = (id, value) => {
+                    const element = document.getElementById(id);
+                    if (element) {
+                        element.textContent = value || 'N/A';
+                    }
+                };
+
+                setText('name', userData.name);
+                setText('uniqueId', userData.uniqueId);
+                const avatarUrl = `https://www.habbo.com.br/habbo-imaging/avatarimage?user=${userData.name}&img_format=png&gesture=null&headonly=0&size=l`;
+                const avatarElement = document.getElementById('avatar');
+                if (avatarElement) {
+                    avatarElement.src = avatarUrl;
+                }
+                setText('profile', userData.profileVisible ? 'aberto' : 'fechado');
+                setText('motto', userData.motto);
+                setText('lastAccess', formatDate(userData.lastAccessTime));
+                setText('level', userData.currentLevel);
+                setText('currentLevelCompletePercent', userData.currentLevelCompletePercent ? `${userData.currentLevelCompletePercent}%` : 'N/A');
+                setText('starGemCount', userData.starGemCount);
+                setText('experience', userData.totalExperience);
+                setText('memberSince', formatDate(userData.memberSince));
+
+                const badgesDiv = document.getElementById('badges');
+                if (badgesDiv) {
+                    badgesDiv.innerHTML = '';
+                    if (userData.selectedBadges && userData.selectedBadges.length > 0) {
+                        userData.selectedBadges.forEach(badge => {
+                            const img = document.createElement('img');
+                            img.src = `https://images.habbo.com/c_images/album1584/${badge.code}.png`;
+                            img.alt = badge.code;
+                            img.onerror = () => {
+                                img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+                            };
+                            badgesDiv.appendChild(img);
+                        });
+                    } else {
+                        badgesDiv.textContent = 'Nenhum emblema selecionado.';
+                    }
+                }
+
+                // Buscar informações do perfil usando o uniqueId
+                const profileResponse = await fetch(`https://www.habbo.com.br/api/public/users/${encodeURIComponent(uniqueId)}/profile`);
+                if (!profileResponse.ok) {
+                    throw new Error('Erro ao buscar perfil do usuário.');
+                }
+                const profileData = await profileResponse.json();
+
+                // Atualizar grupos com contagem no summary
+                const groupSummary = document.getElementById('groupSummary');
+                if (groupSummary) {
+                    groupSummary.textContent = `Grupos: ${profileData.groups ? profileData.groups.length : '0'}`;
+                }
+                const groupsDiv = document.getElementById('groups');
+                if (groupsDiv) {
+                    groupsDiv.innerHTML = '';
+                    if (profileData.groups && profileData.groups.length > 0) {
+                        profileData.groups.forEach(group => {
+                            const div = document.createElement('div');
+                            div.className = 'item';
+                            const img = document.createElement('img');
+                            img.src = group.badgeCode ? `https://www.habbo.com.br/habbo-imaging/badge/${group.badgeCode}.gif` : '';
+                            img.alt = group.name;
+                            img.onerror = () => {
+                                img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+                            };
+                            const p = document.createElement('span');
+                            p.textContent = group.name || 'N/A';
+                            div.appendChild(img);
+                            div.appendChild(p);
+                            groupsDiv.appendChild(div);
+                        });
+                    } else {
+                        groupsDiv.textContent = 'Nenhum grupo encontrado.';
+                    }
+                }
+
+                // Atualizar amigos com contagem no summary
+                const friendSummary = document.getElementById('friendSummary');
+                if (friendSummary) {
+                    friendSummary.textContent = `Amigos: ${profileData.friends ? profileData.friends.length : '0'}`;
+                }
+                const friendsDiv = document.getElementById('friends');
+                if (friendsDiv) {
+                    friendsDiv.innerHTML = '';
+                    if (profileData.friends && profileData.friends.length > 0) {
+                        profileData.friends.forEach(friend => {
+                            const div = document.createElement('div');
+                            div.className = 'item';
+                            const img = document.createElement('img');
+                            img.src = `https://www.habbo.com.br/habbo-imaging/avatarimage?user=${friend.name}&img_format=png&gesture=null&headonly=1&size=m`;
+                            img.alt = friend.name;
+                            img.onerror = () => {
+                                img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+                            };
+                            const p = document.createElement('span');
+                            p.textContent = friend.name || 'N/A';
+                            div.appendChild(img);
+                            div.appendChild(p);
+                            friendsDiv.appendChild(div);
+                        });
+                    } else {
+                        friendsDiv.textContent = 'Nenhum amigo encontrado.';
+                    }
+                }
+
+                // Atualizar quartos com contagem no summary
+                const roomSummary = document.getElementById('roomSummary');
+                if (roomSummary) {
+                    roomSummary.textContent = `Quartos: ${profileData.rooms ? profileData.rooms.length : '0'}`;
+                }
+                const roomsDiv = document.getElementById('rooms');
+                if (roomsDiv) {
+                    roomsDiv.innerHTML = '';
+                    if (profileData.rooms && profileData.rooms.length > 0) {
+                        profileData.rooms.forEach(room => {
+                            const p = document.createElement('p');
+                            p.textContent = room.name || 'N/A';
+                            roomsDiv.appendChild(p);
+                        });
+                    } else {
+                        roomsDiv.textContent = 'Nenhum quarto encontrado.';
+                    }
+                }
+
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('results').style.display = 'block';
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                alert('Erro ao buscar dados: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>
