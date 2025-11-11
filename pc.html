@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TonnyConfig - PC Builder</title>
+    <style>
+        :root {
+            --bg: #0a0a0a; --card: #1a1a1a; --text: #e0e0e0; --accent: #00d4ff; --accent2: #ff4d7d;
+            --border: #2a2a2a; --btn: #2a2a2a; --btn-hover: #3a3a3a; --fs: 0.94em;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', sans-serif; font-size: var(--fs); background: var(--bg); color: var(--text); padding: 12px; line-height: 1.4; }
+        .container { max-width: 100%; margin: 0 auto; background: var(--card); padding: 16px; border-radius: 14px; box-shadow: 0 6px 24px rgba(0,0,0,0.5); border: 1px solid var(--border); }
+        h1 { text-align: center; color: var(--accent); margin-bottom: 6px; font-size: 1.5em; font-weight: 600; }
+        .subtitle { text-align: center; color: #777; font-size: 0.78em; margin-bottom: 14px; }
+
+        .menu-toggle { background: rgba(255,255,255,0.06); border: 1px solid var(--border); padding: 10px 14px; border-radius: 10px; font-size: 0.88em; cursor: pointer; text-align: center; margin: 8px 0; }
+        .menu-toggle:hover { background: rgba(255,255,255,0.1); }
+        .menu { display: none; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-top: 8px; max-height: 200px; overflow-y: auto; }
+        .menu.show { display: block; }
+        .menu-group { margin-bottom: 10px; }
+        .menu-group strong { color: var(--accent); font-size: 0.85em; }
+        .menu-item { display: flex; align-items: center; gap: 6px; font-size: 0.8em; margin: 4px 0; }
+        .menu-item input { accent-color: var(--accent); width: 14px; height: 14px; }
+
+        .slider-container { margin: 16px 0; }
+        .slider-label { display: flex; justify-content: space-between; font-size: 0.9em; color: var(--accent); margin-bottom: 6px; font-weight: bold; }
+        input[type="range"] { width: 100%; height: 10px; border-radius: 5px; background: #333; -webkit-appearance: none; outline: none; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 24px; height: 24px; background: var(--accent); border-radius: 50%; cursor: pointer; box-shadow: 0 0 8px rgba(0,212,255,0.6); }
+
+        .btn-buscar { width: 100%; padding: 14px; background: var(--btn); color: #ccc; font-weight: bold; border: 1px solid var(--border); border-radius: 12px; font-size: 1.05em; cursor: pointer; margin: 16px 0; transition: 0.3s; }
+        .btn-buscar:hover { background: var(--btn-hover); color: #fff; border-color: var(--accent); }
+
+        .result-header { text-align: center; color: var(--accent2); font-weight: bold; font-size: 0.94em; margin: 12px 0 10px; grid-column: 1/-1; }
+        .resultados { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin-top: 10px; }
+        @media (max-width: 600px) { .resultados { grid-template-columns: 1fr; } }
+        .config-card { background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 12px; padding: 14px; transition: 0.3s; overflow-x: auto; }
+        .config-card:hover { background: rgba(255,255,255,0.09); }
+        .config-title { font-size: 1.15em; font-weight: bold; color: var(--accent); text-align: center; margin-bottom: 5px; }
+        .config-subtitle { font-size: 0.8em; color: #aaa; text-align: center; margin-bottom: 5px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.8em; min-width: 250px; }
+        th, td { border: 1px solid var(--border); padding: 5px 7px; text-align: left; }
+        th { background: rgba(0,212,255,0.12); color: var(--accent); font-weight: bold; }
+        .total { font-size: 1.1em; font-weight: bold; color: var(--accent2); text-align: right; margin-top: 5px; }
+        .links { text-align: center; margin-top: 10px; font-size: 0.72em; }
+        .links a { color: var(--accent); text-decoration: none; }
+        .links a:hover { text-decoration: underline; }
+        .youtube-btn { background: #ff0000; color: white; padding: 4px 8px; border-radius: 6px; }
+        .empty-state { grid-column: 1/-1; text-align: center; color: #666; font-style: italic; padding: 35px; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>TonnyConfig</h1>
+        <!-- MENU PROCESSADOR -->
+        <div class="menu-toggle" onclick="toggleMenu('Processador')">PROCESSADOR ▼</div>
+        <div id="menuProcessador" class="menu">
+            <label class="menu-item"><input type="checkbox" id="intel-cpu" checked> Intel</label>
+            <label class="menu-item"><input type="checkbox" id="amd-cpu" checked> AMD</label>
+        </div>
+
+        <!-- MENU PLACA DE VÍDEO -->
+        <div class="menu-toggle" onclick="toggleMenu('PlacaVideo')">PLACA DE VÍDEO ▼</div>
+        <div id="menuPlacaVideo" class="menu">
+            <label class="menu-item"><input type="checkbox" id="nvidia-gpu" checked> NVIDIA</label>
+            <label class="menu-item"><input type="checkbox" id="radeon-gpu" checked> AMD Radeon</label>
+        </div>
+
+        <!-- MENU JOGOS (OPCIONAL) -->
+        <div class="menu-toggle" onclick="toggleMenu('Jogos')">QUAL JOGO QUER JOGAR? (OPCIONAL) ▼</div>
+        <div id="menuJogos" class="menu">
+            <div class="menu-group"><strong>FPS / CPU Pesado:</strong></div>
+            <label class="menu-item"><input type="checkbox" value="cs2"> CS2</label>
+            <label class="menu-item"><input type="checkbox" value="fortnite"> Fortnite</label>
+            <label class="menu-item"><input type="checkbox" value="valorant"> Valorant</label>
+            <label class="menu-item"><input type="checkbox" value="apex"> Apex Legends</label>
+            <label class="menu-item"><input type="checkbox" value="cod"> Call of Duty BO6</label>
+            <div class="menu-group"><strong>Story / GPU Pesado:</strong></div>
+            <label class="menu-item"><input type="checkbox" value="gta5"> GTA 5</label>
+            <label class="menu-item"><input type="checkbox" value="rdr2"> RDR2</label>
+            <label class="menu-item"><input type="checkbox" value="cyberpunk"> Cyberpunk 2077</label>
+            <label class="menu-item"><input type="checkbox" value="witcher3"> The Witcher 3</label>
+            <label class="menu-item"><input type="checkbox" value="elden"> Elden Ring</label>
+            <label class="menu-item"><input type="checkbox" value="assassins"> Assassin's Creed Shadows</label>
+            <label class="menu-item"><input type="checkbox" value="monster"> Monster Hunter Wilds</label>
+            <label class="menu-item"><input type="checkbox" value="clair"> Clair Obscur: Expedition 33</label>
+        </div>
+
+        <!-- ORÇAMENTO -->
+        <div class="slider-container">
+            <div class="slider-label">
+                <span>Orçamento</span>
+                <span id="valorDisplay">R$ 2.400</span>
+            </div>
+            <input type="range" id="orcamento" min="1000" max="20000" step="100" value="2400">
+        </div>
+
+        <!-- BOTÃO -->
+        <button class="btn-buscar" onclick="buscarConfigs()">BUSCAR CONFIGURAÇÕES</button>
+
+        <!-- RESULTADOS -->
+        <div id="resultados" class="resultados">
+            <div class="empty-state">Marque Intel/AMD, NVIDIA/Radeon e ajuste o orçamento. Clique em BUSCAR!</div>
+        </div>
+    </div>
+
+    <script src="orcamento.js"></script>
+</body>
+</html>
