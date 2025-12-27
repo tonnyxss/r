@@ -29,10 +29,15 @@
             border: 2px solid #222;
             z-index: 1;
         }
-        video {
+        .player-container {
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            position: relative;
+        }
+        video, iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
         }
         .overlay {
             position: absolute;
@@ -243,7 +248,9 @@
         <ul class="channel-list" id="channel-list"></ul>
     </div>
     <div class="player-wrapper">
-        <video id="video" autoplay muted playsinline></video>
+        <div class="player-container" id="player-container">
+            <video id="video" autoplay muted playsinline></video>
+        </div>
         <div class="status" id="status">Carregando...</div>
         <!-- Ícones centrais com lógica inteligente -->
         <div class="center-icons" id="center-icons">
@@ -264,8 +271,9 @@
             </div>
         </div>
     </div>
+
     <script>
-        const video = document.getElementById('video');
+        const playerContainer = document.getElementById('player-container');
         const status = document.getElementById('status');
         const muteIcon = document.getElementById('mute-icon');
         const reloadCenter = document.getElementById('reload-center');
@@ -278,15 +286,18 @@
         const menuBtn = document.getElementById('menu-btn');
         const sidebar = document.getElementById('sidebar');
         const channelList = document.getElementById('channel-list');
+
         let hls;
         let currentUrl = 'https://stream.ads.ottera.tv/playlist.m3u8?network_id=2116';
+
         const channels = [
             { name: 'Record News', url: 'https://stream.ads.ottera.tv/playlist.m3u8?network_id=2116' },
             { name: 'SBT', url: 'https://cdn.jmvstream.com/w/LVW-10801/LVW10801_Xvg4R0u57n/playlist.m3u8' },
             { name: 'Rede TV', url: 'https://evp.mm.uol.com.br:1935/redetv1/redetv1/playlist.m3u8' },
             { name: 'Nickelodeon', url: 'http://45.235.0.78/Nickelodeon/playlist.m3u8' },
-			{ name: 'Grok xAI', url: 'https://www.youtube.com/watch?v=iLEc51HjMbY' } // Exemplo real (Rick Roll 😄)
+            { name: 'Grok xAI - The Future of AI', url: 'https://www.youtube.com/watch?v=iLEc51HjMbY' }
         ];
+
         channels.forEach((channel, index) => {
             const li = document.createElement('li');
             li.textContent = channel.name;
@@ -298,14 +309,23 @@
             });
             channelList.appendChild(li);
         });
+
+        function getYouTubeID(url) {
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+
         function reloadCurrentChannel() {
             const activeLi = document.querySelector('.channel-list li.active');
             if (activeLi) {
                 changeChannel(currentUrl, activeLi);
             }
         }
+
         reloadBtn.addEventListener('click', reloadCurrentChannel);
         reloadCenter.addEventListener('click', reloadCurrentChannel);
+
         muteIcon.addEventListener('click', () => {
             video.muted = false;
             video.volume = 1.0;
@@ -313,55 +333,76 @@
             volumeBtn.textContent = '🔊';
             updateMuteIcon();
         });
+
         function changeChannel(newUrl, selectedLi) {
             if (newUrl === currentUrl && hls && hls.media) {
                 sidebar.classList.remove('open');
                 return;
             }
+
             currentUrl = newUrl;
             document.querySelectorAll('.channel-list li').forEach(li => li.classList.remove('active'));
             selectedLi.classList.add('active');
+
             status.textContent = 'Carregando...';
             status.style.display = 'block';
             reloadCenter.classList.add('hidden');
-            if (hls) hls.destroy();
-            const loadTimeout = setTimeout(() => {
-                reloadCenter.classList.remove('hidden');
-                updateCenterLayout();
-            }, 8000);
-            if (Hls.isSupported()) {
-                hls = new Hls({ enableWorker: true, lowLatencyMode: true });
-                hls.loadSource(newUrl);
-                hls.attachMedia(video);
-                hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    clearTimeout(loadTimeout);
-                    video.play();
-                    status.style.display = 'none';
-                    reloadCenter.classList.add('hidden');
+
+            playerContainer.innerHTML = '<video id="video" autoplay muted playsinline></video>';
+            const video = playerContainer.querySelector('video');
+
+            const youtubeID = getYouTubeID(newUrl);
+
+            if (youtubeID) {
+                const embedUrl = `https://www.youtube-nocookie.com/embed/${youtubeID}?autoplay=1&mute=1&playsinline=1&rel=0`;
+                playerContainer.innerHTML = `<iframe src="${embedUrl}" allow="autoplay; encrypted-media" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
+                status.style.display = 'none';
+            } else {
+                if (hls) hls.destroy();
+
+                const loadTimeout = setTimeout(() => {
+                    reloadCenter.classList.remove('hidden');
                     updateCenterLayout();
-                    updateQualityOptions();
-                });
-                hls.on(Hls.Events.ERROR, (event, data) => {
-                    clearTimeout(loadTimeout);
-                    if (data.fatal) {
-                        status.textContent = 'Erro na conexão';
-                        status.style.display = 'block';
-                        reloadCenter.classList.remove('hidden');
+                }, 8000);
+
+                if (Hls.isSupported()) {
+                    hls = new Hls({ enableWorker: true, lowLatencyMode: true });
+                    hls.loadSource(newUrl);
+                    hls.attachMedia(video);
+
+                    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                        clearTimeout(loadTimeout);
+                        video.play();
+                        status.style.display = 'none';
+                        reloadCenter.classList.add('hidden');
                         updateCenterLayout();
-                    }
-                });
-            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                video.src = newUrl;
-                video.addEventListener('loadedmetadata', () => {
-                    clearTimeout(loadTimeout);
-                    video.play();
-                    status.style.display = 'none';
-                    reloadCenter.classList.add('hidden');
-                    updateCenterLayout();
-                }, { once: true });
+                        updateQualityOptions();
+                    });
+
+                    hls.on(Hls.Events.ERROR, (event, data) => {
+                        clearTimeout(loadTimeout);
+                        if (data.fatal) {
+                            status.textContent = 'Erro na conexão';
+                            status.style.display = 'block';
+                            reloadCenter.classList.remove('hidden');
+                            updateCenterLayout();
+                        }
+                    });
+                } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                    video.src = newUrl;
+                    video.addEventListener('loadedmetadata', () => {
+                        clearTimeout(loadTimeout);
+                        video.play();
+                        status.style.display = 'none';
+                        reloadCenter.classList.add('hidden');
+                        updateCenterLayout();
+                    }, { once: true });
+                }
             }
+
             sidebar.classList.remove('open');
         }
+
         function updateQualityOptions() {
             qualitySelect.innerHTML = '<option value="-1">Auto</option>';
             qualitySelect.style.display = 'none';
@@ -376,6 +417,7 @@
                 qualitySelect.value = hls.currentLevel;
             }
         }
+
         function updateMuteIcon() {
             if (video.muted || video.volume === 0) {
                 muteIcon.classList.remove('hidden');
@@ -384,6 +426,7 @@
             }
             updateCenterLayout();
         }
+
         function updateCenterLayout() {
             const visibleIcons = document.querySelectorAll('.center-icon:not(.hidden)');
             if (visibleIcons.length === 1) {
@@ -392,7 +435,7 @@
                 centerIcons.classList.remove('has-one');
             }
         }
-        // CORREÇÃO: Carrega o canal inicial depois que a página está pronta
+
         window.onload = () => {
             changeChannel(currentUrl, channelList.querySelector('li'));
         };
@@ -401,16 +444,19 @@
             e.stopPropagation();
             sidebar.classList.toggle('open');
         });
+
         document.addEventListener('click', (e) => {
             if (!sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
                 sidebar.classList.remove('open');
             }
         });
+
         video.volume = 0.0;
         volumeSlider.value = 0;
         volumeBtn.textContent = '🔇';
         updateMuteIcon();
         updateCenterLayout();
+
         volumeSlider.addEventListener('input', (e) => {
             const vol = e.target.value / 100;
             video.volume = vol;
@@ -418,6 +464,7 @@
             volumeBtn.textContent = vol === 0 ? '🔇' : '🔊';
             updateMuteIcon();
         });
+
         volumeBtn.addEventListener('click', () => {
             video.muted = !video.muted;
             if (video.muted) {
@@ -431,6 +478,7 @@
             }
             updateMuteIcon();
         });
+
         fullscreenBtn.addEventListener('click', () => {
             const wrapper = document.querySelector('.player-wrapper');
             if (!document.fullscreenElement) {
@@ -439,9 +487,11 @@
                 document.exitFullscreen?.() || document.webkitExitFullscreen?.() || document.msExitFullscreen?.();
             }
         });
+
         qualitySelect.addEventListener('change', (e) => {
             if (hls) hls.currentLevel = parseInt(e.target.value);
         });
+
         video.addEventListener('dblclick', () => fullscreenBtn.click());
     </script>
 </body>
