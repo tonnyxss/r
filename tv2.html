@@ -261,8 +261,20 @@
             .center-icon { font-size: 60px; }
             .center-icons { gap: 40px; }
         }
+						
+						
+.youtube-black-screen {
+    transition: opacity 0.5s ease; /* Duração da animação de saída */
+    opacity: 1;
+}
+
+.hidden {
+    opacity: 0;
+    pointer-events: none; /* Impede cliques na div invisível */
+}
     </style>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+	
 	<script>
 	const blackScreen = document.getElementById('youtube-black-screen');
 
