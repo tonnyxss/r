@@ -24,7 +24,7 @@
             max-width: 1280px;
             aspect-ratio: 16 / 9;
             background: #111;
-            border-radius: 12px;
+            border-radius: 5px;
             overflow: hidden;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
             border: 2px solid #222;
@@ -233,11 +233,11 @@
         }
 
         .channel-list li {
-            padding: 10px 12px;
+            padding: 5px 5px;
             color: #ccc;
             cursor: pointer;
-            border-radius: 6px;
-            margin-bottom: 6px;
+            border-radius: 3px;
+            margin-bottom: 3px;
             transition: all 0.2s;
             font-size: 0.9rem;
         }
@@ -251,7 +251,7 @@
             background: #003322;
             color: #00ff88;
             font-weight: bold;
-            border-left: 3px solid #00ff88;
+            border-left: 2px solid #00ff88;
         }
 
         @media (max-width: 768px) {
@@ -322,9 +322,9 @@
 
         const channels = [
             { name: 'Record News', url: 'https://stream.ads.ottera.tv/playlist.m3u8?network_id=2116' },
-            { name: 'TV Cultura', url: 'https://player-tvcultura.stream.uol.com.br/live/tvcultura.m3u8' },
+       		{ name: 'SBT', url: 'https://cdn.jmvstream.com/w/LVW-10801/LVW10801_Xvg4R0u57n/playlist.m3u8' },
             { name: 'Rede TV', url: 'https://evp.mm.uol.com.br:1935/redetv1/redetv1/playlist.m3u8' },
-            { name: 'Premiere FC', url: '' }
+			{ name: 'Nickelodeon', url: 'http://45.235.0.78/Nickelodeon/playlist.m3u8' },
         ];
 
         channels.forEach((channel, index) => {
