@@ -39,27 +39,25 @@
             height: 100%;
             border: none;
         }
-
-        /* Tela preta para YouTube - Ajustada */
+        /* Tela preta inicial por 2s no YouTube */
         .youtube-black-screen {
             position: absolute;
             inset: 0;
             background: #000;
-            z-index: 99; /* Garante que fica em cima de tudo dentro do player */
+            z-index: 50; /* Aumentei o Z-index para garantir que cubra o youtube */
             opacity: 1;
             transition: opacity 1s ease;
             pointer-events: none;
         }
         .youtube-black-screen.hidden {
             opacity: 0;
-            visibility: hidden;
         }
-
+        /* Div transparente permanente para bloquear cliques no YouTube */
         .youtube-cover {
             position: absolute;
             inset: 0;
             background: transparent;
-            z-index: 10;
+            z-index: 3;
             pointer-events: auto;
         }
         .overlay {
@@ -71,9 +69,10 @@
             pointer-events: none;
             opacity: 0;
             transition: opacity 0.3s ease;
-            z-index: 20;
+            z-index: 4;
         }
-        .player-wrapper:hover .overlay {
+        .player-wrapper:hover .overlay,
+        .overlay:hover {
             opacity: 1;
             pointer-events: all;
         }
@@ -85,6 +84,7 @@
             padding: 15px;
             background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
         }
+        /* Oculta completamente os controles inferiores no YouTube */
         .overlay.youtube-hidden {
             display: none !important;
         }
@@ -131,6 +131,9 @@
             border-radius: 10px;
             outline: none;
         }
+        input[type="range"]:hover {
+            background: rgba(0, 255, 136, 0.3);
+        }
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
             width: 18px;
@@ -138,6 +141,16 @@
             background: #00ff88;
             border-radius: 50%;
             cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.6);
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: #00ff88;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.6);
         }
         .status {
             position: absolute;
@@ -149,7 +162,7 @@
             border-radius: 20px;
             font-size: 13px;
             border: 1px solid #555;
-            z-index: 30;
+            z-index: 10;
         }
         .center-icons {
             position: absolute;
@@ -158,22 +171,45 @@
             transform: translate(-50%, -50%);
             display: flex;
             gap: 60px;
-            z-index: 30;
-            pointer-events: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
         }
         .center-icon {
             font-size: 80px;
             color: rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+            cursor: pointer;
             pointer-events: auto;
         }
-        .center-icon.hidden { display: none; }
-        
+        .center-icon:hover {
+            color: #00ff88;
+            transform: scale(1.1);
+        }
+        .center-icon.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .center-icons.has-one .center-icon:not(.hidden) {
+            position: absolute;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        #reload-btn {
+            font-size: 18px;
+        }
         .menu-btn {
             position: fixed;
             top: 15px;
             left: 15px;
-            z-index: 100;
+            z-index: 30;
             background: rgba(0, 0, 0, 0.7);
+            font-size: 22px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            backdrop-filter: blur(5px);
         }
         .sidebar {
             position: fixed;
@@ -183,57 +219,94 @@
             height: 100vh;
             background: #0a0a0a;
             transition: left 0.4s ease;
-            z-index: 90;
+            z-index: 25;
             padding: 80px 10px 20px;
+            box-sizing: border-box;
             overflow-y: auto;
             border-right: 1px solid #222;
         }
-        .sidebar.open { left: 0; }
+        .sidebar.open {
+            left: 0;
+        }
+        .sidebar h2 {
+            color: #00ff88;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
         .channel-list { list-style: none; padding: 0; }
         .channel-list li {
-            padding: 10px;
+            padding: 2px 2px;
             color: #ccc;
             cursor: pointer;
-            border-radius: 5px;
-            margin-bottom: 5px;
+            border-radius: 3px;
+            margin-bottom: 3px;
+            transition: all 0.2s;
+            font-size: 0.9rem;
         }
-        .channel-list li.active { background: #003322; color: #00ff88; }
+        .channel-list li:hover {
+            background: #1a1a1a;
+            color: white;
+        }
+        .channel-list li.active {
+            background: #003322;
+            color: #00ff88;
+            font-weight: bold;
+            border-left: 2px solid #00ff88;
+        }
+        @media (max-width: 768px) {
+            .player-wrapper { width: 95vw; }
+            .menu-btn { top: 10px; left: 10px; width: 40px; height: 40px; font-size: 20px; }
+            .sidebar { width: 160px; left: -180px; }
+            .center-icon { font-size: 60px; }
+            .center-icons { gap: 40px; }
+        }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
 <body>
     <button class="menu-btn" id="menu-btn">☰</button>
     <div class="sidebar" id="sidebar">
-        <h2 style="color: #00ff88; text-align: center;">Canais</h2>
+        <h2>Canais</h2>
         <ul class="channel-list" id="channel-list"></ul>
     </div>
-
     <div class="player-wrapper">
         <div class="player-container" id="player-container">
-            </div>
+            <video id="video" autoplay muted playsinline></video>
+            <div class="youtube-black-screen hidden" id="youtube-black-screen"></div>
+            <div class="youtube-cover hidden" id="youtube-cover"></div>
+        </div>
         <div class="status" id="status">Carregando...</div>
         <div class="center-icons" id="center-icons">
-            <div class="center-icon hidden" id="mute-icon">控制</div>
+            <div class="center-icon hidden" id="mute-icon">🔇</div>
             <div class="center-icon hidden" id="reload-center">🔄</div>
         </div>
         <div class="overlay" id="overlay">
             <div class="custom-controls">
                 <div class="volume-container">
-                    <button id="volume-btn">🔇</button>
+                    <button id="volume-btn" title="Ativar som">🔇</button>
                     <input type="range" id="volume-slider" min="0" max="100" value="0">
                 </div>
-                <button id="reload-btn">🔄</button>
-                <select id="quality-selector" style="display:none;"></select>
-                <button id="fullscreen-btn">⛶</button>
+                <button id="reload-btn" title="Atualizar canal">🔄</button>
+                <select id="quality-selector" style="display:none;">
+                    <option value="-1">Auto</option>
+                </select>
+                <button id="fullscreen-btn" title="Tela Cheia">⛶</button>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script>
         const playerContainer = document.getElementById('player-container');
+        // As referências globais para elementos que são recriados (como youtube-black-screen) 
+        // são úteis apenas para a inicialização. Dentro do changeChannel pegaremos a nova referência.
+        const youtubeCover = document.getElementById('youtube-cover');
         const overlay = document.getElementById('overlay');
         const status = document.getElementById('status');
+        const muteIcon = document.getElementById('mute-icon');
         const reloadCenter = document.getElementById('reload-center');
+        const centerIcons = document.getElementById('center-icons');
         const reloadBtn = document.getElementById('reload-btn');
         const fullscreenBtn = document.getElementById('fullscreen-btn');
         const qualitySelect = document.getElementById('quality-selector');
@@ -252,15 +325,19 @@
             { name: 'SBT', url: 'https://cdn.jmvstream.com/w/LVW-10801/LVW10801_Xvg4R0u57n/playlist.m3u8' },
             { name: 'Rede TV', url: 'https://evp.mm.uol.com.br:1935/redetv1/redetv1/playlist.m3u8' },
             { name: 'Nickelodeon', url: 'http://45.235.0.78/Nickelodeon/playlist.m3u8' },
-            { name: 'Pica-Pau TV', url: 'https://www.youtube.com/watch?v=g-wtiZlKQ54' }
+            { name: 'Grok xAI - The Future of AI', url: 'https://www.youtube.com/watch?v=iLEc51HjMbY' }
         ];
 
         channels.forEach((channel, index) => {
             const li = document.createElement('li');
             li.textContent = channel.name;
-            li.addEventListener('click', () => changeChannel(channel.url, li));
-            channelList.appendChild(li);
+            li.dataset.url = channel.url;
             if (index === 0) li.classList.add('active');
+            li.addEventListener('click', (e) => {
+                e.stopPropagation();
+                changeChannel(channel.url, li);
+            });
+            channelList.appendChild(li);
         });
 
         function getYouTubeID(url) {
@@ -269,66 +346,207 @@
             return (match && match[2].length === 11) ? match[2] : null;
         }
 
+        function reloadCurrentChannel() {
+            const activeLi = document.querySelector('.channel-list li.active');
+            if (activeLi) {
+                changeChannel(currentUrl, activeLi);
+            }
+        }
+
+        reloadBtn.addEventListener('click', reloadCurrentChannel);
+        reloadCenter.addEventListener('click', reloadCurrentChannel);
+
         function changeChannel(newUrl, selectedLi) {
+            if (newUrl === currentUrl && hls && hls.media) {
+                sidebar.classList.remove('open');
+                return;
+            }
+
             currentUrl = newUrl;
             document.querySelectorAll('.channel-list li').forEach(li => li.classList.remove('active'));
             selectedLi.classList.add('active');
-            sidebar.classList.remove('open');
 
             status.textContent = 'Carregando...';
             status.style.display = 'block';
             reloadCenter.classList.add('hidden');
+            muteIcon.classList.add('hidden');
+
+            // Limpa o container para colocar o novo player
+            playerContainer.innerHTML = ''; 
 
             const youtubeID = getYouTubeID(newUrl);
 
             if (youtubeID) {
                 isYouTube = true;
                 overlay.classList.add('youtube-hidden');
+
+                const embedUrl = `https://www.youtube-nocookie.com/embed/${youtubeID}?autoplay=1&mute=0&playsinline=1&rel=0&controls=0&modestbranding=1&iv_load_policy=3&fs=0`;
                 
-                // Injeta Iframe + Capa + TELA PRETA
+                // Recriamos o HTML interno. Note que a div preta foi recriada aqui.
                 playerContainer.innerHTML = `
-                    <iframe src="https://www.youtube-nocookie.com/embed/${youtubeID}?autoplay=1&mute=0&controls=0&modestbranding=1&rel=0" allow="autoplay"></iframe>
+                    <iframe src="${embedUrl}" allow="autoplay" allowfullscreen></iframe>
                     <div class="youtube-cover"></div>
-                    <div class="youtube-black-screen" id="yt-black"></div>
+                    <div class="youtube-black-screen" id="yt-screen-temp"></div>
                 `;
 
-                // Faz a tela preta sumir após 2 segundos
+                // IMPORTANTÍSSIMO: Selecionamos a NOVA div preta que acabamos de criar
+                const currentBlackScreen = document.getElementById('yt-screen-temp');
+
+                // Tela preta some após 2 segundos
                 setTimeout(() => {
-                    const blackDiv = document.getElementById('yt-black');
-                    if (blackDiv) blackDiv.classList.add('hidden');
+                    if (currentBlackScreen) {
+                        currentBlackScreen.classList.add('hidden');
+                    }
                 }, 2000);
 
                 status.style.display = 'none';
             } else {
                 isYouTube = false;
                 overlay.classList.remove('youtube-hidden');
-                playerContainer.innerHTML = '<video id="video" autoplay muted playsinline></video>';
-                const video = document.getElementById('video');
+
+                // Restaura a estrutura padrão para players normais
+                playerContainer.innerHTML = `
+                    <video id="video" autoplay muted playsinline></video>
+                    <div class="youtube-black-screen hidden"></div>
+                    <div class="youtube-cover hidden"></div>
+                `;
+                
+                const video = playerContainer.querySelector('video');
 
                 if (hls) hls.destroy();
 
+                const loadTimeout = setTimeout(() => {
+                    reloadCenter.classList.remove('hidden');
+                    updateCenterLayout();
+                }, 8000);
+
                 if (Hls.isSupported()) {
-                    hls = new Hls();
+                    hls = new Hls({ enableWorker: true, lowLatencyMode: true });
                     hls.loadSource(newUrl);
                     hls.attachMedia(video);
+
                     hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                        clearTimeout(loadTimeout);
                         video.play();
                         status.style.display = 'none';
+                        reloadCenter.classList.add('hidden');
+                        updateCenterLayout();
+                        updateQualityOptions();
                     });
+
+                    hls.on(Hls.Events.ERROR, (event, data) => {
+                        clearTimeout(loadTimeout);
+                        if (data.fatal) {
+                            status.textContent = 'Erro na conexão';
+                            status.style.display = 'block';
+                            reloadCenter.classList.remove('hidden');
+                            updateCenterLayout();
+                        }
+                    });
+                } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                    video.src = newUrl;
+                    video.addEventListener('loadedmetadata', () => {
+                        clearTimeout(loadTimeout);
+                        video.play();
+                        status.style.display = 'none';
+                        reloadCenter.classList.add('hidden');
+                        updateCenterLayout();
+                    }, { once: true });
                 }
+            }
+
+            sidebar.classList.remove('open');
+        }
+
+        function updateQualityOptions() {
+            qualitySelect.innerHTML = '<option value="-1">Auto</option>';
+            qualitySelect.style.display = 'none';
+            if (hls && hls.levels.length > 1) {
+                qualitySelect.style.display = 'block';
+                hls.levels.forEach((level, index) => {
+                    const option = document.createElement('option');
+                    option.value = index;
+                    option.textContent = level.height ? `${level.height}p` : 'Auto';
+                    qualitySelect.appendChild(option);
+                });
+                qualitySelect.value = hls.currentLevel;
             }
         }
 
-        menuBtn.addEventListener('click', () => sidebar.classList.toggle('open'));
-        reloadBtn.addEventListener('click', () => changeChannel(currentUrl, document.querySelector('.channel-list li.active')));
-        
-        fullscreenBtn.addEventListener('click', () => {
-            const wrapper = document.querySelector('.player-wrapper');
-            if (!document.fullscreenElement) wrapper.requestFullscreen?.();
-            else document.exitFullscreen?.();
+        function updateCenterLayout() {
+            const visibleIcons = document.querySelectorAll('.center-icon:not(.hidden)');
+            if (visibleIcons.length === 1) {
+                centerIcons.classList.add('has-one');
+            } else {
+                centerIcons.classList.remove('has-one');
+            }
+        }
+
+        window.onload = () => {
+            changeChannel(currentUrl, channelList.querySelector('li'));
+        };
+
+        menuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            sidebar.classList.toggle('open');
         });
 
-        window.onload = () => changeChannel(currentUrl, channelList.querySelector('li'));
+        document.addEventListener('click', (e) => {
+            if (!sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
+                sidebar.classList.remove('open');
+            }
+        });
+
+        // Volume e mute só para .m3u8
+        volumeSlider.addEventListener('input', (e) => {
+            if (!isYouTube) {
+                const video = playerContainer.querySelector('video');
+                if (video) {
+                    const vol = e.target.value / 100;
+                    video.volume = vol;
+                    video.muted = false;
+                    volumeBtn.textContent = vol === 0 ? '🔇' : '🔊';
+                }
+            }
+        });
+
+        volumeBtn.addEventListener('click', () => {
+            if (!isYouTube) {
+                const video = playerContainer.querySelector('video');
+                if (video) {
+                    video.muted = !video.muted;
+                    if (video.muted) {
+                        video.volume = 0.0;
+                        volumeSlider.value = 0;
+                        volumeBtn.textContent = '🔇';
+                    } else {
+                        video.volume = 1.0;
+                        volumeSlider.value = 100;
+                        volumeBtn.textContent = '🔊';
+                    }
+                }
+            }
+        });
+
+        fullscreenBtn.addEventListener('click', () => {
+            const wrapper = document.querySelector('.player-wrapper');
+            if (!document.fullscreenElement) {
+                wrapper.requestFullscreen?.() || wrapper.webkitRequestFullscreen?.() || wrapper.msRequestFullscreen?.();
+            } else {
+                document.exitFullscreen?.() || document.webkitExitFullscreen?.() || document.msExitFullscreen?.();
+            }
+        });
+
+        qualitySelect.addEventListener('change', (e) => {
+            if (hls) hls.currentLevel = parseInt(e.target.value);
+        });
+
+        // Event delegation para dblclick já que o elemento video é recriado
+        playerContainer.addEventListener('dblclick', (e) => {
+             if(e.target.tagName === 'VIDEO') {
+                 fullscreenBtn.click();
+             }
+        });
     </script>
 </body>
 </html>
