@@ -263,30 +263,44 @@
         }
 						
 						
-.youtube-black-screen {
-    transition: opacity 0.5s ease; /* Duração da animação de saída */
-    opacity: 1;
+#youtube-black-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
+    z-index: 9999;
+    
+    /* Animação: espera 2s, dura 0.5s para sumir e mantém o estado final */
+    animation: sumirDiv 0.5s forwards;
+    animation-delay: 2s;
 }
 
-.hidden {
-    opacity: 0;
-    pointer-events: none; /* Impede cliques na div invisível */
+@keyframes sumirDiv {
+    to {
+        opacity: 0;
+        visibility: hidden;
+        display: none;
+    }
 }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 	
-	<script>
-	const blackScreen = document.getElementById('youtube-black-screen');
+<script>
+    window.addEventListener('load', function() {
+        const screen = document.getElementById('youtube-black-screen');
+        
+        // Remove a classe 'hidden' caso ela comece escondida
+        screen.classList.remove('hidden'); 
 
-// 1. Remove a classe 'hidden' para mostrar a div
-blackScreen.classList.remove('hidden');
-
-// 2. Após 2000 milissegundos (2 segundos), adiciona a classe de volta
-setTimeout(() => {
-    blackScreen.classList.add('hidden');
-}, 2000);
-	
-	</script>
+        // Conta 2 segundos e esconde
+        setTimeout(() => {
+            screen.style.display = 'none'; 
+            // Ou screen.classList.add('hidden');
+        }, 2000);
+    });
+</script>
 
 </head>
 <body>
