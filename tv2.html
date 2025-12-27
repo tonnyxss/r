@@ -160,18 +160,18 @@
             left: 50%;
             transform: translate(-50%, -50%);
             display: flex;
-            gap: 40px; /* Espaço entre os ícones se os dois aparecerem */
+            gap: 40px;
             align-items: center;
             justify-content: center;
             z-index: 10;
-            pointer-events: none; /* Deixa clicar através do container */
+            pointer-events: none;
         }
         .center-icon {
             font-size: 80px;
             color: rgba(255, 255, 255, 0.8);
             transition: all 0.3s ease;
             cursor: pointer;
-            pointer-events: auto; /* Reativa o clique no ícone */
+            pointer-events: auto;
             text-shadow: 0 0 10px rgba(0,0,0,0.8);
         }
         .center-icon:hover {
@@ -217,6 +217,19 @@
             font-size: 1.2rem;
             font-weight: 600;
         }
+        /* ESTILO NOVO PARA AS CATEGORIAS */
+        .category-title {
+            color: #666;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            padding-left: 5px;
+            border-bottom: 1px solid #222;
+            font-weight: bold;
+        }
+        
         .channel-list { list-style: none; padding: 0; }
         .channel-list li {
             padding: 2px 2px;
@@ -294,27 +307,58 @@
         const channelList = document.getElementById('channel-list');
 
         let hls;
-        let currentUrl = 'https://stream.ads.ottera.tv/playlist.m3u8?network_id=2116';
+        let currentUrl = ''; 
         let isYouTube = false;
 
-        const channels = [
-            { name: 'Record News', url: 'https://stream.ads.ottera.tv/playlist.m3u8?network_id=2116' },
-            { name: 'SBT', url: 'https://cdn.jmvstream.com/w/LVW-10801/LVW10801_Xvg4R0u57n/playlist.m3u8' },
-            { name: 'Rede TV', url: 'https://evp.mm.uol.com.br:1935/redetv1/redetv1/playlist.m3u8' },
-            { name: 'Nickelodeon', url: 'http://45.235.0.78/Nickelodeon/playlist.m3u8' },
-            { name: 'Grok xAI - YouTube', url: 'https://www.youtube.com/watch?v=iLEc51HjMbY' }
+        // NOVA ESTRUTURA DE CANAIS POR CATEGORIA
+        const channelGroups = [
+            {
+                category: "TV Aberta & Notícias",
+                items: [
+                    { name: 'Record News', url: 'https://stream.ads.ottera.tv/playlist.m3u8?network_id=2116' },
+                    { name: 'SBT', url: 'https://cdn.jmvstream.com/w/LVW-10801/LVW10801_Xvg4R0u57n/playlist.m3u8' },
+                    { name: 'Rede TV', url: 'https://evp.mm.uol.com.br:1935/redetv1/redetv1/playlist.m3u8' }
+                ]
+            },
+            {
+                category: "Infantil & Variedades",
+                items: [
+                    { name: 'Nickelodeon', url: 'http://45.235.0.78/Nickelodeon/playlist.m3u8' },
+                    { name: 'Pica-Pau TV', url: 'https://www.youtube.com/watch?v=g-wtiZlKQ54' },
+                    { name: 'Relax TV', url: 'https://www.youtube.com/watch?v=dXIyMS61B68' }
+                ]
+            }
         ];
 
-        channels.forEach((channel, index) => {
-            const li = document.createElement('li');
-            li.textContent = channel.name;
-            li.dataset.url = channel.url;
-            if (index === 0) li.classList.add('active');
-            li.addEventListener('click', (e) => {
-                e.stopPropagation();
-                changeChannel(channel.url, li);
+        // Geração da lista com Categorias
+        let firstChannelSet = false;
+
+        channelGroups.forEach(group => {
+            // Cria o título da categoria
+            const title = document.createElement('div');
+            title.className = 'category-title';
+            title.textContent = group.category;
+            channelList.appendChild(title);
+
+            // Cria os canais da categoria
+            group.items.forEach(channel => {
+                const li = document.createElement('li');
+                li.textContent = channel.name;
+                li.dataset.url = channel.url;
+                
+                // Define o primeiro canal de todos como o inicial
+                if (!firstChannelSet) {
+                    li.classList.add('active');
+                    currentUrl = channel.url;
+                    firstChannelSet = true;
+                }
+
+                li.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    changeChannel(channel.url, li);
+                });
+                channelList.appendChild(li);
             });
-            channelList.appendChild(li);
         });
 
         function getYouTubeID(url) {
@@ -333,7 +377,6 @@
         reloadBtn.addEventListener('click', reloadCurrentChannel);
         reloadCenter.addEventListener('click', reloadCurrentChannel);
 
-        // Ao clicar no ícone de mudo no centro da tela
         muteIcon.addEventListener('click', () => {
             if (!isYouTube) {
                 const video = playerContainer.querySelector('video');
@@ -342,7 +385,7 @@
                     video.volume = 1.0;
                     volumeSlider.value = 100;
                     volumeBtn.textContent = '🔊';
-                    muteIcon.classList.add('hidden'); // Some o ícone
+                    muteIcon.classList.add('hidden'); 
                 }
             }
         });
@@ -360,7 +403,6 @@
             status.textContent = 'Carregando...';
             status.style.display = 'block';
             
-            // Reinicia estados visuais
             reloadCenter.classList.add('hidden');
             muteIcon.classList.add('hidden'); 
 
@@ -383,7 +425,7 @@
                 const currentBlackScreen = document.getElementById('yt-screen-temp');
                 setTimeout(() => {
                     if (currentBlackScreen) currentBlackScreen.classList.add('hidden');
-                }, 3000);
+                }, 3500);
 
                 status.style.display = 'none';
             } else {
@@ -398,7 +440,6 @@
                 
                 const video = playerContainer.querySelector('video');
 
-                // Como o vídeo inicia mutado, mostramos o ícone central
                 muteIcon.classList.remove('hidden');
                 volumeBtn.textContent = '🔇';
                 volumeSlider.value = 0;
@@ -417,7 +458,6 @@
                     hls.on(Hls.Events.MANIFEST_PARSED, () => {
                         clearTimeout(loadTimeout);
                         video.play().catch(() => {
-                            // Se o play falhar, mostra o reload
                             reloadCenter.classList.remove('hidden');
                         });
                         status.style.display = 'none';
@@ -430,7 +470,7 @@
                         if (data.fatal) {
                             status.textContent = 'Erro na conexão';
                             status.style.display = 'block';
-                            reloadCenter.classList.remove('hidden'); // Exibe botão reload
+                            reloadCenter.classList.remove('hidden'); 
                         }
                     });
                 } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
@@ -480,7 +520,6 @@
             }
         });
 
-        // Controle de Volume (Sincronizado com ícone central)
         volumeSlider.addEventListener('input', (e) => {
             if (!isYouTube) {
                 const video = playerContainer.querySelector('video');
@@ -490,11 +529,11 @@
                     
                     if (vol > 0) {
                         video.muted = false;
-                        muteIcon.classList.add('hidden'); // Esconde ícone central
+                        muteIcon.classList.add('hidden'); 
                         volumeBtn.textContent = '🔊';
                     } else {
                         video.muted = true;
-                        muteIcon.classList.remove('hidden'); // Mostra ícone central
+                        muteIcon.classList.remove('hidden'); 
                         volumeBtn.textContent = '🔇';
                     }
                 }
@@ -511,12 +550,12 @@
                         video.volume = 0.0;
                         volumeSlider.value = 0;
                         volumeBtn.textContent = '🔇';
-                        muteIcon.classList.remove('hidden'); // Mostra ícone central
+                        muteIcon.classList.remove('hidden'); 
                     } else {
                         video.volume = 1.0;
                         volumeSlider.value = 100;
                         volumeBtn.textContent = '🔊';
-                        muteIcon.classList.add('hidden'); // Esconde ícone central
+                        muteIcon.classList.add('hidden'); 
                     }
                 }
             }
