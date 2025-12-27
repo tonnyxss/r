@@ -39,6 +39,14 @@
             height: 100%;
             border: none;
         }
+        /* Overlay para esconder controles do YouTube */
+        .youtube-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.01); /* Transparente, mas captura cliques */
+            pointer-events: none;
+            z-index: 3;
+        }
         .overlay {
             position: absolute;
             inset: 0;
@@ -48,7 +56,7 @@
             pointer-events: none;
             opacity: 0;
             transition: opacity 0.3s ease;
-            z-index: 2;
+            z-index: 4;
         }
         .player-wrapper:hover .overlay,
         .overlay:hover {
@@ -250,6 +258,8 @@
     <div class="player-wrapper">
         <div class="player-container" id="player-container">
             <video id="video" autoplay muted playsinline></video>
+            <!-- Overlay para esconder controles do YouTube -->
+            <div class="youtube-overlay hidden" id="youtube-overlay"></div>
         </div>
         <div class="status" id="status">Carregando...</div>
         <!-- Ícones centrais com lógica inteligente -->
@@ -274,6 +284,7 @@
 
     <script>
         const playerContainer = document.getElementById('player-container');
+        const youtubeOverlay = document.getElementById('youtube-overlay');
         const status = document.getElementById('status');
         const muteIcon = document.getElementById('mute-icon');
         const reloadCenter = document.getElementById('reload-center');
@@ -289,6 +300,7 @@
 
         let hls;
         let currentUrl = 'https://stream.ads.ottera.tv/playlist.m3u8?network_id=2116';
+        let isYouTube = false;
 
         const channels = [
             { name: 'Record News', url: 'https://stream.ads.ottera.tv/playlist.m3u8?network_id=2116' },
@@ -354,10 +366,14 @@
             const youtubeID = getYouTubeID(newUrl);
 
             if (youtubeID) {
-                const embedUrl = `https://www.youtube-nocookie.com/embed/${youtubeID}?autoplay=1&mute=1&playsinline=1&rel=0`;
-                playerContainer.innerHTML = `<iframe src="${embedUrl}" allow="autoplay; encrypted-media" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
+                isYouTube = true;
+                const embedUrl = `https://www.youtube-nocookie.com/embed/${youtubeID}?autoplay=1&mute=1&playsinline=1&rel=0&controls=0&modestbranding=1&iv_load_policy=3&fs=0`;
+                playerContainer.innerHTML = `<iframe src="${embedUrl}" allow="autoplay" allowfullscreen></iframe><div class="youtube-overlay"></div>`;
+                youtubeOverlay.classList.remove('hidden');
                 status.style.display = 'none';
             } else {
+                isYouTube = false;
+                youtubeOverlay.classList.add('hidden');
                 if (hls) hls.destroy();
 
                 const loadTimeout = setTimeout(() => {
