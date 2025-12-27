@@ -39,13 +39,25 @@
             height: 100%;
             border: none;
         }
-        /* Div transparente por cima do iframe do YouTube – esconde tudo */
+        /* Tela preta inicial para YouTube (2 segundos) */
+        .youtube-black-screen {
+            position: absolute;
+            inset: 0;
+            background: #000;
+            z-index: 5;
+            transition: opacity 0.5s ease;
+        }
+        .youtube-black-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        /* Overlay para bloquear cliques e esconder tudo do YouTube */
         .youtube-cover {
             position: absolute;
             inset: 0;
             background: transparent;
             z-index: 3;
-            pointer-events: auto; /* Bloqueia cliques no iframe */
+            pointer-events: auto;
         }
         .overlay {
             position: absolute;
@@ -70,6 +82,10 @@
             gap: 20px;
             padding: 15px;
             background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+        }
+        /* Oculta controles inferiores quando for YouTube */
+        .custom-controls.youtube-hidden {
+            display: none;
         }
         button {
             background: rgba(0, 0, 0, 0.6);
@@ -258,7 +274,9 @@
     <div class="player-wrapper">
         <div class="player-container" id="player-container">
             <video id="video" autoplay muted playsinline></video>
-            <!-- Div transparente por cima do YouTube -->
+            <!-- Tela preta inicial (2s) para YouTube -->
+            <div class="youtube-black-screen hidden" id="youtube-black-screen"></div>
+            <!-- Div para bloquear cliques no YouTube -->
             <div class="youtube-cover hidden" id="youtube-cover"></div>
         </div>
         <div class="status" id="status">Carregando...</div>
@@ -268,7 +286,7 @@
             <div class="center-icon hidden" id="reload-center">🔄</div>
         </div>
         <div class="overlay">
-            <div class="custom-controls">
+            <div class="custom-controls" id="custom-controls">
                 <div class="volume-container">
                     <button id="volume-btn" title="Ativar som">🔇</button>
                     <input type="range" id="volume-slider" min="0" max="100" value="0">
@@ -284,7 +302,9 @@
 
     <script>
         const playerContainer = document.getElementById('player-container');
+        const youtubeBlackScreen = document.getElementById('youtube-black-screen');
         const youtubeCover = document.getElementById('youtube-cover');
+        const customControls = document.getElementById('custom-controls');
         const status = document.getElementById('status');
         const muteIcon = document.getElementById('mute-icon');
         const reloadCenter = document.getElementById('reload-center');
@@ -307,7 +327,7 @@
             { name: 'SBT', url: 'https://cdn.jmvstream.com/w/LVW-10801/LVW10801_Xvg4R0u57n/playlist.m3u8' },
             { name: 'Rede TV', url: 'https://evp.mm.uol.com.br:1935/redetv1/redetv1/playlist.m3u8' },
             { name: 'Nickelodeon', url: 'http://45.235.0.78/Nickelodeon/playlist.m3u8' },
-            { name: 'Grok xAI - The Future of AI', url: 'https://www.youtube.com/watch?v=iLEc51HjMbY' }
+            { name: 'Grok xAI - The Future of AI', url: 'https://www.youtube.com/watch?v=g-wtiZlKQ54' }
         ];
 
         channels.forEach((channel, index) => {
@@ -367,14 +387,22 @@
 
             if (youtubeID) {
                 isYouTube = true;
-                // Embed limpo + volume máximo + autoplay
-                const embedUrl = `https://www.youtube-nocookie.com/embed/${youtubeID}?autoplay=1&mute=0&playsinline=1&rel=0&controls=0&modestbranding=1&iv_load_policy=3&fs=0`;
-                playerContainer.innerHTML = `<iframe src="${embedUrl}" allow="autoplay" allowfullscreen></iframe><div class="youtube-cover"></div>`;
+                customControls.classList.add('youtube-hidden');
                 youtubeCover.classList.remove('hidden');
+                youtubeBlackScreen.classList.remove('hidden');
+                setTimeout(() => {
+                    youtubeBlackScreen.classList.add('hidden');
+                }, 2000); // Tela preta por 2 segundos
+
+                const embedUrl = `https://www.youtube-nocookie.com/embed/${youtubeID}?autoplay=1&mute=0&playsinline=1&rel=0&controls=0&modestbranding=1&iv_load_policy=3&fs=0`;
+                playerContainer.innerHTML = `<iframe src="${embedUrl}" allow="autoplay" allowfullscreen></iframe><div class="youtube-cover"></div><div class="youtube-black-screen"></div>`;
                 status.style.display = 'none';
             } else {
                 isYouTube = false;
+                customControls.classList.remove('youtube-hidden');
                 youtubeCover.classList.add('hidden');
+                youtubeBlackScreen.classList.add('hidden');
+
                 if (hls) hls.destroy();
 
                 const loadTimeout = setTimeout(() => {
