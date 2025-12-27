@@ -263,6 +263,19 @@
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+	<script>
+	const blackScreen = document.getElementById('youtube-black-screen');
+
+// 1. Remove a classe 'hidden' para mostrar a div
+blackScreen.classList.remove('hidden');
+
+// 2. Após 2000 milissegundos (2 segundos), adiciona a classe de volta
+setTimeout(() => {
+    blackScreen.classList.add('hidden');
+}, 2000);
+	
+	</script>
+
 </head>
 <body>
     <button class="menu-btn" id="menu-btn">☰</button>
