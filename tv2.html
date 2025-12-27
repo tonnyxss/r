@@ -263,43 +263,49 @@
         }
 						
 						
-#youtube-black-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: black;
-    z-index: 9999;
-    
-    /* Animação: espera 2s, dura 0.5s para sumir e mantém o estado final */
-    animation: sumirDiv 0.5s forwards;
-    animation-delay: 2s;
+.youtube-black-screen {
+    position: absolute;
+    inset: 0;
+    background: #000;
+    z-index: 5;
+    opacity: 1;
+    transition: opacity 1s ease;
 }
-
-@keyframes sumirDiv {
-    to {
-        opacity: 0;
-        visibility: hidden;
-        display: none;
-    }
+.youtube-black-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
 }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 	
 <script>
-    window.addEventListener('load', function() {
-        const screen = document.getElementById('youtube-black-screen');
-        
-        // Remove a classe 'hidden' caso ela comece escondida
-        screen.classList.remove('hidden'); 
+if (youtubeID) {
+    isYouTube = true;
+    overlay.classList.add('youtube-hidden');
 
-        // Conta 2 segundos e esconde
-        setTimeout(() => {
-            screen.style.display = 'none'; 
-            // Ou screen.classList.add('hidden');
-        }, 2000);
-    });
+    const embedUrl = `https://www.youtube-nocookie.com/embed/${youtubeID}?autoplay=1&mute=0&playsinline=1&rel=0&controls=0&modestbranding=1&iv_load_policy=3&fs=0`;
+    
+    // Injetamos o iframe e as camadas de cobertura
+    playerContainer.innerHTML = `
+        <iframe src="${embedUrl}" allow="autoplay" allowfullscreen></iframe>
+        <div class="youtube-cover" id="youtube-cover"></div>
+        <div class="youtube-black-screen" id="youtube-black-screen"></div>
+    `;
+
+    // BUSCAMOS A DIV RECÉM CRIADA DENTRO DO CONTAINER
+    const currentBlackScreen = playerContainer.querySelector('.youtube-black-screen');
+
+    // Remove a tela preta após 2 segundos com efeito fade (CSS transition)
+    setTimeout(() => {
+        if (currentBlackScreen) {
+            currentBlackScreen.classList.add('hidden');
+            // Opcional: remover do DOM após o fade para não pesar
+            setTimeout(() => currentBlackScreen.remove(), 1000);
+        }
+    }, 2000);
+
+    status.style.display = 'none';
+}
 </script>
 
 </head>
