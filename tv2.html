@@ -44,7 +44,7 @@
             position: absolute;
             inset: 0;
             background: #000;
-            z-index: 50; /* Aumentei o Z-index para garantir que cubra o youtube */
+            z-index: 50;
             opacity: 1;
             transition: opacity 1s ease;
             pointer-events: none;
@@ -52,7 +52,6 @@
         .youtube-black-screen.hidden {
             opacity: 0;
         }
-        /* Div transparente permanente para bloquear cliques no YouTube */
         .youtube-cover {
             position: absolute;
             inset: 0;
@@ -84,7 +83,6 @@
             padding: 15px;
             background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
         }
-        /* Oculta completamente os controles inferiores no YouTube */
         .overlay.youtube-hidden {
             display: none !important;
         }
@@ -143,15 +141,6 @@
             cursor: pointer;
             box-shadow: 0 0 10px rgba(0, 255, 136, 0.6);
         }
-        input[type="range"]::-moz-range-thumb {
-            width: 18px;
-            height: 18px;
-            background: #00ff88;
-            border-radius: 50%;
-            cursor: pointer;
-            border: none;
-            box-shadow: 0 0 10px rgba(0, 255, 136, 0.6);
-        }
         .status {
             position: absolute;
             top: 15px;
@@ -164,41 +153,36 @@
             border: 1px solid #555;
             z-index: 10;
         }
+        /* Central Icons - Layout lado a lado */
         .center-icons {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             display: flex;
-            gap: 60px;
+            gap: 40px; /* Espaço entre os ícones se os dois aparecerem */
             align-items: center;
             justify-content: center;
             z-index: 10;
+            pointer-events: none; /* Deixa clicar através do container */
         }
         .center-icon {
             font-size: 80px;
             color: rgba(255, 255, 255, 0.8);
             transition: all 0.3s ease;
             cursor: pointer;
-            pointer-events: auto;
+            pointer-events: auto; /* Reativa o clique no ícone */
+            text-shadow: 0 0 10px rgba(0,0,0,0.8);
         }
         .center-icon:hover {
             color: #00ff88;
             transform: scale(1.1);
         }
         .center-icon.hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
+            display: none;
         }
-        .center-icons.has-one .center-icon:not(.hidden) {
-            position: absolute;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-        #reload-btn {
-            font-size: 18px;
-        }
+        
+        #reload-btn { font-size: 18px; }
         .menu-btn {
             position: fixed;
             top: 15px;
@@ -225,9 +209,7 @@
             overflow-y: auto;
             border-right: 1px solid #222;
         }
-        .sidebar.open {
-            left: 0;
-        }
+        .sidebar.open { left: 0; }
         .sidebar h2 {
             color: #00ff88;
             text-align: center;
@@ -245,10 +227,7 @@
             transition: all 0.2s;
             font-size: 0.9rem;
         }
-        .channel-list li:hover {
-            background: #1a1a1a;
-            color: white;
-        }
+        .channel-list li:hover { background: #1a1a1a; color: white; }
         .channel-list li.active {
             background: #003322;
             color: #00ff88;
@@ -278,10 +257,12 @@
             <div class="youtube-cover hidden" id="youtube-cover"></div>
         </div>
         <div class="status" id="status">Carregando...</div>
+        
         <div class="center-icons" id="center-icons">
-            <div class="center-icon hidden" id="mute-icon">🔇</div>
-            <div class="center-icon hidden" id="reload-center">🔄</div>
+            <div class="center-icon hidden" id="mute-icon" title="Clique para ativar o som">🔇</div>
+            <div class="center-icon hidden" id="reload-center" title="Recarregar canal">🔄</div>
         </div>
+
         <div class="overlay" id="overlay">
             <div class="custom-controls">
                 <div class="volume-container">
@@ -299,14 +280,10 @@
 
     <script>
         const playerContainer = document.getElementById('player-container');
-        // As referências globais para elementos que são recriados (como youtube-black-screen) 
-        // são úteis apenas para a inicialização. Dentro do changeChannel pegaremos a nova referência.
-        const youtubeCover = document.getElementById('youtube-cover');
         const overlay = document.getElementById('overlay');
         const status = document.getElementById('status');
         const muteIcon = document.getElementById('mute-icon');
         const reloadCenter = document.getElementById('reload-center');
-        const centerIcons = document.getElementById('center-icons');
         const reloadBtn = document.getElementById('reload-btn');
         const fullscreenBtn = document.getElementById('fullscreen-btn');
         const qualitySelect = document.getElementById('quality-selector');
@@ -325,7 +302,7 @@
             { name: 'SBT', url: 'https://cdn.jmvstream.com/w/LVW-10801/LVW10801_Xvg4R0u57n/playlist.m3u8' },
             { name: 'Rede TV', url: 'https://evp.mm.uol.com.br:1935/redetv1/redetv1/playlist.m3u8' },
             { name: 'Nickelodeon', url: 'http://45.235.0.78/Nickelodeon/playlist.m3u8' },
-            { name: 'Grok xAI - The Future of AI', url: 'https://www.youtube.com/watch?v=iLEc51HjMbY' }
+            { name: 'Grok xAI - YouTube', url: 'https://www.youtube.com/watch?v=iLEc51HjMbY' }
         ];
 
         channels.forEach((channel, index) => {
@@ -356,6 +333,20 @@
         reloadBtn.addEventListener('click', reloadCurrentChannel);
         reloadCenter.addEventListener('click', reloadCurrentChannel);
 
+        // Ao clicar no ícone de mudo no centro da tela
+        muteIcon.addEventListener('click', () => {
+            if (!isYouTube) {
+                const video = playerContainer.querySelector('video');
+                if (video) {
+                    video.muted = false;
+                    video.volume = 1.0;
+                    volumeSlider.value = 100;
+                    volumeBtn.textContent = '🔊';
+                    muteIcon.classList.add('hidden'); // Some o ícone
+                }
+            }
+        });
+
         function changeChannel(newUrl, selectedLi) {
             if (newUrl === currentUrl && hls && hls.media) {
                 sidebar.classList.remove('open');
@@ -368,10 +359,11 @@
 
             status.textContent = 'Carregando...';
             status.style.display = 'block';
+            
+            // Reinicia estados visuais
             reloadCenter.classList.add('hidden');
-            muteIcon.classList.add('hidden');
+            muteIcon.classList.add('hidden'); 
 
-            // Limpa o container para colocar o novo player
             playerContainer.innerHTML = ''; 
 
             const youtubeID = getYouTubeID(newUrl);
@@ -382,29 +374,22 @@
 
                 const embedUrl = `https://www.youtube-nocookie.com/embed/${youtubeID}?autoplay=1&mute=0&playsinline=1&rel=0&controls=0&modestbranding=1&iv_load_policy=3&fs=0`;
                 
-                // Recriamos o HTML interno. Note que a div preta foi recriada aqui.
                 playerContainer.innerHTML = `
                     <iframe src="${embedUrl}" allow="autoplay" allowfullscreen></iframe>
                     <div class="youtube-cover"></div>
                     <div class="youtube-black-screen" id="yt-screen-temp"></div>
                 `;
 
-                // IMPORTANTÍSSIMO: Selecionamos a NOVA div preta que acabamos de criar
                 const currentBlackScreen = document.getElementById('yt-screen-temp');
-
-                // Tela preta some após 2 segundos
                 setTimeout(() => {
-                    if (currentBlackScreen) {
-                        currentBlackScreen.classList.add('hidden');
-                    }
-                }, 2000);
+                    if (currentBlackScreen) currentBlackScreen.classList.add('hidden');
+                }, 3000);
 
                 status.style.display = 'none';
             } else {
                 isYouTube = false;
                 overlay.classList.remove('youtube-hidden');
 
-                // Restaura a estrutura padrão para players normais
                 playerContainer.innerHTML = `
                     <video id="video" autoplay muted playsinline></video>
                     <div class="youtube-black-screen hidden"></div>
@@ -413,11 +398,15 @@
                 
                 const video = playerContainer.querySelector('video');
 
+                // Como o vídeo inicia mutado, mostramos o ícone central
+                muteIcon.classList.remove('hidden');
+                volumeBtn.textContent = '🔇';
+                volumeSlider.value = 0;
+
                 if (hls) hls.destroy();
 
                 const loadTimeout = setTimeout(() => {
                     reloadCenter.classList.remove('hidden');
-                    updateCenterLayout();
                 }, 8000);
 
                 if (Hls.isSupported()) {
@@ -427,10 +416,12 @@
 
                     hls.on(Hls.Events.MANIFEST_PARSED, () => {
                         clearTimeout(loadTimeout);
-                        video.play();
+                        video.play().catch(() => {
+                            // Se o play falhar, mostra o reload
+                            reloadCenter.classList.remove('hidden');
+                        });
                         status.style.display = 'none';
                         reloadCenter.classList.add('hidden');
-                        updateCenterLayout();
                         updateQualityOptions();
                     });
 
@@ -439,8 +430,7 @@
                         if (data.fatal) {
                             status.textContent = 'Erro na conexão';
                             status.style.display = 'block';
-                            reloadCenter.classList.remove('hidden');
-                            updateCenterLayout();
+                            reloadCenter.classList.remove('hidden'); // Exibe botão reload
                         }
                     });
                 } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
@@ -450,11 +440,13 @@
                         video.play();
                         status.style.display = 'none';
                         reloadCenter.classList.add('hidden');
-                        updateCenterLayout();
                     }, { once: true });
+                    
+                    video.addEventListener('error', () => {
+                        reloadCenter.classList.remove('hidden');
+                    });
                 }
             }
-
             sidebar.classList.remove('open');
         }
 
@@ -473,15 +465,6 @@
             }
         }
 
-        function updateCenterLayout() {
-            const visibleIcons = document.querySelectorAll('.center-icon:not(.hidden)');
-            if (visibleIcons.length === 1) {
-                centerIcons.classList.add('has-one');
-            } else {
-                centerIcons.classList.remove('has-one');
-            }
-        }
-
         window.onload = () => {
             changeChannel(currentUrl, channelList.querySelector('li'));
         };
@@ -497,15 +480,23 @@
             }
         });
 
-        // Volume e mute só para .m3u8
+        // Controle de Volume (Sincronizado com ícone central)
         volumeSlider.addEventListener('input', (e) => {
             if (!isYouTube) {
                 const video = playerContainer.querySelector('video');
                 if (video) {
                     const vol = e.target.value / 100;
                     video.volume = vol;
-                    video.muted = false;
-                    volumeBtn.textContent = vol === 0 ? '🔇' : '🔊';
+                    
+                    if (vol > 0) {
+                        video.muted = false;
+                        muteIcon.classList.add('hidden'); // Esconde ícone central
+                        volumeBtn.textContent = '🔊';
+                    } else {
+                        video.muted = true;
+                        muteIcon.classList.remove('hidden'); // Mostra ícone central
+                        volumeBtn.textContent = '🔇';
+                    }
                 }
             }
         });
@@ -515,14 +506,17 @@
                 const video = playerContainer.querySelector('video');
                 if (video) {
                     video.muted = !video.muted;
+                    
                     if (video.muted) {
                         video.volume = 0.0;
                         volumeSlider.value = 0;
                         volumeBtn.textContent = '🔇';
+                        muteIcon.classList.remove('hidden'); // Mostra ícone central
                     } else {
                         video.volume = 1.0;
                         volumeSlider.value = 100;
                         volumeBtn.textContent = '🔊';
+                        muteIcon.classList.add('hidden'); // Esconde ícone central
                     }
                 }
             }
@@ -531,9 +525,9 @@
         fullscreenBtn.addEventListener('click', () => {
             const wrapper = document.querySelector('.player-wrapper');
             if (!document.fullscreenElement) {
-                wrapper.requestFullscreen?.() || wrapper.webkitRequestFullscreen?.() || wrapper.msRequestFullscreen?.();
+                wrapper.requestFullscreen?.() || wrapper.webkitRequestFullscreen?.();
             } else {
-                document.exitFullscreen?.() || document.webkitExitFullscreen?.() || document.msExitFullscreen?.();
+                document.exitFullscreen?.();
             }
         });
 
@@ -541,11 +535,8 @@
             if (hls) hls.currentLevel = parseInt(e.target.value);
         });
 
-        // Event delegation para dblclick já que o elemento video é recriado
         playerContainer.addEventListener('dblclick', (e) => {
-             if(e.target.tagName === 'VIDEO') {
-                 fullscreenBtn.click();
-             }
+             if(e.target.tagName === 'VIDEO') fullscreenBtn.click();
         });
     </script>
 </body>
