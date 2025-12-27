@@ -39,19 +39,19 @@
             height: 100%;
             border: none;
         }
-        /* Tela preta inicial para YouTube (2 segundos) */
+        /* Tela preta inicial por 2s no YouTube */
         .youtube-black-screen {
             position: absolute;
             inset: 0;
             background: #000;
             z-index: 5;
-            transition: opacity 0.5s ease;
+            opacity: 1;
+            transition: opacity 1s ease;
         }
-        .youtube-black-screen.hidden {
+        .youtube-black-screen.fade-out {
             opacity: 0;
-            pointer-events: none;
         }
-        /* Overlay para bloquear cliques e esconder tudo do YouTube */
+        /* Overlay para bloquear cliques no YouTube */
         .youtube-cover {
             position: absolute;
             inset: 0;
@@ -83,7 +83,7 @@
             padding: 15px;
             background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
         }
-        /* Oculta controles inferiores quando for YouTube */
+        /* Oculta controles inferiores no YouTube */
         .custom-controls.youtube-hidden {
             display: none;
         }
@@ -163,7 +163,6 @@
             border: 1px solid #555;
             z-index: 10;
         }
-        /* Container central inteligente */
         .center-icons {
             position: absolute;
             top: 50%;
@@ -191,7 +190,6 @@
             visibility: hidden;
             pointer-events: none;
         }
-        /* Quando só um ícone estiver visível, centraliza perfeitamente */
         .center-icons.has-one .center-icon:not(.hidden) {
             position: absolute;
             left: 50%;
@@ -274,13 +272,10 @@
     <div class="player-wrapper">
         <div class="player-container" id="player-container">
             <video id="video" autoplay muted playsinline></video>
-            <!-- Tela preta inicial (2s) para YouTube -->
             <div class="youtube-black-screen hidden" id="youtube-black-screen"></div>
-            <!-- Div para bloquear cliques no YouTube -->
             <div class="youtube-cover hidden" id="youtube-cover"></div>
         </div>
         <div class="status" id="status">Carregando...</div>
-        <!-- Ícones centrais com lógica inteligente -->
         <div class="center-icons" id="center-icons">
             <div class="center-icon" id="mute-icon">🔇</div>
             <div class="center-icon hidden" id="reload-center">🔄</div>
@@ -327,7 +322,7 @@
             { name: 'SBT', url: 'https://cdn.jmvstream.com/w/LVW-10801/LVW10801_Xvg4R0u57n/playlist.m3u8' },
             { name: 'Rede TV', url: 'https://evp.mm.uol.com.br:1935/redetv1/redetv1/playlist.m3u8' },
             { name: 'Nickelodeon', url: 'http://45.235.0.78/Nickelodeon/playlist.m3u8' },
-            { name: 'Grok xAI - The Future of AI', url: 'https://www.youtube.com/watch?v=g-wtiZlKQ54' }
+            { name: 'Grok xAI - The Future of AI', url: 'https://www.youtube.com/watch?v=iLEc51HjMbY' }
         ];
 
         channels.forEach((channel, index) => {
@@ -359,8 +354,15 @@
         reloadCenter.addEventListener('click', reloadCurrentChannel);
 
         muteIcon.addEventListener('click', () => {
-            video.muted = false;
-            video.volume = 1.0;
+            // Funciona para .m3u8 e YouTube (ativa som máximo)
+            if (isYouTube) {
+                const iframe = playerContainer.querySelector('iframe');
+                if (iframe) iframe.contentWindow.postMessage('{"event":"command","func":"unMute","args":""}', '*');
+                iframe.contentWindow.postMessage('{"event":"command","func":"setVolume","args":[100]}', '*');
+            } else {
+                video.muted = false;
+                video.volume = 1.0;
+            }
             volumeSlider.value = 100;
             volumeBtn.textContent = '🔊';
             updateMuteIcon();
@@ -390,13 +392,16 @@
                 customControls.classList.add('youtube-hidden');
                 youtubeCover.classList.remove('hidden');
                 youtubeBlackScreen.classList.remove('hidden');
-                setTimeout(() => {
-                    youtubeBlackScreen.classList.add('hidden');
-                }, 2000); // Tela preta por 2 segundos
+                youtubeBlackScreen.classList.remove('fade-out'); // Reinicia
 
                 const embedUrl = `https://www.youtube-nocookie.com/embed/${youtubeID}?autoplay=1&mute=0&playsinline=1&rel=0&controls=0&modestbranding=1&iv_load_policy=3&fs=0`;
                 playerContainer.innerHTML = `<iframe src="${embedUrl}" allow="autoplay" allowfullscreen></iframe><div class="youtube-cover"></div><div class="youtube-black-screen"></div>`;
                 status.style.display = 'none';
+
+                // Tela preta some após 2 segundos
+                setTimeout(() => {
+                    youtubeBlackScreen.classList.add('fade-out');
+                }, 2000);
             } else {
                 isYouTube = false;
                 customControls.classList.remove('youtube-hidden');
