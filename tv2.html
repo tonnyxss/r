@@ -48,10 +48,11 @@
             opacity: 1;
             transition: opacity 1s ease;
         }
-        .youtube-black-screen.fade-out {
+        .youtube-black-screen.hidden {
             opacity: 0;
+            pointer-events: none;
         }
-        /* Overlay para bloquear cliques no YouTube */
+        /* Div transparente permanente para bloquear cliques no YouTube */
         .youtube-cover {
             position: absolute;
             inset: 0;
@@ -83,9 +84,9 @@
             padding: 15px;
             background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
         }
-        /* Oculta controles inferiores no YouTube */
-        .custom-controls.youtube-hidden {
-            display: none;
+        /* Oculta completamente os controles inferiores no YouTube */
+        .overlay.youtube-hidden {
+            display: none !important;
         }
         button {
             background: rgba(0, 0, 0, 0.6);
@@ -277,11 +278,11 @@
         </div>
         <div class="status" id="status">Carregando...</div>
         <div class="center-icons" id="center-icons">
-            <div class="center-icon" id="mute-icon">🔇</div>
+            <div class="center-icon hidden" id="mute-icon">🔇</div>
             <div class="center-icon hidden" id="reload-center">🔄</div>
         </div>
-        <div class="overlay">
-            <div class="custom-controls" id="custom-controls">
+        <div class="overlay" id="overlay">
+            <div class="custom-controls">
                 <div class="volume-container">
                     <button id="volume-btn" title="Ativar som">🔇</button>
                     <input type="range" id="volume-slider" min="0" max="100" value="0">
@@ -299,7 +300,7 @@
         const playerContainer = document.getElementById('player-container');
         const youtubeBlackScreen = document.getElementById('youtube-black-screen');
         const youtubeCover = document.getElementById('youtube-cover');
-        const customControls = document.getElementById('custom-controls');
+        const overlay = document.getElementById('overlay');
         const status = document.getElementById('status');
         const muteIcon = document.getElementById('mute-icon');
         const reloadCenter = document.getElementById('reload-center');
@@ -353,21 +354,6 @@
         reloadBtn.addEventListener('click', reloadCurrentChannel);
         reloadCenter.addEventListener('click', reloadCurrentChannel);
 
-        muteIcon.addEventListener('click', () => {
-            // Funciona para .m3u8 e YouTube (ativa som máximo)
-            if (isYouTube) {
-                const iframe = playerContainer.querySelector('iframe');
-                if (iframe) iframe.contentWindow.postMessage('{"event":"command","func":"unMute","args":""}', '*');
-                iframe.contentWindow.postMessage('{"event":"command","func":"setVolume","args":[100]}', '*');
-            } else {
-                video.muted = false;
-                video.volume = 1.0;
-            }
-            volumeSlider.value = 100;
-            volumeBtn.textContent = '🔊';
-            updateMuteIcon();
-        });
-
         function changeChannel(newUrl, selectedLi) {
             if (newUrl === currentUrl && hls && hls.media) {
                 sidebar.classList.remove('open');
@@ -381,6 +367,7 @@
             status.textContent = 'Carregando...';
             status.style.display = 'block';
             reloadCenter.classList.add('hidden');
+            muteIcon.classList.add('hidden'); // Esconde mute icon no YouTube
 
             playerContainer.innerHTML = '<video id="video" autoplay muted playsinline></video>';
             const video = playerContainer.querySelector('video');
@@ -389,22 +376,22 @@
 
             if (youtubeID) {
                 isYouTube = true;
-                customControls.classList.add('youtube-hidden');
+                overlay.classList.add('youtube-hidden');
                 youtubeCover.classList.remove('hidden');
                 youtubeBlackScreen.classList.remove('hidden');
-                youtubeBlackScreen.classList.remove('fade-out'); // Reinicia
 
                 const embedUrl = `https://www.youtube-nocookie.com/embed/${youtubeID}?autoplay=1&mute=0&playsinline=1&rel=0&controls=0&modestbranding=1&iv_load_policy=3&fs=0`;
                 playerContainer.innerHTML = `<iframe src="${embedUrl}" allow="autoplay" allowfullscreen></iframe><div class="youtube-cover"></div><div class="youtube-black-screen"></div>`;
-                status.style.display = 'none';
 
                 // Tela preta some após 2 segundos
                 setTimeout(() => {
-                    youtubeBlackScreen.classList.add('fade-out');
+                    youtubeBlackScreen.classList.add('hidden');
                 }, 2000);
+
+                status.style.display = 'none';
             } else {
                 isYouTube = false;
-                customControls.classList.remove('youtube-hidden');
+                overlay.classList.remove('youtube-hidden');
                 youtubeCover.classList.add('hidden');
                 youtubeBlackScreen.classList.add('hidden');
 
@@ -468,15 +455,6 @@
             }
         }
 
-        function updateMuteIcon() {
-            if (video.muted || video.volume === 0) {
-                muteIcon.classList.remove('hidden');
-            } else {
-                muteIcon.classList.add('hidden');
-            }
-            updateCenterLayout();
-        }
-
         function updateCenterLayout() {
             const visibleIcons = document.querySelectorAll('.center-icon:not(.hidden)');
             if (visibleIcons.length === 1) {
@@ -501,32 +479,29 @@
             }
         });
 
-        video.volume = 0.0;
-        volumeSlider.value = 0;
-        volumeBtn.textContent = '🔇';
-        updateMuteIcon();
-        updateCenterLayout();
-
+        // Volume e mute só para .m3u8
         volumeSlider.addEventListener('input', (e) => {
-            const vol = e.target.value / 100;
-            video.volume = vol;
-            video.muted = false;
-            volumeBtn.textContent = vol === 0 ? '🔇' : '🔊';
-            updateMuteIcon();
+            if (!isYouTube) {
+                const vol = e.target.value / 100;
+                video.volume = vol;
+                video.muted = false;
+                volumeBtn.textContent = vol === 0 ? '🔇' : '🔊';
+            }
         });
 
         volumeBtn.addEventListener('click', () => {
-            video.muted = !video.muted;
-            if (video.muted) {
-                video.volume = 0.0;
-                volumeSlider.value = 0;
-                volumeBtn.textContent = '🔇';
-            } else {
-                video.volume = 1.0;
-                volumeSlider.value = 100;
-                volumeBtn.textContent = '🔊';
+            if (!isYouTube) {
+                video.muted = !video.muted;
+                if (video.muted) {
+                    video.volume = 0.0;
+                    volumeSlider.value = 0;
+                    volumeBtn.textContent = '🔇';
+                } else {
+                    video.volume = 1.0;
+                    volumeSlider.value = 100;
+                    volumeBtn.textContent = '🔊';
+                }
             }
-            updateMuteIcon();
         });
 
         fullscreenBtn.addEventListener('click', () => {
