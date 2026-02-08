@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XML Extractor</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 { color: #4ec9b0; margin-bottom: 10px; }
+        .container {
+            width: 100%;
+            max-width: 1100px; /* Aumentei um pouco pra caber a nova coluna */
+            background-color: #252526;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        
+        /* Área de Controles */
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            align-items: center;
+            background: #333;
+            padding: 15px;
+            border-radius: 6px;
+        }
+
+        /* Barra de Busca */
+        #searchBox {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            border: 2px solid #0e639c;
+            border-radius: 4px;
+            background-color: #1e1e1e;
+            color: white;
+            outline: none;
+            box-sizing: border-box;
+        }
+        #searchBox::placeholder { color: #aaa; }
+        #searchBox:focus { box-shadow: 0 0 5px #0e639c; }
+
+        input[type="file"] {
+            padding: 8px;
+            background: #3c3c3c;
+            border-radius: 4px;
+            color: #fff;
+            cursor: pointer;
+            flex-grow: 1;
+        }
+
+        /* Botões Gerais */
+        button {
+            padding: 10px 20px;
+            background-color: #0e639c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            display: none; /* Escondido até carregar */
+        }
+        button:hover { background-color: #1177bb; }
+
+        /* Estilo Específico do Botão Observação */
+        #btnObs {
+            background-color: #c586c0;
+        }
+        #btnObs:hover { background-color: #d197cc; }
+
+        /* Tabela */
+        .table-container {
+            height: 60vh;
+            overflow-y: auto;
+            border: 1px solid #3c3c3c;
+            margin-top: 10px;
+            position: relative;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        th {
+            background-color: #333;
+            position: sticky;
+            top: 0;
+            padding: 12px;
+            text-align: left;
+            border-bottom: 2px solid #555;
+            z-index: 2;
+        }
+        td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #3c3c3c;
+            vertical-align: top;
+        }
+        tr:hover { background-color: #2a2d2e; }
+
+        /* Colunas */
+        .col-id { width: 60px; font-family: monospace; color: #569cd6; font-weight: bold; }
+        .col-class { width: 200px; font-family: monospace; color: #dcdcaa; word-break: break-all; } /* Nova Coluna */
+        .col-name { width: 250px; font-weight: bold; color: #ce9178; }
+        .col-desc { color: #9cdcfe; font-style: italic; }
+
+        #status { margin-bottom: 10px; color: #dcdcaa; font-weight: bold; }
+        .shortcut-hint { font-size: 12px; color: #888; margin-bottom: 10px; display: block; }
+
+        /* --- MENU FLUTUANTE --- */
+        #draggableMenu {
+            position: fixed;
+            top: 100px;
+            right: 50px;
+            width: 450px;
+            background-color: #252526;
+            border: 1px solid #454545;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            border-radius: 8px;
+            z-index: 1000;
+            display: none;
+        }
+
+        #menuHeader {
+            padding: 10px;
+            cursor: move;
+            background-color: #333;
+            color: #fff;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            border-bottom: 1px solid #454545;
+            user-select: none;
+        }
+
+        #btnCloseMenu {
+            cursor: pointer;
+            background: #ff5f56;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        #btnCloseMenu:hover { background: #ff3b30; }
+
+        #menuContent {
+            padding: 15px;
+            font-family: monospace;
+            font-size: 13px;
+            color: #d4d4d4;
+            line-height: 1.5;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .code-block {
+            background-color: #1e1e1e;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #3c3c3c;
+            color: #9cdcfe;
+            margin-bottom: 10px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .highlight { color: #ce9178; font-weight: bold; }
+        .comment { color: #6a9955; }
+    </style>
+</head>
+<body>
+
+    <h1>[ XML Extractor ]</h1>
+    
+    <div class="container">
+        
+        <div id="status">Carregue o arquivo XML</div>
+
+        <div class="controls">
+            <input type="file" id="fileInput" accept=".xml">
+            
+            <button id="btnDownload">Baixar .TXT</button>
+            <button id="btnObs">Observação</button>
+        </div>
+
+        <div>
+            <input type="text" id="searchBox" placeholder="Buscar por Nome, ID, Classname ou Descrição..." disabled>
+        </div>
+        <span class="shortcut-hint">Dica: Use <b>Ctrl+F</b> para buscar.</span>
+
+        <div class="table-container">
+            <table id="resultTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+							 <th>Nome</th>
+                        <th>Descrição</th>
+                        <th>Classname</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="draggableMenu">
+        <div id="menuHeader">
+            <span>Packets</span>
+            <div id="btnCloseMenu" title="Fechar"></div>
+        </div>
+        <div id="menuContent">
+            <p style="margin-top:0;"><strong>Estrutura Padrão:</strong></p>
+            <div class="code-block">{in:ObjectAdd}{i:10000000}{i:<span class="highlight">230</span>}{i:<span class="highlight">20</span>}{i:<span class="highlight">20</span>}{i:<span class="highlight">1</span>}{s:"0.0"}{s:"1.0E-4"}{i:0}{i:0}{s:"0"}{i:-1}{i:1}{i:89353654}{s:"Antonio"}</div>
+            
+            <p><strong>Legenda:</strong></p>
+            <ul style="padding-left: 20px; margin: 5px 0;">
+                <li><span class="highlight">230</span> = ID do mobi (Ex: Trono)</li>
+                <li><span class="highlight">20</span> e <span class="highlight">20</span> = Posição X e Y</li>
+                <li><span class="highlight">1</span> (após X+Y) = Rotação (1-4)</li>
+                <li class="comment">Obs: Pra girar serpa é 2 e 4 apenas.</li>
+            </ul>
+
+            <hr style="border: 0; border-top: 1px solid #454545; margin: 15px 0;">
+
+            <p><strong>Para ligar a Serpa:</strong></p>
+            <div class="code-block">{in:ObjectAdd}{i:10000009}{i:1623}{i:20}{i:20}{i:4}{s:"0.0"}{s:"1.0E-4"}{i:0}{i:0}{s:"<span class="highlight">1</span>"}{i:-1}{i:1}{i:89353654}{s:"Antonio"}</div>
+            <p>O "1" destacado antes da ID do usuário é o estado (ligado)</p>
+            
+            <hr style="border: 0; border-top: 1px solid #454545; margin: 15px 0;">
+
+            <p><strong>Ativar/Desativar mobi já colocado:</strong></p> 
+            <div class="code-block">{in:ObjectDataUpdate}{s:"1000000000000001"}{i:0}{s:"<span class="highlight">1</span>"}</div>
+			
+			<hr style="border: 0; border-top: 1px solid #454545; margin: 15px 0;">
+
+          <p><strong>Injetar mobi no inventário:</strong></p>
+			
+			<div class="code-block">{in:FurniListAddOrUpdate}{i:1}{i:-100000000}{s:"S"}{i:1602380224}{i:230}{i:1}{i:0}{s:""}{b:true}{b:true}{b:true}{b:true}{i:-1}{b:false}{i:-1}{i:0}{s:""}</div>
+			
+			<hr style="border: 0; border-top: 1px solid #454545; margin: 15px 0;">
+
+			<p>Script mobi de parede:</p>
+			
+			<div class="code-block">{in:ItemAdd}{s:"1000000000"}{i:4001}{s:":w=11,2 l=0,23 r"}{s:"502"}{i:-1}{i:0}{i:89353654}{s:"Antonio"}</div>
+			
+        </div>
+    </div>
+
+    <script>
+        // --- VARIÁVEIS ---
+        const fileInput = document.getElementById('fileInput');
+        const statusDiv = document.getElementById('status');
+        const tableBody = document.getElementById('tableBody');
+        const btnDownload = document.getElementById('btnDownload');
+        const btnObs = document.getElementById('btnObs');
+        const searchBox = document.getElementById('searchBox');
+        
+        let allData = []; 
+
+        // --- LÓGICA DO XML ---
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            statusDiv.textContent = "Lendo arquivo...";
+            btnDownload.style.display = 'none';
+            btnObs.style.display = 'none';
+            searchBox.disabled = true;
+            tableBody.innerHTML = '';
+
+            const reader = new FileReader();
+            reader.onload = function(e) { parseXML(e.target.result); };
+            reader.readAsText(file);
+        });
+
+        function parseXML(xmlText) {
+            statusDiv.textContent = "Processando XML...";
+            
+            setTimeout(() => {
+                try {
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+                    const items = xmlDoc.querySelectorAll('furnitype');
+                    
+                    allData = []; 
+
+                    items.forEach(item => {
+                        const id = item.getAttribute('id');
+
+                        const nameNode = item.querySelector('name');
+                        const name = nameNode ? nameNode.textContent : "Sem Nome";
+                        
+						const classname = item.getAttribute('classname') || ""; // Captura Classname
+						
+                        const descNode = item.querySelector('description');
+                        const desc = descNode ? descNode.textContent : "";
+
+                        if (id) {
+                            allData.push({ id, name, desc, classname });
+                        }
+                    });
+
+                    renderTable(allData);
+                    
+                    statusDiv.textContent = `Carregado! ${allData.length} mobis encontrados.`;
+                    
+                    btnDownload.style.display = 'block';
+                    btnObs.style.display = 'block';
+                    searchBox.disabled = false;
+                    searchBox.focus();
+
+                } catch (error) {
+                    statusDiv.textContent = "Erro ao ler XML: " + error.message;
+                }
+            }, 50);
+        }
+
+        function renderTable(data) {
+            const html = data.map(item => `
+                <tr>
+                    <td class="col-id">${item.id}</td>
+					<td class="col-name">${escapeHtml(item.name)}</td>
+                    <td class="col-desc">${escapeHtml(item.desc)}</td> 
+                    <td class="col-class">${escapeHtml(item.classname)}</td></tr>
+            `).join('');
+            tableBody.innerHTML = html;
+        }
+
+        // --- LÓGICA DE BUSCA ---
+        searchBox.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const filtered = allData.filter(item => 
+                item.name.toLowerCase().includes(term) || 
+                item.id.includes(term) ||
+                item.classname.toLowerCase().includes(term) || // Busca na classname
+                item.desc.toLowerCase().includes(term)
+            );
+            renderTable(filtered);
+        });
+
+        // --- DOWNLOAD ---
+        btnDownload.addEventListener('click', () => {
+            if (allData.length === 0) return;
+            let fileContent = "";
+            allData.forEach(item => {
+                // Formato do arquivo atualizado
+                fileContent += `ID: ${item.id} | Class: ${item.classname} | Nome: ${item.name} | Desc: ${item.desc}\n`;
+            });
+            const blob = new Blob([fileContent], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'lista_habbo_completa.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        });
+
+        // --- MENU E DRAG ---
+        const modal = document.getElementById("draggableMenu");
+        const header = document.getElementById("menuHeader");
+        const btnClose = document.getElementById("btnCloseMenu");
+
+        btnObs.addEventListener('click', () => { modal.style.display = "block"; });
+        btnClose.addEventListener('click', () => { modal.style.display = "none"; });
+
+        let isDragging = false;
+        let startX, startY, initialLeft, initialTop;
+
+        header.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            const rect = modal.getBoundingClientRect();
+            initialLeft = rect.left;
+            initialTop = rect.top;
+            e.preventDefault(); 
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+                modal.style.left = `${initialLeft + dx}px`;
+                modal.style.top = `${initialTop + dy}px`;
+                modal.style.right = 'auto'; 
+            }
+        });
+
+        document.addEventListener('mouseup', () => { isDragging = false; });
+
+        // --- CTRL+F ---
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'f') {
+                e.preventDefault();
+                searchBox.focus();
+                searchBox.select();
+            }
+        });
+
+        function escapeHtml(text) {
+            if (!text) return "";
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>
