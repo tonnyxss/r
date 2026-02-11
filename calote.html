@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Notificação Extrajudicial</title>
+    <style>
+        :root {
+            --bg-body: #0a0a0a;
+            --bg-card: #141414;
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --border-color: #262626;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 50px 20px;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 850px;
+            width: 100%;
+        }
+
+        h2 { 
+            font-weight: 300; 
+            letter-spacing: 2px; 
+            text-transform: uppercase;
+            font-size: 1rem;
+            margin-bottom: 40px;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        label { 
+            display: block; 
+            margin-bottom: 12px; 
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 2px;
+            color: #d1d1d1;
+            padding: 15px;
+            font-family: 'Consolas', monospace;
+            box-sizing: border-box;
+            resize: none;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        textarea:focus {
+            border-color: #444;
+            background-color: #1a1a1a;
+        }
+
+        .lista-resultados {
+            margin-top: 50px;
+        }
+
+        .card-pessoa {
+            background: var(--bg-card);
+            padding: 25px;
+            margin-bottom: 15px;
+            border-radius: 2px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--border-color);
+            transition: border 0.2s;
+        }
+
+        .card-pessoa:hover {
+            border-color: #444;
+        }
+
+        .info-pessoa b { 
+            display: block;
+            font-size: 1rem;
+            margin-bottom: 6px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .info-pessoa span {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-family: 'Consolas', monospace;
+        }
+
+        .btn-zap {
+            background-color: transparent;
+            color: var(--text-primary);
+            border: 1px solid #444;
+            padding: 10px 24px;
+            border-radius: 2px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .btn-zap:hover {
+            background-color: var(--text-primary);
+            color: #000;
+            border-color: var(--text-primary);
+        }
+
+        .footer-info {
+            font-size: 0.7rem;
+            color: #333;
+            margin-top: 15px;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Módulo de Intimação Extrajudicial</h2>
+    
+    <label>Entrada de Dados Brutos</label>
+    <textarea id="inputDados" placeholder="Cole aqui: 79 9823-0725  Nome do Cliente  R$ 397,00" oninput="processarDados()"></textarea>
+    <div class="footer-info">PROCESSAMENTO LOCAL E PRIVADO</div>
+
+    <div id="lista" class="lista-resultados">
+        </div>
+</div>
+
+<script>
+    function processarDados() {
+        const rawText = document.getElementById('inputDados').value;
+        const linhas = rawText.split('\n');
+        const listaDiv = document.getElementById('lista');
+        listaDiv.innerHTML = '';
+
+        linhas.forEach(linha => {
+            if (linha.trim() === '') return;
+
+            // Regex para Telefone, Nome (meio) e Valor (R$)
+            const regex = /^\s*([\d\s\-()]+)\t*(.*?)\t*(R\$.*)$/i;
+            const match = linha.match(regex);
+
+            if (match) {
+                const foneLimpo = match[1].trim().replace(/\D/g, '');
+                const nome = match[2].trim();
+                const valor = match[3].trim();
+                
+                // Gênero simples: final "a" ou "as" assume feminino
+                const primeiroNome = nome.split(' ')[0].toLowerCase();
+                const genero = (primeiroNome.endsWith('a') || primeiroNome.endsWith('as')) ? 'F' : 'M';
+
+                criarCard(foneLimpo, nome, valor, genero);
+            }
+        });
+    }
+
+    function criarCard(fone, nome, valor, genero) {
+        const listaDiv = document.getElementById('lista');
+        const saudacao = genero === 'F' ? 'Sra.' : 'Sr.';
+        const artigo = genero === 'F' ? 'sua' : 'seu';
+
+        const mensagem = `⚠️ *NOTIFICAÇÃO EXTRAJUDICIAL DE COBRANÇA - URGENTE*
+
+${saudacao} ${nome},
+
+Diante da ausência de regularização do débito pendente e do esgotamento de todas as tentativas de resolução amigável, servimo-nos da presente para *NOTIFICAR EXTRAJUDICIALMENTE*.
+
+O não pagamento do valor de *${valor}* no prazo improrrogável de *48 horas* a partir do recebimento desta mensagem acarretará o envio imediato do ${artigo} contrato para o Departamento Jurídico.
+
+⚠️ As seguintes medidas serão tomadas *sem novo aviso prévio*:
+
+1) Ajuizamento do *PROCESSO DE EXECUÇÃO* (Cobrança Judicial);
+2) Solicitação de bloqueio judicial de contas bancárias (Bacenjud) em seu CPF;
+3) Pedido de penhora de bens passíveis de execução para quitação da dívida e custas processuais;
+4) Protesto em Cartório e *NEGATIVAÇÃO* junto ao SPC/Serasa.
+5) Restrição de Bens (RENAJUD): Bloqueio de circulação e transferência de veículos e outros bens em seu nome;
+6) Medidas Coercitivas Atípicas (Art. 139, IV, CPC): Pedido de suspensão de CNH e CARTÕES DE CRÉDITO até a quitação integral do débito;
+7) Multa Processual (Art. 77, CPC): Aplicação de multa de até 20% sobre o valor da causa por Ato Atentatório à Dignidade da Justiça, caso seja verificada ocultação de patrimônio.
+
+‼️Para evitar o agravamento da dívida com custas judiciais e honorários advocatícios (30%), *efetue o pagamento IMEDIATO através dos dados abaixo*
+
+💵 PIX: 48.038.598/0001-34
+
+Esta é a sua *última oportunidade de evitar a via judicial*.
+
+Atenciosamente, *RM EMPREENDIMENTOS | DEPARTAMENTO JURÍDICO*`;
+
+        // Link formatado para abrir o WhatsApp WEB diretamente
+        const linkWebZap = `https://web.whatsapp.com/send?phone=55${fone}&text=${encodeURIComponent(mensagem)}`;
+
+        const card = document.createElement('div');
+        card.className = 'card-pessoa';
+        card.innerHTML = `
+            <div class="info-pessoa">
+                <b>${nome}</b>
+                <span>ID: ${fone} // DEBITO: ${valor}</span>
+            </div>
+            <a href="${linkWebZap}" target="_blank" class="btn-zap">Gerar Protocolo</a>
+        `;
+        listaDiv.appendChild(card);
+    }
+</script>
+
+</body>
+</html>
