@@ -11,6 +11,7 @@
             --text-primary: #ffffff;
             --text-secondary: #888888;
             --border-color: #262626;
+            --accent: #444;
         }
 
         body {
@@ -101,6 +102,37 @@
             font-family: 'Consolas', monospace;
         }
 
+        /* Controles de Gênero */
+        .genero-selector {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .genero-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+            padding: 4px 8px;
+            cursor: pointer;
+            border-radius: 2px;
+            transition: 0.2s;
+        }
+
+        .genero-btn.active {
+            border-color: var(--text-primary);
+            color: var(--text-primary);
+            background: #222;
+        }
+
+        .acoes {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+        }
+
         .btn-zap {
             background-color: transparent;
             color: var(--text-primary);
@@ -139,8 +171,7 @@
     <textarea id="inputDados" placeholder="Cole aqui: 79 9823-0725  Nome do Cliente  R$ 397,00" oninput="processarDados()"></textarea>
     <div class="footer-info">PROCESSAMENTO LOCAL E PRIVADO</div>
 
-    <div id="lista" class="lista-resultados">
-        </div>
+    <div id="lista" class="lista-resultados"></div>
 </div>
 
 <script>
@@ -150,10 +181,9 @@
         const listaDiv = document.getElementById('lista');
         listaDiv.innerHTML = '';
 
-        linhas.forEach(linha => {
+        linhas.forEach((linha, index) => {
             if (linha.trim() === '') return;
 
-            // Regex para Telefone, Nome (meio) e Valor (R$)
             const regex = /^\s*([\d\s\-()]+)\t*(.*?)\t*(R\$.*)$/i;
             const match = linha.match(regex);
 
@@ -162,17 +192,27 @@
                 const nome = match[2].trim();
                 const valor = match[3].trim();
                 
-                // Gênero simples: final "a" ou "as" assume feminino
+                // Gênero inicial automático
                 const primeiroNome = nome.split(' ')[0].toLowerCase();
                 const genero = (primeiroNome.endsWith('a') || primeiroNome.endsWith('as')) ? 'F' : 'M';
 
-                criarCard(foneLimpo, nome, valor, genero);
+                criarCard(foneLimpo, nome, valor, genero, index);
             }
         });
     }
 
-    function criarCard(fone, nome, valor, genero) {
+    function criarCard(fone, nome, valor, genero, id) {
         const listaDiv = document.getElementById('lista');
+        const card = document.createElement('div');
+        card.className = 'card-pessoa';
+        card.id = `card-${id}`;
+        
+        atualizarCardInterno(card, fone, nome, valor, genero);
+        
+        listaDiv.appendChild(card);
+    }
+
+    function atualizarCardInterno(cardElement, fone, nome, valor, genero) {
         const saudacao = genero === 'F' ? 'Sra.' : 'Sr.';
         const artigo = genero === 'F' ? 'sua' : 'seu';
 
@@ -202,19 +242,26 @@ Esta é a sua *última oportunidade de evitar a via judicial*.
 
 Atenciosamente, *RM EMPREENDIMENTOS | DEPARTAMENTO JURÍDICO*`;
 
-        // Link formatado para abrir o WhatsApp WEB diretamente
         const linkWebZap = `https://web.whatsapp.com/send?phone=55${fone}&text=${encodeURIComponent(mensagem)}`;
 
-        const card = document.createElement('div');
-        card.className = 'card-pessoa';
-        card.innerHTML = `
+        cardElement.innerHTML = `
             <div class="info-pessoa">
                 <b>${nome}</b>
                 <span>ID: ${fone} // DEBITO: ${valor}</span>
+                <div class="genero-selector">
+                    <button class="genero-btn ${genero === 'M' ? 'active' : ''}" onclick="mudarGenero(this, '${fone}', '${nome}', '${valor}', 'M')">MASC</button>
+                    <button class="genero-btn ${genero === 'F' ? 'active' : ''}" onclick="mudarGenero(this, '${fone}', '${nome}', '${valor}', 'F')">FEM</button>
+                </div>
             </div>
-            <a href="${linkWebZap}" target="_blank" class="btn-zap">Gerar Protocolo</a>
+            <div class="acoes">
+                <a href="${linkWebZap}" target="_blank" class="btn-zap">Gerar Protocolo</a>
+            </div>
         `;
-        listaDiv.appendChild(card);
+    }
+
+    function mudarGenero(btn, fone, nome, valor, novoGenero) {
+        const card = btn.closest('.card-pessoa');
+        atualizarCardInterno(card, fone, nome, valor, novoGenero);
     }
 </script>
 
