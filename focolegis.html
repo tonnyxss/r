@@ -131,12 +131,40 @@
             color: white;
         }
 
+        /* Classe para esconder os cartões adicionais */
+        .oculto {
+            display: none !important;
+        }
+
+        /* Botão Ver Mais */
+        .ver-mais-container {
+            text-align: center;
+            margin-top: 30px;
+            margin-bottom: 10px;
+        }
+        #btnVerMais {
+            background-color: #34495e;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        #btnVerMais:hover {
+            background-color: #2c3e50;
+            transform: translateY(-2px);
+        }
+
         .combo-section {
             background: linear-gradient(135deg, #2c3e50, #34495e);
             color: white;
             border-radius: 10px;
             padding: 40px;
-            margin-top: 60px;
+            margin-top: 40px;
             text-align: center;
             box-shadow: 0 8px 16px rgba(0,0,0,0.2);
         }
@@ -146,7 +174,6 @@
             margin-top: 0;
         }
         
-        /* Modificações de Preço no Combo */
         .combo-preco {
             font-size: 2.5em;
             font-weight: bold;
@@ -183,9 +210,7 @@
             transform: scale(1.05);
         }
 
-        /* =========================================
-           MODAL (GALERIA UNIFICADA)
-           ========================================= */
+        /* MODAL (GALERIA UNIFICADA) */
         .modal {
             display: none; 
             position: fixed;
@@ -252,7 +277,7 @@
             .seta-esq { left: 10px; }
             .seta-dir { right: 10px; }
             .fechar { top: -40px; right: 10px; }
-            .combo-preco { flex-direction: column; gap: 0px; } /* Ajuste pro celular */
+            .combo-preco { flex-direction: column; gap: 0px; }
         }
 
         .contador-imagem {
@@ -283,7 +308,7 @@
                 <div class="preco">R$ 10,00</div>
                 <div class="area-botoes">
                     <button class="btn-amostra" onclick="abrirAmostra()">👁️ Ver Amostra</button>
-                    <a href="https://pay.plataforma.com/etica" class="btn-comprar">Comprar Agora</a>
+                    <a href="#" class="btn-comprar">Comprar Agora</a>
                 </div>
             </div>
 
@@ -293,7 +318,7 @@
                 <div class="preco">R$ 10,00</div>
                 <div class="area-botoes">
                     <button class="btn-amostra" onclick="abrirAmostra()">👁️ Ver Amostra</button>
-                    <a href="https://pay.plataforma.com/penal" class="btn-comprar">Comprar Agora</a>
+                    <a href="#" class="btn-comprar">Comprar Agora</a>
                 </div>
             </div>
 
@@ -303,10 +328,84 @@
                 <div class="preco">R$ 10,00</div>
                 <div class="area-botoes">
                     <button class="btn-amostra" onclick="abrirAmostra()">👁️ Ver Amostra</button>
-                    <a href="https://pay.plataforma.com/civil" class="btn-comprar">Comprar Agora</a>
+                    <a href="#" class="btn-comprar">Comprar Agora</a>
                 </div>
             </div>
 
+            <div class="card">
+                <h3>Processo Penal</h3>
+                <p>Tabelas de prazos, inquérito e recursos organizados visualmente.</p>
+                <div class="preco">R$ 10,00</div>
+                <div class="area-botoes">
+                    <button class="btn-amostra" onclick="abrirAmostra()">👁️ Ver Amostra</button>
+                    <a href="#" class="btn-comprar">Comprar Agora</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Processo Civil</h3>
+                <p>O pesadelo dos prazos resolvido com tabelas e mnemônicos.</p>
+                <div class="preco">R$ 10,00</div>
+                <div class="area-botoes">
+                    <button class="btn-amostra" onclick="abrirAmostra()">👁️ Ver Amostra</button>
+                    <a href="#" class="btn-comprar">Comprar Agora</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Direito Constitucional</h3>
+                <p>Artigo 5º, remédios constitucionais e controle de constitucionalidade.</p>
+                <div class="preco">R$ 10,00</div>
+                <div class="area-botoes">
+                    <button class="btn-amostra" onclick="abrirAmostra()">👁️ Ver Amostra</button>
+                    <a href="#" class="btn-comprar">Comprar Agora</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Direito Administrativo</h3>
+                <p>Lei de Licitações, Improbidade e Agentes Públicos grifados.</p>
+                <div class="preco">R$ 10,00</div>
+                <div class="area-botoes">
+                    <button class="btn-amostra" onclick="abrirAmostra()">👁️ Ver Amostra</button>
+                    <a href="#" class="btn-comprar">Comprar Agora</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Direito do Trabalho</h3>
+                <p>CLT atualizada com as súmulas mais recorrentes nas provas.</p>
+                <div class="preco">R$ 10,00</div>
+                <div class="area-botoes">
+                    <button class="btn-amostra" onclick="abrirAmostra()">👁️ Ver Amostra</button>
+                    <a href="#" class="btn-comprar">Comprar Agora</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Processo do Trabalho</h3>
+                <p>Rito sumaríssimo, recursos e execução mapeados passo a passo.</p>
+                <div class="preco">R$ 10,00</div>
+                <div class="area-botoes">
+                    <button class="btn-amostra" onclick="abrirAmostra()">👁️ Ver Amostra</button>
+                    <a href="#" class="btn-comprar">Comprar Agora</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Direito Tributário</h3>
+                <p>CTN focado em impostos, taxas e limitações do poder de tributar.</p>
+                <div class="preco">R$ 10,00</div>
+                <div class="area-botoes">
+                    <button class="btn-amostra" onclick="abrirAmostra()">👁️ Ver Amostra</button>
+                    <a href="#" class="btn-comprar">Comprar Agora</a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="ver-mais-container">
+            <button id="btnVerMais" onclick="mostrarMaisMaterias()">VER MAIS MATÉRIAS ⬇️</button>
         </div>
 
         <div class="combo-section">
@@ -314,9 +413,9 @@
             <p>Leve todos os 10 resumos de Lei Seca Esquematizada acima e tenha o material completo para gabaritar a prova.</p>
             <div class="combo-preco">
                 <span class="preco-antigo">R$ 100,00</span>
-                <span class="preco-novo">Por R$ 50,00</span>
+                <span class="preco-novo">R$ 50,00</span>
             </div>
-            <a href="https://pay.plataforma.com/combo" class="btn-combo">🔥 QUERO O COMBO COMPLETO</a>
+            <a href="#" class="btn-combo">🔥 QUERO O COMBO COMPLETO</a>
         </div>
 
     </div>
@@ -338,7 +437,53 @@
     </div>
 
     <script>
-        // 1. LISTA ÚNICA DE AMOSTRAS
+        // ==========================================
+        // LÓGICA DO BOTÃO "VER MAIS" E LIMITES DE TELA
+        // ==========================================
+        const cartoes = document.querySelectorAll('.card');
+        const btnVerMais = document.getElementById('btnVerMais');
+        
+        // Define o limite inicial baseado no tamanho da tela (Celular: 3, PC: 6)
+        let cartoesVisiveis = window.innerWidth <= 768 ? 3 : 6;
+        
+        // Esconde os cartões que passam do limite ao carregar a página
+        function inicializarGrade() {
+            cartoes.forEach((cartao, index) => {
+                if (index >= cartoesVisiveis) {
+                    cartao.classList.add('oculto');
+                }
+            });
+            verificarBotao();
+        }
+
+        // Função ativada ao clicar no botão "VER MAIS"
+        function mostrarMaisMaterias() {
+            // Se for celular mostra +3, se for PC mostra +6 a cada clique
+            let incremento = window.innerWidth <= 768 ? 3 : 6;
+            cartoesVisiveis += incremento;
+            
+            cartoes.forEach((cartao, index) => {
+                if (index < cartoesVisiveis) {
+                    cartao.classList.remove('oculto');
+                }
+            });
+            verificarBotao();
+        }
+
+        // Remove o botão "VER MAIS" da tela se todas as matérias já estiverem visíveis
+        function verificarBotao() {
+            if (cartoesVisiveis >= cartoes.length) {
+                btnVerMais.style.display = 'none';
+            }
+        }
+
+        // Inicia a grade assim que o site carregar
+        document.addEventListener("DOMContentLoaded", inicializarGrade);
+
+
+        // ==========================================
+        // LÓGICA DA GALERIA DE AMOSTRAS
+        // ==========================================
         const amostrasGerais = [
             'https://via.placeholder.com/600x800/34495e/ffffff?text=Amostra+Padrao+Pagina+1',
             'https://via.placeholder.com/600x800/2c3e50/ffffff?text=Amostra+Padrao+Pagina+2'
@@ -346,7 +491,6 @@
 
         let indiceAtual = 0;
 
-        // Abrir Modal
         function abrirAmostra() {
             if (amostrasGerais.length === 0) return; 
             indiceAtual = 0;
@@ -354,15 +498,12 @@
             document.getElementById('modalAmostra').style.display = 'flex';
         }
 
-        // Fechar Modal
         function fecharAmostra() {
             document.getElementById('modalAmostra').style.display = 'none';
         }
 
-        // Navegar entre as fotos
         function mudarImagem(direcao) {
             indiceAtual += direcao;
-
             if (indiceAtual >= amostrasGerais.length) {
                 indiceAtual = 0;
             } else if (indiceAtual < 0) {
@@ -371,7 +512,6 @@
             atualizarTela();
         }
 
-        // Atualiza a imagem e contador
         function atualizarTela() {
             document.getElementById('imagemEmDestaque').src = amostrasGerais[indiceAtual];
             document.getElementById('contador').innerText = (indiceAtual + 1) + " / " + amostrasGerais.length;
@@ -384,14 +524,15 @@
             }
         }
 
-        // Fechar ao clicar fora da imagem
         document.getElementById('modalAmostra').addEventListener('click', function(e) {
             if (e.target === this) {
                 fecharAmostra();
             }
         });
 
-        // Rastreio Celular/PC
+        // ==========================================
+        // RASTREIO DE DISPOSITIVO (Celular ou PC)
+        // ==========================================
         document.addEventListener("DOMContentLoaded", function() {
             function detectarDispositivo() {
                 const userAgent = navigator.userAgent || navigator.vendor || window.opera;
