@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resumos Foco Legis - Lei Seca Esquematizada</title>
+    <style>
+        /* Estilos Gerais */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+        
+        header {
+            background-color: #1a252f;
+            color: #ffffff;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.2em;
+            color: #f1c40f; 
+        }
+        header p {
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 1.8em;
+            color: #2c3e50;
+        }
+
+        .grid-produtos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 25px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        .card-tag {
+            background-color: #e74c3c;
+            color: white;
+            font-size: 0.8em;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .card h3 {
+            margin: 10px 0;
+            color: #2c3e50;
+            font-size: 1.3em;
+        }
+        .card p {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+        .preco {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #27ae60;
+            margin-bottom: 15px;
+        }
+
+        .area-botoes {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-comprar {
+            background-color: #27ae60;
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            display: block;
+            transition: background-color 0.3s;
+        }
+        .btn-comprar:hover {
+            background-color: #219653;
+        }
+
+        .btn-amostra {
+            background-color: transparent;
+            color: #34495e;
+            border: 2px solid #34495e;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 1em;
+            width: 100%;
+        }
+        .btn-amostra:hover {
+            background-color: #34495e;
+            color: white;
+        }
+
+        .combo-section {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            border-radius: 10px;
+            padding: 40px;
+            margin-top: 60px;
+            text-align: center;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+        .combo-section h2 {
+            color: #f1c40f;
+            font-size: 2em;
+            margin-top: 0;
+        }
+        
+        /* Modificações de Preço no Combo */
+        .combo-preco {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+        .preco-antigo {
+            text-decoration: line-through;
+            text-decoration-color: #e74c3c;
+            text-decoration-thickness: 3px;
+            color: #95a5a6;
+            font-size: 0.6em;
+        }
+        .preco-novo {
+            color: #2ecc71;
+        }
+
+        .btn-combo {
+            background-color: #f1c40f;
+            color: #2c3e50;
+            text-decoration: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.2em;
+            display: inline-block;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        .btn-combo:hover {
+            background-color: #f39c12;
+            transform: scale(1.05);
+        }
+
+        /* =========================================
+           MODAL (GALERIA UNIFICADA)
+           ========================================= */
+        .modal {
+            display: none; 
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85); 
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .modal-content {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            max-width: 90%;
+            max-height: 80vh;
+        }
+
+        .modal-content img {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            object-fit: contain; 
+        }
+
+        .fechar {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 35px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .fechar:hover { color: #f1c40f; }
+
+        .seta {
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: auto;
+            padding: 16px;
+            color: white;
+            font-weight: bold;
+            font-size: 30px;
+            transition: 0.3s;
+            border-radius: 50%;
+            background-color: rgba(0,0,0,0.5);
+            user-select: none;
+        }
+        .seta:hover { background-color: rgba(0,0,0,0.8); color: #f1c40f; }
+        .seta-esq { left: -60px; }
+        .seta-dir { right: -60px; }
+
+        @media only screen and (max-width: 768px) {
+            .seta-esq { left: 10px; }
+            .seta-dir { right: 10px; }
+            .fechar { top: -40px; right: 10px; }
+            .combo-preco { flex-direction: column; gap: 0px; } /* Ajuste pro celular */
+        }
+
+        .contador-imagem {
+            color: white;
+            margin-top: 15px;
+            font-size: 1.1em;
+        }
+
+        footer { text-align: center; padding: 20px; color: #7f8c8d; margin-top: 40px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Foco Legis</h1>
+        <p>Acelere sua aprovação com resumos otimizados. Grifos nos prazos e palavras-chave.</p>
+    </header>
+
+    <div class="container">
+        <h2 class="section-title">Escolha sua matéria:</h2>
+
+        <div class="grid-produtos">
+            
+            <div class="card">
+                <span class="card-tag">Mais Vendido</span>
+                <h3>Ética Profissional</h3>
+                <p>Estatuto, Regulamento e Código de Ética grifados com foco na 1ª fase.</p>
+                <div class="preco">R$ 10,00</div>
+                <div class="area-botoes">
+                    <button class="btn-amostra" onclick="abrirAmostra()">👁️ Ver Amostra</button>
+                    <a href="https://pay.plataforma.com/etica" class="btn-comprar">Comprar Agora</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Direito Penal</h3>
+                <p>Parte Geral e Especial esquematizadas, incluindo excludentes de ilicitude.</p>
+                <div class="preco">R$ 10,00</div>
+                <div class="area-botoes">
+                    <button class="btn-amostra" onclick="abrirAmostra()">👁️ Ver Amostra</button>
+                    <a href="https://pay.plataforma.com/penal" class="btn-comprar">Comprar Agora</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Direito Civil</h3>
+                <p>Os pontos mais cobrados da Parte Geral, Obrigações e Contratos.</p>
+                <div class="preco">R$ 10,00</div>
+                <div class="area-botoes">
+                    <button class="btn-amostra" onclick="abrirAmostra()">👁️ Ver Amostra</button>
+                    <a href="https://pay.plataforma.com/civil" class="btn-comprar">Comprar Agora</a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="combo-section">
+            <h2>OFERTA ESPECIAL: Combo OAB Completo</h2>
+            <p>Leve todos os 10 resumos de Lei Seca Esquematizada acima e tenha o material completo para gabaritar a prova.</p>
+            <div class="combo-preco">
+                <span class="preco-antigo">R$ 100,00</span>
+                <span class="preco-novo">Por R$ 50,00</span>
+            </div>
+            <a href="https://pay.plataforma.com/combo" class="btn-combo">🔥 QUERO O COMBO COMPLETO</a>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Foco Legis. Pagamento 100% Seguro. Acesso Imediato via E-mail.</p>
+    </footer>
+
+    <div id="modalAmostra" class="modal">
+        <div class="modal-content">
+            <span class="fechar" onclick="fecharAmostra()">&times;</span>
+            <span class="seta seta-esq" onclick="mudarImagem(-1)">&#10094;</span>
+            
+            <img id="imagemEmDestaque" src="" alt="Amostra do Resumo">
+            
+            <span class="seta seta-dir" onclick="mudarImagem(1)">&#10095;</span>
+        </div>
+        <div id="contador" class="contador-imagem">1 / 1</div>
+    </div>
+
+    <script>
+        // 1. LISTA ÚNICA DE AMOSTRAS
+        const amostrasGerais = [
+            'https://via.placeholder.com/600x800/34495e/ffffff?text=Amostra+Padrao+Pagina+1',
+            'https://via.placeholder.com/600x800/2c3e50/ffffff?text=Amostra+Padrao+Pagina+2'
+        ];
+
+        let indiceAtual = 0;
+
+        // Abrir Modal
+        function abrirAmostra() {
+            if (amostrasGerais.length === 0) return; 
+            indiceAtual = 0;
+            atualizarTela();
+            document.getElementById('modalAmostra').style.display = 'flex';
+        }
+
+        // Fechar Modal
+        function fecharAmostra() {
+            document.getElementById('modalAmostra').style.display = 'none';
+        }
+
+        // Navegar entre as fotos
+        function mudarImagem(direcao) {
+            indiceAtual += direcao;
+
+            if (indiceAtual >= amostrasGerais.length) {
+                indiceAtual = 0;
+            } else if (indiceAtual < 0) {
+                indiceAtual = amostrasGerais.length - 1;
+            }
+            atualizarTela();
+        }
+
+        // Atualiza a imagem e contador
+        function atualizarTela() {
+            document.getElementById('imagemEmDestaque').src = amostrasGerais[indiceAtual];
+            document.getElementById('contador').innerText = (indiceAtual + 1) + " / " + amostrasGerais.length;
+            
+            const setas = document.querySelectorAll('.seta');
+            if(amostrasGerais.length <= 1) {
+                setas.forEach(seta => seta.style.display = 'none');
+            } else {
+                setas.forEach(seta => seta.style.display = 'block');
+            }
+        }
+
+        // Fechar ao clicar fora da imagem
+        document.getElementById('modalAmostra').addEventListener('click', function(e) {
+            if (e.target === this) {
+                fecharAmostra();
+            }
+        });
+
+        // Rastreio Celular/PC
+        document.addEventListener("DOMContentLoaded", function() {
+            function detectarDispositivo() {
+                const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+                if (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase())) {
+                    return 'celular';
+                }
+                return 'pc';
+            }
+            const dispositivo = detectarDispositivo();
+            const botoesCompra = document.querySelectorAll('.btn-comprar, .btn-combo');
+            
+            botoesCompra.forEach(function(botao) {
+                let linkOriginal = botao.getAttribute('href');
+                if (linkOriginal && linkOriginal !== "#") {
+                    let separador = linkOriginal.includes('?') ? '&' : '?';
+                    botao.setAttribute('href', linkOriginal + separador + "src=" + dispositivo);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
