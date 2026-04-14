@@ -96,7 +96,7 @@
             </div>
             <div class="range-group">
                 <label>Espaçamento da Logo</label>
-                <input type="range" min="0" max="200" value="10" oninput="document.querySelector('.logo-area').style.marginBottom = this.value + 'px'">
+                <input type="range" min="-100" max="200" value="10" oninput="document.querySelector('.logo-area').style.marginBottom = this.value + 'px'">
             </div>
         </div>
 
@@ -141,30 +141,24 @@
     </div>
 
     <script>
-        // NOVO: Função para alterar o tamanho apenas do texto SELECIONADO
+        // Função para alterar o tamanho apenas do texto SELECIONADO
         function forceFontSize(pxSize) {
             const selection = window.getSelection();
-            if (!selection.rangeCount) return; // Se nada estiver selecionado, não faz nada
+            if (!selection.rangeCount) return; 
             
-            // Verifica se a seleção está dentro do editor de texto
             const editor = document.getElementById('text-editor');
             if (!editor.contains(selection.anchorNode)) return;
 
             const range = selection.getRangeAt(0);
             
-            // Se o usuário apenas clicou (não selecionou texto), não fazemos nada 
-            // (evita criar spans vazios)
             if (selection.isCollapsed) return;
 
-            // Cria um "embrulho" (span) para o texto selecionado e aplica o tamanho nele
             const span = document.createElement("span");
             span.style.fontSize = pxSize;
             
-            // Extrai o texto, coloca no span e devolve para o documento
             span.appendChild(range.extractContents());
             range.insertNode(span);
             
-            // Mantém o texto selecionado após a mudança para continuar arrastando a barra
             selection.removeAllRanges();
             const newRange = document.createRange();
             newRange.selectNodeContents(span);
