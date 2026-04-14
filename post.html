@@ -2,90 +2,80 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>FocoLegis Studio - v17</title>
+    <title>FocoLegis Studio</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        /* CSS com comentários explicativos */
+        /* Base do site */
         body { font-family: 'Segoe UI', sans-serif; background: #1a1a1a; display: flex; flex-direction: column; align-items: center; padding: 20px; color: white; margin: 0; }
         
-        /* Barra de Emojis Lateral */
-        .emoji-sidebar { position: fixed; left: 20px; top: 50%; transform: translateY(-50%); background: #fff; padding: 15px; border-radius: 12px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); max-height: 80vh; overflow-y: auto; color: #333; z-index: 100; }
-        .emoji-sidebar h4 { margin: 0 0 10px 0; font-size: 12px; text-align: center; border-bottom: 1px solid #eee; padding-bottom: 5px; }
-        .emoji-item { font-size: 24px; cursor: pointer; padding: 5px; text-align: center; border-radius: 5px; transition: background 0.2s; }
-        .emoji-item:hover { background: #f0f0f0; transform: scale(1.1); }
+        /* Barra Lateral de Emojis */
+        .emoji-sidebar { position: fixed; left: 20px; top: 50%; transform: translateY(-50%); background: #fff; padding: 15px; border-radius: 12px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); color: #333; z-index: 100; }
+        .emoji-item { font-size: 24px; cursor: pointer; text-align: center; padding: 5px; border-radius: 5px; }
+        .emoji-item:hover { background: #eee; }
 
         /* Toolbar Superior */
         .toolbar { background: #fff; padding: 20px; border-radius: 12px; margin-bottom: 25px; display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; color: #333; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        .control-group { display: flex; flex-direction: column; gap: 8px; font-size: 12px; font-weight: bold; border-right: 1px solid #ddd; padding-right: 20px; min-width: 160px; }
+        .control-group { display: flex; flex-direction: column; gap: 8px; font-size: 11px; font-weight: bold; border-right: 1px solid #ddd; padding-right: 20px; }
         .control-group:last-child { border-right: none; }
-        .btn-tool { padding: 5px 10px; cursor: pointer; background: #eee; border: 1px solid #ccc; border-radius: 4px; font-weight: bold; }
-        .btn-tool:hover { background: #ddd; }
-
-        /* Área do Post (800x800) */
-        #post-area { width: 800px; height: 800px; background: white; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 10px; box-sizing: border-box; }
-        .logo-area { width: 100%; display: flex; justify-content: center; margin-bottom: -15px; } /* Sobe o texto para perto da logo */
-        .logo-area img { max-width: 170px; height: auto; }
         
-        /* Editor de Texto */
-        #text-editor { width: 100%; flex-grow: 1; outline: none; font-size: 30px; color: #000; z-index: 5; display: block; text-align: center; padding: 0px 15px; line-height: 1.2; }
+        /* Estilo das Réguas */
+        .range-group { display: flex; flex-direction: column; gap: 2px; }
+        .range-group label { font-size: 9px; color: #666; }
 
-        /* Rodapé */
-        .footer-area { display: flex; align-items: center; justify-content: center; gap: 10px; z-index: 5; width: 100%; padding-bottom: 5px; margin-top: auto; }
+        .btn-tool { padding: 5px 10px; cursor: pointer; background: #eee; border: 1px solid #ccc; border-radius: 4px; font-weight: bold; }
+
+        /* ÁREA DO POST 800x800 */
+        #post-area { 
+            width: 800px; height: 800px; 
+            background: white; position: relative; 
+            overflow: hidden; display: flex; 
+            flex-direction: column; align-items: center; 
+            justify-content: flex-start; 
+            box-sizing: border-box;
+            /* Valores iniciais de margem */
+            padding-top: 20px;
+            padding-bottom: 20px;
+            padding-left: 40px;
+            padding-right: 40px;
+        }
+
+        .logo-area { width: 100%; display: flex; justify-content: center; margin-bottom: 10px; }
+        .logo-area img { max-width: 170px; height: auto; pointer-events: none; }
+        
+        #text-editor { 
+            width: 100%; flex-grow: 1; outline: none; 
+            font-size: 32px; color: #000; z-index: 5; 
+            text-align: center; line-height: 1.3;
+        }
+
+        .footer-area { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; margin-top: auto; padding-bottom: 10px; }
         .social-icons { display: flex; gap: 8px; }
-        .social-icons img { width: 32px; height: 32px; object-fit: contain; }
+        .social-icons img { width: 32px; height: 32px; }
         .social-tag { font-weight: 800; font-size: 22px; color: #333; }
 
-        /* Botão de Salvar */
         .btn-save { background: #27ae60 !important; color: white !important; cursor: pointer; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div class="emoji-sidebar">
-        <h4>Símbolos</h4>
         <div class="emoji-item" onclick="copyEmoji('⚖️')">⚖️</div>
         <div class="emoji-item" onclick="copyEmoji('📖')">📖</div>
         <div class="emoji-item" onclick="copyEmoji('🚨')">🚨</div>
-        <div class="emoji-item" onclick="copyEmoji('💡')">💡</div>
         <div class="emoji-item" onclick="copyEmoji('🎯')">🎯</div>
         <div class="emoji-item" onclick="copyEmoji('✅')">✅</div>
-        <div class="emoji-item" onclick="copyEmoji('⚠️')">⚠️</div>
         <div class="emoji-item" onclick="copyEmoji('➡️')">➡️</div>
-        <div class="emoji-item" onclick="copyEmoji('🔥')">🔥</div>
     </div>
 
     <div class="toolbar">
         <div class="control-group">
-            Estilos
+            Formatação
             <div>
                 <button class="btn-tool" onmousedown="event.preventDefault(); document.execCommand('bold')">B</button>
-                <button class="btn-tool" onmousedown="event.preventDefault(); document.execCommand('italic')"><i>I</i></button>
-                <button class="btn-tool" onmousedown="event.preventDefault(); document.execCommand('underline')"><u>S</u></button>
-            </div>
-        </div>
-
-        <div class="control-group">
-            Tamanho e Cor
-            <div>
-                <select class="btn-tool" onchange="changeFontSize(this.value)">
-                    <option value="16px">1</option>
-                    <option value="22px">2</option>
-                    <option value="28px">3</option>
-                    <option value="36px">4</option>
-                    <option value="42px" selected>5</option>
-                    <option value="54px">6</option>
-                    <option value="70px">7</option>
-                    <option value="90px">8</option>
-                    <option value="110px">9</option>
-                    <option value="130px">10</option>
-                </select>
+                <button class="btn-tool" onmousedown="event.preventDefault(); document.execCommand('italic')">I</button>
                 <input type="color" oninput="document.execCommand('foreColor', false, this.value)">
             </div>
-        </div>
-
-        <div class="control-group">
-            Marca-Texto
-            <div style="display:flex; gap:5px;">
+            <div style="display:flex; gap:3px;">
                 <button class="btn-tool" style="background:#b2fab4" onmousedown="event.preventDefault(); document.execCommand('hiliteColor', false, '#b2fab4')"> </button>
                 <button class="btn-tool" style="background:#97ecf0" onmousedown="event.preventDefault(); document.execCommand('hiliteColor', false, '#97ecf0')"> </button>
                 <button class="btn-tool" style="background:#c59fcc" onmousedown="event.preventDefault(); document.execCommand('hiliteColor', false, '#c59fcc')"> </button>
@@ -95,20 +85,42 @@
         </div>
 
         <div class="control-group">
-            Alinhamento
-            <div>
-                <button class="btn-tool" onmousedown="event.preventDefault(); document.execCommand('justifyLeft')">⬅ Esq</button>
-                <button class="btn-tool" onmousedown="event.preventDefault(); document.execCommand('justifyCenter')">⏺ Centro</button>
+            Tamanho da Fonte (1-10)
+            <select class="btn-tool" onchange="forceFontSize(this.value)">
+                <option value="14px">1</option>
+                <option value="18px">2</option>
+                <option value="24px">3</option>
+                <option value="32px">4</option>
+                <option value="40px" selected>5</option>
+                <option value="52px">6</option>
+                <option value="68px">7</option>
+                <option value="85px">8</option>
+                <option value="110px">9</option>
+                <option value="140px">10</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            Réguas (Margens)
+            <div class="range-group">
+                <label>Topo</label>
+                <input type="range" min="0" max="250" value="20" oninput="changeMargin('top', this.value)">
+            </div>
+            <div class="range-group">
+                <label>Lados</label>
+                <input type="range" min="0" max="250" value="40" oninput="changeMargin('sides', this.value)">
+            </div>
+            <div class="range-group">
+                <label>Base</label>
+                <input type="range" min="0" max="200" value="20" oninput="changeMargin('bottom', this.value)">
             </div>
         </div>
 
         <div class="control-group">
             Ações
-            <div style="display:flex; gap:5px;">
-                <input type="file" id="bgInput" hidden onchange="updateBgImg(event)">
-                <button class="btn-tool" onclick="document.getElementById('bgInput').click()">Mudar Fundo</button>
-                <button class="btn-save" onclick="savePng()">Download .PNG</button>
-            </div>
+            <button class="btn-tool" onclick="document.getElementById('bgInput').click()">Mudar Fundo</button>
+            <input type="file" id="bgInput" hidden onchange="updateBgImg(event)">
+            <button class="btn-save" onclick="handleSave()">Salvar PNG</button>
         </div>
     </div>
 
@@ -117,33 +129,47 @@
             <img src="https://i.imgur.com/RKYXdCJ.png" alt="Logo">
         </div>
         <div id="text-editor" contenteditable="true">
-            TEXTO AQUI!
+            90% ERRA ISSO NAS PROVAS!
         </div>
         <div class="footer-area">
             <div class="social-icons">
-                <img id="icon-insta" src="https://i.imgur.com/GSpLtVa.png" alt="">
-                <img id="icon-x" src="https://i.imgur.com/jkajxFs.png" alt="">
+                <img src="https://i.imgur.com/GSpLtVa.png" alt="Insta">
+                <img src="https://i.imgur.com/jkajxFs.png" alt="X">
             </div>
             <div class="social-tag">@FocoLegis</div>
         </div>
     </div>
 
     <script>
-        function copyEmoji(emoji) {
-            navigator.clipboard.writeText(emoji);
+        // CORREÇÃO: Função de margem que realmente funciona
+        function changeMargin(type, val) {
+            const post = document.getElementById('post-area');
+            if (type === 'top') post.style.paddingTop = val + "px";
+            if (type === 'bottom') post.style.paddingBottom = val + "px";
+            if (type === 'sides') {
+                post.style.paddingLeft = val + "px";
+                post.style.paddingRight = val + "px";
+            }
         }
 
-        function changeFontSize(size) {
-            document.execCommand('styleWithCSS', false, true);
+        // CORREÇÃO: Função de fonte 1-10 funcional
+        function forceFontSize(pxSize) {
             const selection = window.getSelection();
-            if (selection.rangeCount > 0) {
-                document.execCommand('fontSize', false, '7');
-                const fonts = document.getElementById('text-editor').querySelectorAll('font[size="7"]');
-                fonts.forEach(f => {
-                    f.removeAttribute('size');
-                    f.style.fontSize = size;
-                });
+            if (!selection.rangeCount) return;
+            
+            const range = selection.getRangeAt(0);
+            const span = document.createElement("span");
+            span.style.fontSize = pxSize;
+            span.style.lineHeight = "1.1";
+            
+            if (!selection.isCollapsed) {
+                span.appendChild(range.extractContents());
+                range.insertNode(span);
             }
+        }
+
+        function copyEmoji(emoji) {
+            navigator.clipboard.writeText(emoji);
         }
 
         function updateBgImg(e) {
@@ -157,26 +183,29 @@
             reader.readAsDataURL(e.target.files[0]);
         }
 
-        // Função de download robusta
-        function savePng() {
+        // CORREÇÃO: Função de salvar com tratamento de erro e delay
+        async function handleSave() {
             const post = document.getElementById('post-area');
+            const btn = document.querySelector('.btn-save');
             
-            // Força o carregamento visual antes do print
+            btn.innerText = "Processando...";
+            
+            // Pequeno delay para o navegador renderizar as margens
+            await new Promise(r => setTimeout(r, 500));
+
             html2canvas(post, {
-                useCORS: true, 
-                allowTaint: true,
-                scale: 2,
-                logging: true,
+                useCORS: true,
+                scale: 2, // Alta qualidade
                 backgroundColor: "#ffffff"
             }).then(canvas => {
-                const image = canvas.toDataURL("image/png");
                 const link = document.createElement('a');
-                link.download = 'post-focolegis-' + Date.now() + '.png';
-                link.href = image;
+                link.download = 'focolegis-' + Date.now() + '.png';
+                link.href = canvas.toDataURL("image/png");
                 link.click();
+                btn.innerText = "Salvar PNG";
             }).catch(err => {
-                console.error("Erro ao gerar imagem: ", err);
-                alert("Erro ao gerar imagem. Tente usar o navegador Chrome.");
+                alert("Erro ao salvar. Tente usar o Chrome.");
+                btn.innerText = "Salvar PNG";
             });
         }
     </script>
