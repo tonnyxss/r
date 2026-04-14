@@ -85,19 +85,19 @@
         </div>
 
         <div class="control-group">
-            Tamanho da Fonte (1-10)
-            <select class="btn-tool" onchange="forceFontSize(this.value)">
-                <option value="14px">1</option>
-                <option value="18px">2</option>
-                <option value="24px">3</option>
-                <option value="32px">4</option>
-                <option value="40px" selected>5</option>
-                <option value="52px">6</option>
-                <option value="68px">7</option>
-                <option value="85px">8</option>
-                <option value="110px">9</option>
-                <option value="140px">10</option>
-            </select>
+            Textos e Logo
+            <div class="range-group">
+                <label>Tamanho da Fonte</label>
+                <input type="range" min="16" max="150" value="32" oninput="document.getElementById('text-editor').style.fontSize = this.value + 'px'">
+            </div>
+            <div class="range-group">
+                <label>Espaçamento entre Linhas</label>
+                <input type="range" min="0.8" max="3" step="0.1" value="1.3" oninput="document.getElementById('text-editor').style.lineHeight = this.value">
+            </div>
+            <div class="range-group">
+                <label>Espaçamento da Logo</label>
+                <input type="range" min="0" max="200" value="10" oninput="document.querySelector('.logo-area').style.marginBottom = this.value + 'px'">
+            </div>
         </div>
 
         <div class="control-group">
@@ -141,7 +141,6 @@
     </div>
 
     <script>
-        // CORREÇÃO: Função de margem que realmente funciona
         function changeMargin(type, val) {
             const post = document.getElementById('post-area');
             if (type === 'top') post.style.paddingTop = val + "px";
@@ -149,22 +148,6 @@
             if (type === 'sides') {
                 post.style.paddingLeft = val + "px";
                 post.style.paddingRight = val + "px";
-            }
-        }
-
-        // CORREÇÃO: Função de fonte 1-10 funcional
-        function forceFontSize(pxSize) {
-            const selection = window.getSelection();
-            if (!selection.rangeCount) return;
-            
-            const range = selection.getRangeAt(0);
-            const span = document.createElement("span");
-            span.style.fontSize = pxSize;
-            span.style.lineHeight = "1.1";
-            
-            if (!selection.isCollapsed) {
-                span.appendChild(range.extractContents());
-                range.insertNode(span);
             }
         }
 
@@ -183,7 +166,6 @@
             reader.readAsDataURL(e.target.files[0]);
         }
 
-        // CORREÇÃO: Função de salvar com tratamento de erro e delay
         async function handleSave() {
             const post = document.getElementById('post-area');
             const btn = document.querySelector('.btn-save');
