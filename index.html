@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Foco Legis - Lei Seca Comentada e Esquematizada!</title>
     <style>
-        /* ==================== ESTILOS GERAIS (mantidos) ==================== */
+        /* ==================== ESTILOS GERAIS (mantidos iguais) ==================== */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
@@ -13,7 +13,7 @@
             background-color: #f4f7f6;
             color: #333;
         }
-       
+      
         header {
             background-color: #1a252f;
             color: #ffffff;
@@ -60,7 +60,7 @@
             transform: translateY(-5px);
             box-shadow: 0 6px 12px rgba(0,0,0,0.15);
         }
-       
+      
         .card-tag {
             background-color: #e74c3c;
             color: white;
@@ -71,7 +71,6 @@
             margin-bottom: 15px;
             font-weight: bold;
         }
-
         .card-img-container {
             width: 160px;
             height: 160px;
@@ -93,7 +92,6 @@
         .card:hover .card-img-container img {
             transform: scale(1.05);
         }
-
         .card h3 {
             margin: 10px 0;
             color: #2c3e50;
@@ -146,66 +144,10 @@
             color: white;
         }
 
-        /* ==================== NOVO MODAL PARA PDF ==================== */
-        .modal-pdf {
-            display: none;
-            position: fixed;
-            z-index: 9999;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
-            align-items: center;
-            justify-content: center;
-        }
-        .modal-pdf-content {
-            background: #fff;
-            width: 90%;
-            max-width: 1100px;
-            height: 92vh;
-            border-radius: 10px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-        }
-        .modal-pdf-header {
-            background: #1a252f;
-            color: white;
-            padding: 12px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .modal-pdf-header h3 {
-            margin: 0;
-            font-size: 1.3em;
-        }
-        .btn-fechar-pdf {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 28px;
-            cursor: pointer;
-            padding: 0 10px;
-        }
-        .pdf-container {
-            flex: 1;
-            background: #f8f9fa;
-            overflow: hidden;
-        }
-        .pdf-container iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        /* Estilos originais que ainda são usados */
         .oculto { display: none !important; }
         footer { text-align: center; padding: 20px; color: #7f8c8d; margin-top: 40px; }
-        
-        /* Mantive o WhatsApp */
+       
+        /* WhatsApp */
         .container-whatsapp {
             position: fixed;
             bottom: 20px;
@@ -262,8 +204,12 @@
                 <p>Parte Geral e Especial esquematizadas e comentadas.</p>
                 <div class="preco">R$ 19,99</div>
                 <div class="area-botoes">
-                    <button class="btn-amostra" onclick="abrirAmostraPDF()">👁️ Ver Amostra</button>
-                    <a href="https://pay.hotmart.com/B105246198A" target="_blank" class="btn-comprar">Comprar Agora</a>
+                    <button class="btn-amostra" onclick="baixarAmostraPDF()">
+                        👁️ Ver Amostra (PDF)
+                    </button>
+                    <a href="https://pay.hotmart.com/B105246198A" target="_blank" class="btn-comprar">
+                        Comprar Agora
+                    </a>
                 </div>
             </div>
         </div>
@@ -273,21 +219,8 @@
         <p>&copy; 2026 Foco Legis. Pagamento 100% Seguro. Acesso Imediato via E-mail.</p>
     </footer>
 
-    <!-- ====================== MODAL PDF ====================== -->
-    <div id="modalPDF" class="modal-pdf">
-        <div class="modal-pdf-content">
-            <div class="modal-pdf-header">
-                <h3>Amostra - Direito Penal Completo (2026)</h3>
-                <button class="btn-fechar-pdf" onclick="fecharAmostraPDF()">✕</button>
-            </div>
-            <div class="pdf-container">
-                <iframe id="pdfViewer" src="" frameborder="0"></iframe>
-            </div>
-        </div>
-    </div>
-
     <!-- WhatsApp -->
-    <a href="https://wa.me/5522998223640?text=Ol%C3%A1%2C%20estou%20com%20d%C3%BAvida%20sobre%20uma%20mat%C3%A9ria%2Fresumo!" 
+    <a href="https://wa.me/5522998223640?text=Ol%C3%A1%2C%20estou%20com%20d%C3%BAvida%20sobre%20uma%20mat%C3%A9ria%2Fresumo!"
        class="container-whatsapp" target="_blank" title="Fale comigo no WhatsApp">
         <div class="mensagem-whatsapp">DÚVIDA? ENTRE EM CONTATO!</div>
         <div class="btn-whatsapp-fixo">
@@ -296,44 +229,23 @@
     </a>
 
     <script>
-        // ====================== FUNÇÃO PARA ABRIR PDF ======================
-        function abrirAmostraPDF() {
-            const modal = document.getElementById('modalPDF');
-            const iframe = document.getElementById('pdfViewer');
+        // ====================== DOWNLOAD AUTOMÁTICO DO PDF ======================
+        function baixarAmostraPDF() {
+            const urlPDF = "https://www.focolegis.com/FocoLegis%20-%20AMOSTRA%20-%20Direito%20Penal.pdf";
             
-            // <<< MUDE AQUI O LINK DO SEU PDF >>>
-            const urlPDF = "https://www.focolegis.com/FocoLegis%20-%20AMOSTRA%20-%20Direito%20Penal.pdf";  
-            // Exemplo: "amostra.pdf"  ou  "https://drive.google.com/file/d/XXXX/view" (melhor usar link direto)
-
-            iframe.src = urlPDF;
-            modal.style.display = "flex";
-            document.body.style.overflow = "hidden";   // bloqueia rolagem da página
+            // Cria um link temporário invisível
+            const link = document.createElement('a');
+            link.href = urlPDF;
+            link.download = "Amostra - Direito Penal Completo (Foco Legis).pdf"; // Nome que vai aparecer no download
+            link.target = "_blank";        // Abre em nova guia (caso precise)
+            link.style.display = 'none';   // Esconde o link
+            
+            document.body.appendChild(link);
+            link.click();                  // Simula o clique (inicia o download)
+            document.body.removeChild(link); // Remove o link após o download
         }
 
-        function fecharAmostraPDF() {
-            const modal = document.getElementById('modalPDF');
-            const iframe = document.getElementById('pdfViewer');
-            
-            modal.style.display = "none";
-            iframe.src = "";                       // limpa o PDF para economizar memória
-            document.body.style.overflow = "auto";
-        }
-
-        // Fechar com tecla ESC
-        document.addEventListener('keydown', function(e) {
-            if (e.key === "Escape") {
-                fecharAmostraPDF();
-            }
-        });
-
-        // Fechar clicando fora do modal
-        document.getElementById('modalPDF').addEventListener('click', function(e) {
-            if (e.target === this) {
-                fecharAmostraPDF();
-            }
-        });
-
-        // Mantive o resto do seu JavaScript (ver mais, rastreio de dispositivo, etc.)
+        // ====================== JAVASCRIPT ORIGINAL MANTIDO ======================
         const cartoes = document.querySelectorAll('.card');
         let cartoesVisiveis = window.innerWidth <= 768 ? 10 : 20;
 
@@ -346,7 +258,7 @@
         }
         document.addEventListener("DOMContentLoaded", inicializarGrade);
 
-        // Rastreio de dispositivo (mantido)
+        // Rastreio de dispositivo
         document.addEventListener("DOMContentLoaded", function() {
             function detectarDispositivo() {
                 const userAgent = navigator.userAgent || navigator.vendor || window.opera;
@@ -357,7 +269,7 @@
             }
             const dispositivo = detectarDispositivo();
             const botoesCompra = document.querySelectorAll('.btn-comprar');
-           
+          
             botoesCompra.forEach(function(botao) {
                 let linkOriginal = botao.getAttribute('href');
                 if (linkOriginal && linkOriginal !== "#") {
