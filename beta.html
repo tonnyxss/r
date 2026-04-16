@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foco Legis - Lei Seca Comentada e Esquematizada!</title>
+    <style>
+        /* Estilos Gerais */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+        
+        header {
+            background-color: #1a252f;
+            color: #ffffff;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.2em;
+            color: #f1c40f; 
+        }
+        header p {
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 1.8em;
+            color: #2c3e50;
+        }
+
+        .grid-produtos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 25px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        .card-tag {
+            background-color: #e74c3c;
+            color: white;
+            font-size: 0.8em;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        /* ==========================================================================
+           NOVO: ESTILOS DA IMAGEM DO PRODUTO (160x160)
+           ========================================================================== */
+        
+        .card-img-container {
+            /* width e height cravam o tamanho da caixa de imagem em 160x160 pixels */
+            width: 160px;
+            height: 160px;
+            
+            /* margin: 0 auto centraliza a caixa no meio do cartão. O 15px dá um espaço para o título abaixo */
+            margin: 0 auto 15px auto; 
+            
+            /* overflow: hidden corta qualquer parte da imagem que tente vazar para fora dos 160px */
+            overflow: hidden; 
+            
+            /* border-radius arredonda as pontinhas da caixa da imagem, deixando mais moderno */
+            border-radius: 8px; 
+            
+            /* display, justify-content e align-items garantem que a imagem fique perfeitamente centralizada */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            
+            /* background-color coloca um fundo cinza bem clarinho caso a imagem demore a carregar ou seja transparente */
+            background-color: #ecf0f1; 
+            
+            /* box-shadow coloca uma sombrinha de leve só ao redor da imagem para destacá-content: ''; */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .card-img-container img {
+            /* Força a imagem a preencher 100% da largura e da altura do container de 160px criado acima */
+            width: 100%;
+            height: 100%;
+            
+            /* object-fit: cover é o SEGREDO mágico: ele faz a imagem preencher o quadrado inteiro SEM distorcer ou amassar a foto */
+            object-fit: cover; 
+            
+            /* transition cria um efeitinho suave de 0.3 segundos, preparando para o efeito de zoom abaixo */
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover .card-img-container img {
+            /* Quando o mouse passa por cima do cartão todo (.card:hover), a imagem dá um leve zoom de 5% (scale 1.05) */
+            transform: scale(1.05);
+        }
+
+        /* ==========================================================================
+           FIM DOS ESTILOS DA IMAGEM
+           ========================================================================== */
+
+        .card h3 {
+            margin: 10px 0;
+            color: #2c3e50;
+            font-size: 1.3em;
+        }
+        .card p {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+        .preco {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #27ae60;
+            margin-bottom: 15px;
+        }
+
+        .area-botoes {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-comprar {
+            background-color: #27ae60;
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            display: block;
+            transition: background-color 0.3s;
+        }
+        .btn-comprar:hover {
+            background-color: #219653;
+        }
+
+        .btn-amostra {
+            background-color: transparent;
+            color: #34495e;
+            border: 2px solid #34495e;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 1em;
+            width: 100%;
+        }
+        .btn-amostra:hover {
+            background-color: #34495e;
+            color: white;
+        }
+
+        .oculto {
+            display: none !important;
+        }
+
+        .ver-mais-container {
+            text-align: center;
+            margin-top: 30px;
+            margin-bottom: 10px;
+        }
+        #btnVerMais {
+            background-color: #34495e;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        #btnVerMais:hover {
+            background-color: #2c3e50;
+            transform: translateY(-2px);
+        }
+
+        .combo-section {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            border-radius: 10px;
+            padding: 40px;
+            margin-top: 40px;
+            text-align: center;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+        .combo-section h2 {
+            color: #f1c40f;
+            font-size: 2em;
+            margin-top: 0;
+        }
+        
+        .combo-preco {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+        .preco-antigo {
+            text-decoration: line-through;
+            text-decoration-color: #e74c3c;
+            text-decoration-thickness: 3px;
+            color: #95a5a6;
+            font-size: 0.6em;
+        }
+        .preco-novo {
+            color: #2ecc71;
+        }
+
+        .btn-combo {
+            background-color: #f1c40f;
+            color: #2c3e50;
+            text-decoration: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.2em;
+            display: inline-block;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        .btn-combo:hover {
+            background-color: #f39c12;
+            transform: scale(1.05);
+        }
+
+        /* MODAL (GALERIA UNIFICADA) */
+        .modal {
+            display: none; 
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85); 
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .modal-content {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            max-width: 90%;
+            max-height: 80vh;
+        }
+
+        .modal-content img {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            object-fit: contain; 
+        }
+
+        .fechar {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 35px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .fechar:hover { color: #f1c40f; }
+
+        .seta {
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: auto;
+            padding: 16px;
+            color: white;
+            font-weight: bold;
+            font-size: 30px;
+            transition: 0.3s;
+            border-radius: 50%;
+            background-color: rgba(0,0,0,0.5);
+            user-select: none;
+        }
+        .seta:hover { background-color: rgba(0,0,0,0.8); color: #f1c40f; }
+        .seta-esq { left: -60px; }
+        .seta-dir { right: -60px; }
+
+        .contador-imagem {
+            color: white;
+            margin-top: 15px;
+            font-size: 1.1em;
+        }
+
+        /* --- ESTILOS DO BOTÃO DO WHATSAPP COM MENSAGEM --- */
+        .container-whatsapp {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 1000;
+            text-decoration: none;
+        }
+
+        .mensagem-whatsapp {
+            background-color: #ffffff;
+            color: #2c3e50;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .mensagem-whatsapp::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -8px;
+            transform: translateY(-50%);
+            border-width: 8px 0 8px 8px;
+            border-style: solid;
+            border-color: transparent transparent transparent #ffffff;
+        }
+
+        .btn-whatsapp-fixo {
+            width: 60px;
+            height: 60px;
+            background-color: #25d366;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+        }
+
+        .btn-whatsapp-fixo img {
+            width: 35px;
+            height: 35px;
+        }
+
+        .container-whatsapp:hover .btn-whatsapp-fixo {
+            transform: scale(1.1);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.4);
+            background-color: #20b858;
+        }
+        
+        .container-whatsapp:hover .mensagem-whatsapp {
+            transform: scale(1.05);
+        }
+
+        @media only screen and (max-width: 768px) {
+            .seta-esq { left: 10px; }
+            .seta-dir { right: 10px; }
+            .fechar { top: -40px; right: 10px; }
+            .combo-preco { flex-direction: column; gap: 0px; }
+            
+            .container-whatsapp {
+                bottom: 15px;
+                right: 15px;
+                gap: 10px;
+            }
+            .btn-whatsapp-fixo {
+                width: 55px;
+                height: 55px;
+            }
+            .btn-whatsapp-fixo img {
+                width: 30px;
+                height: 30px;
+            }
+            .mensagem-whatsapp {
+                font-size: 0.8em;
+                padding: 8px 12px;
+            }
+        }
+
+        footer { text-align: center; padding: 20px; color: #7f8c8d; margin-top: 40px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Foco Legis - Legislação Comentada e Esquematizada</h1>
+        <p>Acelere sua aprovação com lei seca comentada e esquematizada! Material feito para aumentar a eficiência do seu estudo.</p>
+        <hr size="1" color="white">
+        <p>✅ Seu material será atualizado durante todo o ano.</p>
+        <p>✅ Acesso ilimitado e download liberado.</p>
+    </header>
+
+    <div class="container">
+        <h2 class="section-title">Escolha seu material:</h2>
+
+        <div class="grid-produtos">
+
+            <div class="card">
+                <span class="card-tag">DESTAQUE 🔥🔥</span>
+                <div class="card-img-container">
+                    <img src="https://via.placeholder.com/160x160/bdc3c7/2c3e50?text=Capa+Combo" alt="Capa do Material">
+                </div>
+                <h3>OFERTA ESPECIAL: COMBO COM 10 MATÉRIAS</h3>
+                <p>Combo com todas as 10 matérias do site!</p>
+                <font size="6"><span class="preco-antigo">R$ 199,90</span></font>
+                <div class="preco">R$ 69,99</div>
+                <div class="area-botoes">
+                    <button class="btn-amostra" onclick="abrirAmostra()">👁️ Ver Amostra</button>
+                    <a href="#" class="btn-comprar">Comprar Agora</a>
+                </div>
+            </div>
+            
+            <div class="card">
+                <span class="card-tag">DESTAQUE 🔥🔥</span>
+                <div class="card-img-container">
+                    <img src="https://i.imgur.com/ECyJ6dc.png" alt="Capa do Material">
+                </div>
+                <h3>COMBO CRIMINAL</h3>
+                <p>Combo com: Direito Penal e Processo Penal.</p>
+                <font size="6"><span class="preco-antigo">R$ 38,95</span></font>
+                <div class="preco">R$ 29,99</div>
+                <div class="area-botoes">
+                    <button class="btn-amostra" onclick="abrirAmostra()">👁️ Ver Amostra</button>
+                    <a href="#" class="btn-comprar">Comprar Agora</a>
+                </div>
+            </div>
+            
+            <div class="card">
+                <span class="card-tag">DESTAQUE 🔥🔥</span>
+                <div class="card-img-container">
+                    <img src="https://i.imgur.com/tZxuSML.png" alt="Capa do Material">
+                </div>
+                <h3>Ética OAB 47 - Kit Completo</h3>
+                <p>Estatuto da OAB + Regulamento da OAB + Código de Ética.</p>
+                <div class="preco">R$ 19,99</div>
+                <div class="area-botoes">
+                    <button class="btn-amostra" onclick="abrirAmostra()">👁️ Ver Amostra</button>
+                    <a href="#" class="btn-comprar">Comprar Agora</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <span class="card-tag">DESTAQUE 🔥🔥</span>
+                <div class="card-img-container">
+                    <img src="https://i.imgur.com/NcGcuuE.png" alt="Capa do Material">
+                </div>
+                <h3>LEI 9099/95 - LEI DOS JUIZADOS</h3>
+                <p>Lei seca minuciosamente comentada, com os prazos e armadilhas das bancas em total evidência.</p>
+                <div class="preco">R$ 19,99</div>
+                <div class="area-botoes">
+                    <button class="btn-amostra" onclick="abrirAmostra()">👁️ Ver Amostra</button>
+                    <a href="#" class="btn-comprar">Comprar Agora</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-img-container">
+                    <img src="https://i.imgur.com/GQrF8V4.png" alt="Capa do Material">
+                </div>
+                <h3>Direito Penal Completo (2026)</h3>
+                <p>Parte Geral e Especial esquematizadas e comentadas.</p>
+                <div class="preco">R$ 19,99</div>
+                <div class="area-botoes">
+                    <button class="btn-amostra" onclick="abrirAmostra()">👁️ Ver Amostra</button>
+                    <a href="#" class="btn-comprar">Comprar Agora</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-img-container">
+                    <img src="https://via.placeholder.com/160x160/bdc3c7/2c3e50?text=Capa+Civil" alt="Capa do Material">
+                </div>
+                <h3>Direito Civil (2026)</h3>
+                <p>Os pontos mais cobrados da Parte Geral, Obrigações e Contratos.</p>
+                <div class="preco">R$ 19,99</div>
+                <div class="area-botoes">
+                    <button class="btn-amostra" onclick="abrirAmostra()">👁️ Ver Amostra</button>
+                    <a href="#" class="btn-comprar">Comprar Agora</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-img-container">
+                    <img src="https://i.imgur.com/sKCBeQ9.png" alt="Capa do Material">
+                </div>
+                <h3>Processo Penal (2026)</h3>
+                <p>Tabelas de prazos, inquérito e recursos organizados visualmente.</p>
+                <div class="preco">R$ 19,99</div>
+                <div class="area-botoes">
+                    <button class="btn-amostra" onclick="abrirAmostra()">👁️ Ver Amostra</button>
+                    <a href="#" class="btn-comprar">Comprar Agora</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-img-container">
+                    <img src="https://via.placeholder.com/160x160/bdc3c7/2c3e50?text=Capa+Proc+Civil" alt="Capa do Material">
+                </div>
+                <h3>Processo Civil (2026)</h3>
+                <p>O pesadelo dos prazos resolvido com tabelas e mnemônicos.</p>
+                <div class="preco">R$ 19,99</div>
+                <div class="area-botoes">
+                    <button class="btn-amostra" onclick="abrirAmostra()">👁️ Ver Amostra</button>
+                    <a href="#" class="btn-comprar">Comprar Agora</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-img-container">
+                    <img src="https://i.imgur.com/t7SBp7f.png" alt="Capa do Material">
+                </div>
+                <h3>Direito Constitucional (2026)</h3>
+                <p>Artigo 5º, remédios constitucionais e controle de constitucionalidade.</p>
+                <div class="preco">R$ 19,99</div>
+                <div class="area-botoes">
+                    <button class="btn-amostra" onclick="abrirAmostra()">👁️ Ver Amostra</button>
+                    <a href="#" class="btn-comprar">Comprar Agora</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-img-container">
+                    <img src="https://via.placeholder.com/160x160/bdc3c7/2c3e50?text=Capa+Admin" alt="Capa do Material">
+                </div>
+                <h3>Direito Administrativo (2026)</h3>
+                <p>Lei de Licitações, Improbidade e Agentes Públicos grifados.</p>
+                <div class="preco">R$ 19,99</div>
+                <div class="area-botoes">
+                    <button class="btn-amostra" onclick="abrirAmostra()">👁️ Ver Amostra</button>
+                    <a href="#" class="btn-comprar">Comprar Agora</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-img-container">
+                    <img src="https://via.placeholder.com/160x160/bdc3c7/2c3e50?text=Capa+Trabalho" alt="Capa do Material">
+                </div>
+                <h3>Direito do Trabalho (2026)</h3>
+                <p>CLT atualizada com as súmulas mais recorrentes nas provas.</p>
+                <div class="preco">R$ 19,99</div>
+                <div class="area-botoes">
+                    <button class="btn-amostra" onclick="abrirAmostra()">👁️ Ver Amostra</button>
+                    <a href="#" class="btn-comprar">Comprar Agora</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-img-container">
+                    <img src="https://via.placeholder.com/160x160/bdc3c7/2c3e50?text=Capa+Proc+Trab" alt="Capa do Material">
+                </div>
+                <h3>Processo do Trabalho (2026)</h3>
+                <p>Rito sumaríssimo, recursos e execução mapeados passo a passo.</p>
+                <div class="preco">R$ 19,99</div>
+                <div class="area-botoes">
+                    <button class="btn-amostra" onclick="abrirAmostra()">👁️ Ver Amostra</button>
+                    <a href="#" class="btn-comprar">Comprar Agora</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-img-container">
+                    <img src="https://via.placeholder.com/160x160/bdc3c7/2c3e50?text=Capa+Trib" alt="Capa do Material">
+                </div>
+                <h3>Direito Tributário (2026)</h3>
+                <p>CTN focado em impostos, taxas e limitações do poder de tributar.</p>
+                <div class="preco">R$ 19,99</div>
+                <div class="area-botoes">
+                    <button class="btn-amostra" onclick="abrirAmostra()">👁️ Ver Amostra</button>
+                    <a href="#" class="btn-comprar">Comprar Agora</a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="ver-mais-container">
+            <button id="btnVerMais" onclick="mostrarMaisMaterias()">VER MAIS MATÉRIAS ⬇️</button>
+        </div>
+
+        <div class="combo-section">
+            <h2>OFERTA ESPECIAL: Combo OAB Completo (2026)</h2>
+            <p>Leve todos os 10 resumos de Lei Seca Esquematizada acima e tenha o material completo para gabaritar a prova.</p>
+            <div class="combo-preco">
+                <span class="preco-antigo">R$ 199,90</span>
+                <span class="preco-novo">R$ 69,99</span>
+            </div>
+            <a href="#" class="btn-combo">🔥 QUERO O COMBO COMPLETO</a>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Foco Legis. Pagamento 100% Seguro. Acesso Imediato via E-mail.</p>
+    </footer>
+
+    <div id="modalAmostra" class="modal">
+        <div class="modal-content">
+            <span class="fechar" onclick="fecharAmostra()">&times;</span>
+            <span class="seta seta-esq" onclick="mudarImagem(-1)">&#10094;</span>
+            
+            <img id="imagemEmDestaque" src="" alt="Amostra do Resumo">
+            
+            <span class="seta seta-dir" onclick="mudarImagem(1)">&#10095;</span>
+        </div>
+        <div id="contador" class="contador-imagem">1 / 1</div>
+    </div>
+
+    <a href="https://wa.me/5511999999999?text=Ol%C3%A1%2C%20estou%20com%20d%C3%BAvida%20sobre%20uma%20mat%C3%A9ria%2Fresumo!" class="container-whatsapp" target="_blank" title="Fale comigo no WhatsApp">
+        <div class="mensagem-whatsapp">DÚVIDA? ENTRE EM CONTATO!</div>
+        <div class="btn-whatsapp-fixo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
+        </div>
+    </a>
+
+    <script>
+        // ==========================================
+        // LÓGICA DO BOTÃO "VER MAIS" E LIMITES DE TELA
+        // ==========================================
+        const cartoes = document.querySelectorAll('.card');
+        const btnVerMais = document.getElementById('btnVerMais');
+        
+        let cartoesVisiveis = window.innerWidth <= 768 ? 10 : 20;
+        
+        function inicializarGrade() {
+            cartoes.forEach((cartao, index) => {
+                if (index >= cartoesVisiveis) {
+                    cartao.classList.add('oculto');
+                }
+            });
+            verificarBotao();
+        }
+
+        function mostrarMaisMaterias() {
+            let incremento = window.innerWidth <= 768 ? 3 : 6;
+            cartoesVisiveis += incremento;
+            
+            cartoes.forEach((cartao, index) => {
+                if (index < cartoesVisiveis) {
+                    cartao.classList.remove('oculto');
+                }
+            });
+            verificarBotao();
+        }
+
+        function verificarBotao() {
+            if (cartoesVisiveis >= cartoes.length) {
+                btnVerMais.style.display = 'none';
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", inicializarGrade);
+
+
+        // ==========================================
+        // LÓGICA DA GALERIA DE AMOSTRAS
+        // ==========================================
+        const amostrasGerais = [
+            'https://via.placeholder.com/600x800/34495e/ffffff?text=Amostra+Padrao+Pagina+1',
+            'https://via.placeholder.com/600x800/2c3e50/ffffff?text=Amostra+Padrao+Pagina+2'
+        ];
+
+        let indiceAtual = 0;
+
+        function abrirAmostra() {
+            if (amostrasGerais.length === 0) return; 
+            indiceAtual = 0;
+            atualizarTela();
+            document.getElementById('modalAmostra').style.display = 'flex';
+        }
+
+        function fecharAmostra() {
+            document.getElementById('modalAmostra').style.display = 'none';
+        }
+
+        function mudarImagem(direcao) {
+            indiceAtual += direcao;
+            if (indiceAtual >= amostrasGerais.length) {
+                indiceAtual = 0;
+            } else if (indiceAtual < 0) {
+                indiceAtual = amostrasGerais.length - 1;
+            }
+            atualizarTela();
+        }
+
+        function atualizarTela() {
+            document.getElementById('imagemEmDestaque').src = amostrasGerais[indiceAtual];
+            document.getElementById('contador').innerText = (indiceAtual + 1) + " / " + amostrasGerais.length;
+            
+            const setas = document.querySelectorAll('.seta');
+            if(amostrasGerais.length <= 1) {
+                setas.forEach(seta => seta.style.display = 'none');
+            } else {
+                setas.forEach(seta => seta.style.display = 'block');
+            }
+        }
+
+        document.getElementById('modalAmostra').addEventListener('click', function(e) {
+            if (e.target === this) {
+                fecharAmostra();
+            }
+        });
+
+        // ==========================================
+        // RASTREIO DE DISPOSITIVO (Celular ou PC)
+        // ==========================================
+        document.addEventListener("DOMContentLoaded", function() {
+            function detectarDispositivo() {
+                const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+                if (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase())) {
+                    return 'celular';
+                }
+                return 'pc';
+            }
+            const dispositivo = detectarDispositivo();
+            const botoesCompra = document.querySelectorAll('.btn-comprar, .btn-combo');
+            
+            botoesCompra.forEach(function(botao) {
+                let linkOriginal = botao.getAttribute('href');
+                if (linkOriginal && linkOriginal !== "#") {
+                    let separador = linkOriginal.includes('?') ? '&' : '?';
+                    botao.setAttribute('href', linkOriginal + separador + "src=" + dispositivo);
+                }
+            });
+        });
+    </script>
+</body>
+<br><br>
+</html>
