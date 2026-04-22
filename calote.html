@@ -3,200 +3,305 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anti Caloteiros</title>
+    <title>Painel de Cobranças</title>
     <style>
         :root {
-            --bg-body: #0a0a0a;
-            --bg-card: #141414;
-            --text-primary: #ffffff;
-            --text-secondary: #888888;
-            --border-color: #262626;
-            --accent: #444;
+            --bg-body: #050505;
+            --bg-card: #0f0f0f;
+            --text-primary: #e0e0e0;
+            --text-secondary: #666666;
+            --border-color: #1f1f1f;
+            --accent: #c5a059; /* Dourado envelhecido */
+            --whatsapp-green: #25d366;
         }
 
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-body);
             color: var(--text-primary);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 50px 20px;
             margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
         }
 
-        .container {
-            max-width: 850px;
-            width: 100%;
+        /* Painel Principal */
+        .main-panel {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            border-right: 1px solid var(--border-color);
+        }
+
+        /* Painel de Prévia Lateral */
+        .preview-panel {
+            width: 400px;
+            background-color: var(--bg-card);
+            padding: 40px 25px;
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid var(--border-color);
         }
 
         h2 { 
             font-weight: 300; 
-            letter-spacing: 2px; 
+            letter-spacing: 3px; 
             text-transform: uppercase;
-            font-size: 1rem;
-            margin-bottom: 40px;
-            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 30px;
+            color: var(--accent);
             text-align: center;
         }
 
-        label { 
-            display: block; 
-            margin-bottom: 12px; 
-            font-size: 0.85rem;
+        .seletor-modelo {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 25px;
+        }
+
+        .tipo-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
             color: var(--text-secondary);
-            text-transform: uppercase;
+            padding: 12px 8px;
+            cursor: pointer;
+            border-radius: 2px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            flex: 1;
+        }
+
+        .tipo-btn.active {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(197, 160, 89, 0.05);
         }
 
         textarea {
             width: 100%;
-            height: 120px;
-            background-color: var(--bg-card);
+            height: 140px;
+            background-color: #080808;
             border: 1px solid var(--border-color);
-            border-radius: 2px;
-            color: #d1d1d1;
+            border-radius: 3px;
+            color: #ccc;
             padding: 15px;
             font-family: 'Consolas', monospace;
             box-sizing: border-box;
             resize: none;
             outline: none;
-            transition: all 0.3s ease;
+            transition: 0.3s;
         }
 
         textarea:focus {
-            border-color: #444;
-            background-color: #1a1a1a;
-        }
-
-        .lista-resultados {
-            margin-top: 50px;
+            border-color: var(--accent);
         }
 
         .card-pessoa {
             background: var(--bg-card);
-            padding: 25px;
-            margin-bottom: 15px;
-            border-radius: 2px;
+            padding: 20px;
+            margin-top: 12px;
+            border-radius: 3px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border: 1px solid var(--border-color);
-            transition: border 0.2s;
+            transition: 0.2s;
         }
 
         .card-pessoa:hover {
-            border-color: #444;
+            border-color: #333;
         }
 
         .info-pessoa b { 
-            display: block;
-            font-size: 1rem;
-            margin-bottom: 6px;
-            font-weight: 500;
+            display: block; 
+            font-size: 0.95rem; 
+            margin-bottom: 4px; 
             letter-spacing: 0.5px;
+            color: #fff;
         }
 
-        .info-pessoa span {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            font-family: 'Consolas', monospace;
-        }
-
-        /* Controles de Gênero */
-        .genero-selector {
-            display: flex;
-            gap: 5px;
-            margin-top: 10px;
+        .info-pessoa span { 
+            font-size: 0.75rem; 
+            color: var(--text-secondary); 
+            font-family: 'Consolas', monospace; 
         }
 
         .genero-btn {
             background: transparent;
             border: 1px solid var(--border-color);
             color: var(--text-secondary);
-            font-size: 0.7rem;
-            padding: 4px 8px;
+            font-size: 0.6rem;
+            padding: 4px 10px;
             cursor: pointer;
+            margin-top: 10px;
             border-radius: 2px;
-            transition: 0.2s;
+            text-transform: uppercase;
         }
 
         .genero-btn.active {
             border-color: var(--text-primary);
             color: var(--text-primary);
-            background: #222;
-        }
-
-        .acoes {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 10px;
         }
 
         .btn-zap {
-            background-color: transparent;
-            color: var(--text-primary);
-            border: 1px solid #444;
-            padding: 10px 24px;
-            border-radius: 2px;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            cursor: pointer;
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 10px 20px;
             text-decoration: none;
-            transition: all 0.3s;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 1px;
+            transition: 0.3s;
         }
 
         .btn-zap:hover {
-            background-color: var(--text-primary);
+            background: var(--accent);
             color: #000;
-            border-color: var(--text-primary);
         }
 
-        .footer-info {
-            font-size: 0.7rem;
-            color: #333;
-            margin-top: 15px;
-            text-align: center;
-            letter-spacing: 1px;
+        /* Painel de Mensagem Estilizado */
+        .msg-box {
+            background: #080808;
+            padding: 20px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: #bbb;
+            white-space: pre-wrap;
+            flex-grow: 1;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            font-family: 'Segoe UI', sans-serif;
+            position: relative;
         }
+
+        .msg-box::before {
+            content: "PREVIEW";
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 0.6rem;
+            color: var(--text-secondary);
+            letter-spacing: 2px;
+        }
+
+        .label-preview {
+            font-size: 0.65rem;
+            color: var(--accent);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+
+        /* Scrollbar customizada */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #222; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>Anti Caloteiros</h2>
+<div class="main-panel">
+    <h2>PAINEL COBRANÇAS - TONNY</h2>
     
-    <label>Entrada de Dados Brutos (direto da planilha)</label>
-    <textarea id="inputDados" placeholder="Cole aqui: 79 9823-0725  Nome do Cliente  R$ 397,00" oninput="processarDados()"></textarea>
-    <div class="footer-info">PROCESSAMENTO LOCAL E PRIVADO</div>
+    <div class="seletor-modelo">
+        <button class="tipo-btn" data-cat="parcial" onclick="mudarTipo('parcial', this)">DISPARO PAGAMENTO PARCIAL</button>
+        <button class="tipo-btn" data-cat="calote" onclick="mudarTipo('calote1', this)">DISPARO CALOTE 01 - APRESENTAÇÃO</button>
+        <button class="tipo-btn active" data-cat="calote" onclick="mudarTipo('calote2', this)">DISPARO CALOTE 02 - NOTIFICAÇÃO</button>
+    </div>
+
+    <textarea id="inputDados" placeholder="Cole os dados brutos da planilha aqui..." oninput="processarDados()"></textarea>
 
     <div id="lista" class="lista-resultados"></div>
 </div>
 
+<div class="preview-panel">
+    <div class="label-preview">Visualização da Mensagem</div>
+    <div id="msgPreview" class="msg-box">Aguardando processamento de dados...</div>
+</div>
+
 <script>
+    let tipoMensagem = 'calote2';
+    let categoriaAtual = 'calote';
+
+    function mudarTipo(tipo, btn) {
+        const novaCategoria = btn.getAttribute('data-cat');
+        if (novaCategoria !== categoriaAtual) {
+            document.getElementById('inputDados').value = '';
+            document.getElementById('lista').innerHTML = '';
+            document.getElementById('msgPreview').innerText = 'Sistema resetado para novo formato...';
+        }
+        tipoMensagem = tipo;
+        categoriaAtual = novaCategoria;
+        document.querySelectorAll('.tipo-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        processarDados();
+    }
+
+    function gerarTexto(nome, valor, genero) {
+        const nomeUpper = nome.toUpperCase(); // Força o nome para maiúsculo
+        const saudacao = genero === 'F' ? 'sra.' : 'sr.';
+        const pronome = genero === 'F' ? 'a' : 'o';
+        const artigoJudicial = genero === 'F' ? 'sua' : 'seu';
+
+        if (tipoMensagem === 'parcial') {
+            return `Boa tarde ${saudacao} ${nomeUpper}, tudo bem?\n\nVi que está faltando o pagamento de ${valor} da sua compra do Avenóbis.\n\nQuando irá pagar o resto? São muitos dias de atraso já...\n\n\n o PIX é esse abaixo:\n\n48.038.598/0001-34`;
+        } 
+        if (tipoMensagem === 'calote1') {
+            return `Boa tarde, ${saudacao} ${nomeUpper}, tudo bem? Aqui é o dr. Carlos Augusto, sou advogado na area CÍVEL e CRIMINAL.\n\nPreciso conversar com ${pronome} ${saudacao} sobre sua dívida de ${valor} do seu Avenóbis.\n\nPague para esse PIX:\n\n48.038.598/0001-34\n\nPoderia me responder por favor?\n\nAguardo retorno!`;
+        }
+        // Calote 2 - Judicial
+        const saudacaoJudicial = genero === 'F' ? 'SRA.' : 'SR.';
+        return `⚠️ *NOTIFICAÇÃO EXTRAJUDICIAL DE COBRANÇA - URGENTE*\n\n${saudacaoJudicial} ${nomeUpper},\n\nDiante da ausência de regularização do débito pendente e do esgotamento de todas as tentativas de resolução amigável, servimo-nos da presente para *NOTIFICAR EXTRAJUDICIALMENTE*.\n\nO não pagamento do produto *AVENÓBIS*, no valor de *${valor}* no prazo improrrogável de *48 horas* a partir do recebimento desta mensagem acarretará o envio imediato do ${artigoJudicial} contrato para o Departamento Jurídico.`;
+    }
+
     function processarDados() {
         const rawText = document.getElementById('inputDados').value;
         const linhas = rawText.split('\n');
         const listaDiv = document.getElementById('lista');
+        const previewDiv = document.getElementById('msgPreview');
         listaDiv.innerHTML = '';
+
+        if (rawText.trim() === '') return;
 
         linhas.forEach((linha, index) => {
             if (linha.trim() === '') return;
 
-            const regex = /^\s*([\d\s\-()]+)\t*(.*?)\t*(R\$.*)$/i;
-            const match = linha.match(regex);
+            let nome = "", fone = "", valor = "";
+            
+            const matchValor = linha.match(/(R\$\s?[\d.,]+)/i);
+            if (!matchValor) return;
+            valor = matchValor[0].trim();
 
-            if (match) {
-                const foneLimpo = match[1].trim().replace(/\D/g, '');
-                const nome = match[2].trim();
-                const valor = match[3].trim();
+            const matchInicioNum = linha.match(/^(\d{10,11})(.*?)(?=R\$|\d{3}\.\d{3})/);
+            
+            if (matchInicioNum) {
+                fone = matchInicioNum[1];
+                nome = matchInicioNum[2].replace(/[\t\r\n]/g, '').trim();
+            } else {
+                const matchNomeParcial = linha.match(/^([a-zA-ZÀ-ÿ\s]+?)(?=\s\d|R\$|\t)/);
+                const matchQualquerTel = linha.match(/(\d{10,11})/);
+                if (matchNomeParcial && matchQualquerTel) {
+                    nome = matchNomeParcial[1].trim();
+                    fone = matchQualquerTel[0].trim();
+                }
+            }
+
+            if (nome && fone && valor) {
+                if(nome.endsWith(' R')) nome = nome.slice(0, -2);
+                nome = nome.toUpperCase(); // Garante o nome em maiúsculo no card também
                 
-                // Gênero inicial automático
                 const primeiroNome = nome.split(' ')[0].toLowerCase();
                 const genero = (primeiroNome.endsWith('a') || primeiroNome.endsWith('as')) ? 'F' : 'M';
-
-                criarCard(foneLimpo, nome, valor, genero, index);
+                
+                if (index === 0) previewDiv.innerText = gerarTexto(nome, valor, genero);
+                criarCard(fone, nome, valor, genero, index);
             }
         });
     }
@@ -205,63 +310,36 @@
         const listaDiv = document.getElementById('lista');
         const card = document.createElement('div');
         card.className = 'card-pessoa';
-        card.id = `card-${id}`;
-        
-        atualizarCardInterno(card, fone, nome, valor, genero);
-        
+        const txtMsg = gerarTexto(nome, valor, genero);
+        const linkZap = `https://web.whatsapp.com/send?phone=55${fone}&text=${encodeURIComponent(txtMsg)}`;
+
+        card.innerHTML = `
+            <div class="info-pessoa">
+                <b>${nome}</b>
+                <span>WHATSAPP: ${fone} • DÉBITO: ${valor}</span>
+                <div>
+                    <button class="genero-btn ${genero === 'M' ? 'active' : ''}" onclick="mudarGenero(this, 'M')">Masc</button>
+                    <button class="genero-btn ${genero === 'F' ? 'active' : ''}" onclick="mudarGenero(this, 'F')">Fem</button>
+                </div>
+            </div>
+            <a href="${linkZap}" target="_blank" class="btn-zap">Enviar</a>
+        `;
         listaDiv.appendChild(card);
     }
 
-    function atualizarCardInterno(cardElement, fone, nome, valor, genero) {
-        const saudacao = genero === 'F' ? 'Sra.' : 'Sr.';
-        const artigo = genero === 'F' ? 'sua' : 'seu';
+    function mudarGenero(btn, novoGenero) {
+        const infoPessoa = btn.closest('.info-pessoa');
+        const nome = infoPessoa.querySelector('b').innerText;
+        const info = infoPessoa.querySelector('span').innerText;
+        const fone = info.match(/\d+/)[0];
+        const valor = info.split('• DÉBITO:')[1].trim();
 
-        const mensagem = `⚠️ *NOTIFICAÇÃO EXTRAJUDICIAL DE COBRANÇA - URGENTE*
+        btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
 
-${saudacao} ${nome},
-
-Diante da ausência de regularização do débito pendente e do esgotamento de todas as tentativas de resolução amigável, servimo-nos da presente para *NOTIFICAR EXTRAJUDICIALMENTE*.
-
-O não pagamento do produto AVENÓBIS, no valor de *${valor}* no prazo improrrogável de *48 horas* a partir do recebimento desta mensagem acarretará o envio imediato do ${artigo} contrato para o Departamento Jurídico.
-
-⚠️ As seguintes medidas serão tomadas *sem novo aviso prévio*:
-
-1) Ajuizamento do *PROCESSO DE EXECUÇÃO* (Cobrança Judicial);
-2) Solicitação de bloqueio judicial de contas bancárias (Bacenjud) em seu CPF;
-3) Pedido de penhora de bens passíveis de execução para quitação da dívida e custas processuais;
-4) Protesto em Cartório e *NEGATIVAÇÃO* junto ao SPC/Serasa.
-5) Restrição de Bens (RENAJUD): Bloqueio de circulação e transferência de veículos e outros bens em seu nome;
-6) Medidas Coercitivas Atípicas (Art. 139, IV, CPC): Pedido de suspensão de CNH e CARTÕES DE CRÉDITO até a quitação integral do débito;
-7) Multa Processual (Art. 77, CPC): Aplicação de multa de até 20% sobre o valor da causa por Ato Atentatório à Dignidade da Justiça, caso seja verificada ocultação de patrimônio.
-
-‼️Para evitar o agravamento da dívida com custas judiciais e honorários advocatícios (30%), *efetue o pagamento IMEDIATO através dos dados abaixo*
-
-💵 PIX: 48.038.598/0001-34
-
-Esta é a sua *última oportunidade de evitar a via judicial*.
-
-Atenciosamente, *RM EMPREENDIMENTOS | DEPARTAMENTO JURÍDICO*`;
-
-        const linkWebZap = `https://web.whatsapp.com/send?phone=55${fone}&text=${encodeURIComponent(mensagem)}`;
-
-        cardElement.innerHTML = `
-            <div class="info-pessoa">
-                <b>${nome}</b>
-                <span>ID: ${fone} // DEBITO: ${valor}</span>
-                <div class="genero-selector">
-                    <button class="genero-btn ${genero === 'M' ? 'active' : ''}" onclick="mudarGenero(this, '${fone}', '${nome}', '${valor}', 'M')">MASC</button>
-                    <button class="genero-btn ${genero === 'F' ? 'active' : ''}" onclick="mudarGenero(this, '${fone}', '${nome}', '${valor}', 'F')">FEM</button>
-                </div>
-            </div>
-            <div class="acoes">
-                <a href="${linkWebZap}" target="_blank" class="btn-zap">Gerar Protocolo</a>
-            </div>
-        `;
-    }
-
-    function mudarGenero(btn, fone, nome, valor, novoGenero) {
-        const card = btn.closest('.card-pessoa');
-        atualizarCardInterno(card, fone, nome, valor, novoGenero);
+        const txtMsg = gerarTexto(nome, valor, novoGenero);
+        btn.closest('.card-pessoa').querySelector('.btn-zap').href = `https://web.whatsapp.com/send?phone=55${fone}&text=${encodeURIComponent(txtMsg)}`;
+        document.getElementById('msgPreview').innerText = txtMsg;
     }
 </script>
 
