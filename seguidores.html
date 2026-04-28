@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Focolegis - Minerador de Leads Qualificados</title>
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #0b0e14; color: #e6edf3; padding: 30px; line-height: 1.6; }
+        .header { text-align: center; margin-bottom: 40px; border-bottom: 1px solid #30363d; padding-bottom: 20px; }
+        h1 { color: #58a6ff; margin: 0; font-size: 24px; }
+        p { color: #8b949e; font-size: 14px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
+        .category-header { 
+            grid-column: 1 / -1; background: #161b22; color: #f0883e; 
+            padding: 12px; margin-top: 25px; border-radius: 6px; 
+            font-weight: bold; font-size: 13px; letter-spacing: 1px;
+            border-left: 5px solid #f0883e;
+        }
+        button { 
+            background: #21262d; border: 1px solid #30363d; color: #c9d1d9; 
+            padding: 12px; border-radius: 6px; cursor: pointer; font-size: 13px;
+            transition: 0.2s; text-align: left;
+        }
+        button:hover { 
+            background: #30363d; border-color: #8b949e; color: #fff;
+            transform: scale(1.02);
+        }
+        .highlight { color: #f0883e; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Focolegis - Prospecção de Nicho</h1>
+        <p>Alvos: Perfis que atraem <span class="highlight">compradores de materiais jurídicos</span>.</p>
+    </div>
+
+    <div class="grid" id="container"></div>
+
+    <script>
+        const categorias = {
+            "Materiais e Resumos (Concorrência Direta)": [
+                "Resumos de Direito", "Materiais de Direito", "Resumo de Lei Seca", 
+                "Direito Esquematizado", "Mapas Mentais Direito", "Flashcards Jurídicos",
+                "Caderno de Direito", "Resumos OAB", "Apostilas de Direito",
+                "Material de Estudo Direito", "Lei Seca Comentada", "Vade Mecum Esquematizado"
+            ],
+            "Dores de Estudo e Produtividade": [
+                "Dicas para Concursos", "Cronograma OAB", "Como Estudar Direito", 
+                "Informativos STF STJ", "Jurisprudência para Concursos", "Questões Comentadas",
+                "Método de Estudo Jurídico", "Revisão de Direito", "Dicas OAB",
+                "Direito Facilitado", "Descomplicando o Direito"
+            ],
+            "Específicos de Direito Penal (Seu Foco na Pós)": [
+                "Resumo Direito Penal", "Processo Penal Esquematizado", "Dicas de Penal OAB",
+                "Direito Penal na Prática", "Jurisprudência Criminal", "Informativos Penais",
+                "Penal para Concursos", "Legislação Penal Especial"
+            ],
+            "Perfis 'Hub' de Estudantes": [
+                "Studygram Direito", "Blog de Direito", "Vida de Estudante de Direito",
+                "Direito por Amor", "Notícias Jurídicas", "Vagas de Estágio Direito",
+                "Direito na Prática", "Dicas de Carreira Jurídica"
+            ]
+        };
+
+        const container = document.getElementById('container');
+
+        // Gerar 300 botões combinando termos com variações estratégicas
+        Object.keys(categorias).forEach(cat => {
+            const title = document.createElement('div');
+            title.className = 'category-header';
+            title.innerText = cat;
+            container.appendChild(title);
+
+            categorias[cat].forEach(termo => {
+                // Termo base
+                criarBotao(termo);
+                
+                // Variações de Intensidade (ex: "Melhores resumos", "Resumos gratuitos")
+                const prefixos = ["Melhores", "Dicas", "Guia", "Combo"];
+                prefixos.forEach(p => criarBotao(`${p} ${termo}`));
+
+                // Variações de Foco
+                criarBotao(`${termo} OAB`);
+                criarBotao(`${termo} Concursos`);
+                criarBotao(`${termo} Prática`);
+            });
+        });
+
+        function criarBotao(texto) {
+            const btn = document.createElement('button');
+            btn.innerText = texto;
+            btn.onclick = () => {
+                // Busca exata pelo termo na bio para achar o "Dono do perfil"
+                const query = `site:instagram.com "${texto}" -site:instagram.com/p/ -site:instagram.com/reel/`;
+                const url = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+                window.open(url, '_blank');
+            };
+            container.appendChild(btn);
+        }
+    </script>
+</body>
+</html>
