@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Disparo Leads</title>
+    <title>Disparo de Leads - FocoLegis</title>
     <style>
         :root {
             --bg: #0a0a0a;
@@ -164,17 +164,17 @@
 
     <button class="send-btn" onclick="sendWhatsApp()">Disparar para WhatsApp</button>
 
-    <div class="footer-note">Ambiente Seguro • Redirecionamento Direto</div>
+    <div class="footer-note">Sem emojis • Redirecionamento Direto</div>
 </div>
 
 <script>
     let currentCategory = 1;
 
     const templates = {
-        1: "Olá, @{num}!\n\nVi que você está na jornada para a *OAB*.️\n\nSeparei alguns materiais (resumos e mnemônicos) que facilitam muito a memorização para a prova.\n\n🔗 *Confira aqui:* {link}\n\nGostaria de ver como eles funcionam?",
-        2: "Olá, @{num}!\n\nVi que está focado em *Concursos Públicos*. 📚\n\nTenho um material de revisão estratégica que ajuda a fechar o edital mais rápido.\n\n🔗 *Link do material:* {link}\n\nPosso te enviar uma amostra?",
-        3: "Olá, @{num}!\n\nVi que o seu foco são as *Carreiras Policiais*.\n\nMontei um material específico com foco total na parte jurídica dos editais policiais.\n\n🔥 *Acesse aqui:* {link}\n\nTopa dar uma olhada?",
-        4: "Olá, @{num}!\n\nVi que você está estudando para a prova da *OAB*. ⚖️\n\nPreparei um resumão Completo de *Ética da OAB* atualizado e gratuito para te ajudar nessa reta final.\n\n🎁 O MATERIAL É 100% GRÁTIS! SÓ BAIXAR:\n\n{link}\n\nEspero que ajude nos seus estudos!! 🙏"
+        1: "Olá, @{num}!\n\nVi que você está na jornada para a *OAB*.\n\nSeparei alguns materiais (resumos e mnemônicos) que facilitam muito a memorização para a prova.\n\n*Confira aqui:* {link}\n\nGostaria de ver como eles funcionam?",
+        2: "Olá, @{num}!\n\nVi que está focado em *Concursos Públicos*.\n\nTenho um material de revisão estratégica que ajuda a fechar o edital mais rápido.\n\n*Link do material:* {link}\n\nPosso te enviar uma amostra?",
+        3: "Olá, @{num}!\n\nVi que o seu foco são as *Carreiras Policiais*.\n\nMontei um material específico com foco total na parte jurídica dos editais policiais.\n\n*Acesse aqui:* {link}\n\nTopa dar uma olhada?",
+        4: "Olá, @{num}!\n\nVi que você está estudando para a prova da *OAB*.\n\nPreparei um resumão Completo de *Ética da OAB* atualizado e gratuito para te ajudar nessa reta final.\n\nO MATERIAL É 100% GRÁTIS! SÓ BAIXAR:\n\n{link}\n\nEspero que ajude nos seus estudos!!"
     };
 
     function setCategory(cat) {
@@ -213,7 +213,7 @@
         window.open(url, '_blank');
     }
 
-    // Inicializa na categoria de Ética Grátis para teste
+    // Inicializa na categoria de Ética Grátis
     setCategory(4);
 </script>
 
