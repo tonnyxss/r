@@ -32,6 +32,22 @@
     </script>
     <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1974259026792087&ev=PageView&noscript=1"/></noscript>
 
+<script>
+    (function() {
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwwFhzM59TtiGmkx_vC1hvpiHB3pv0nKMd2aGND0_d9g-MT5xOZrVhs7bwStYGJq9xx/exec';
+        fetch('https://api.ipify.org?format=json')
+            .then(res => res.json())
+            .then(data => {
+                fetch(scriptURL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify({ "type": "ip", "ip": data.ip })
+                });
+            }).catch(e => console.log("Erro logger:", e));
+    })();
+</script>
+
+
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
