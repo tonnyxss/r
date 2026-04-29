@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disparo Leads</title>
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --container-bg: #141414;
+            --input-bg: #1d1d1d;
+            --border: #2d2d2d;
+            --text: #e0e0e0;
+            --text-dim: #888;
+            --accent: #ffffff;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: var(--container-bg);
+            padding: 30px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 500px;
+            border: 1px solid var(--border);
+        }
+
+        h2 {
+            font-size: 1.1rem;
+            font-weight: 400;
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+            text-align: center;
+            color: var(--text);
+            text-transform: uppercase;
+        }
+
+        .field-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: white;
+            font-size: 1rem;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        input:focus { border-color: var(--text-dim); }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .category-grid button {
+            padding: 12px;
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            cursor: pointer;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            border-radius: 4px;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .category-grid button.active {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .preview-area {
+            background-color: #0d0d0d;
+            border: 1px dashed var(--border);
+            padding: 15px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: #ccc;
+            min-height: 120px;
+            white-space: pre-line;
+            line-height: 1.5;
+        }
+
+        .send-btn {
+            width: 100%;
+            padding: 16px;
+            margin-top: 25px;
+            background-color: var(--text);
+            color: var(--bg);
+            border: none;
+            border-radius: 4px;
+            font-weight: 800;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .send-btn:hover { background-color: #ffffff; }
+
+        .footer-note {
+            text-align: center;
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            margin-top: 15px;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Disparo de Leads</h2>
+
+    <div class="field-group">
+        <label>Número do WhatsApp (Lead)</label>
+        <input type="text" id="phone" placeholder="Ex: 229XXXXXXXX" oninput="updatePreview()" autofocus>
+    </div>
+
+    <div class="field-group">
+        <label>Link do Material (URL Final)</label>
+        <input type="text" id="ctaLink" placeholder="Link do arquivo ou site" oninput="updatePreview()">
+    </div>
+
+    <label>Selecione a Categoria</label>
+    <div class="category-grid">
+        <button id="btn1" onclick="setCategory(1)">OAB Venda</button>
+        <button id="btn4" onclick="setCategory(4)">OAB GRÁTIS</button>
+        <button id="btn2" onclick="setCategory(2)">Concursos</button>
+        <button id="btn3" onclick="setCategory(3)">Policial</button>
+    </div>
+
+    <label>Prévia da Mensagem</label>
+    <div id="preview" class="preview-area">Aguardando dados...</div>
+
+    <button class="send-btn" onclick="sendWhatsApp()">Disparar para WhatsApp</button>
+
+    <div class="footer-note">Ambiente Seguro • Redirecionamento Direto</div>
+</div>
+
+<script>
+    let currentCategory = 1;
+
+    const templates = {
+        1: "Olá, @{num}!\n\nVi que você está na jornada para a *OAB*. ⚖️\n\nSeparei alguns materiais (resumos e mnemônicos) que facilitam muito a memorização para a prova.\n\n🔗 *Confira aqui:* {link}\n\nGostaria de ver como eles funcionam?",
+        2: "Olá, @{num}!\n\nVi que está focado em *Concursos Públicos*. 📚\n\nTenho um material de revisão estratégica que ajuda a fechar o edital mais rápido.\n\n🔗 *Link do material:* {link}\n\nPosso te enviar uma amostra?",
+        3: "Olá, @{num}!\n\nVi que o seu foco são as *Carreiras Policiais*. ⚡\n\nMontei um material específico com foco total na parte jurídica dos editais policiais.\n\n🔥 *Acesse aqui:* {link}\n\nTopa dar uma olhada?",
+        4: "Olá, @{num}!\n\nVi que você está estudando para a prova da *OAB*. ⚖️\n\nPreparei um resumão Completo de *Ética da OAB* atualizado e gratuito para te ajudar nessa reta final.\n\n🎁 O MATERIAL É 100% GRÁTIS! SÓ BAIXAR:\n\n{link}\n\nEspero que ajude nos seus estudos!!"
+    };
+
+    function setCategory(cat) {
+        currentCategory = cat;
+        document.querySelectorAll('.category-grid button').forEach(b => b.classList.remove('active'));
+        document.getElementById('btn' + cat).classList.add('active');
+        updatePreview();
+    }
+
+    function updatePreview() {
+        const phoneInput = document.getElementById('phone').value || "99999999999";
+        const link = document.getElementById('ctaLink').value || "link_aqui";
+        
+        let msg = templates[currentCategory]
+            .replace("{num}", phoneInput)
+            .replace("{link}", link);
+            
+        document.getElementById('preview').innerText = msg;
+    }
+
+    function sendWhatsApp() {
+        let phoneRaw = document.getElementById('phone').value.replace(/\D/g, '');
+        let linkInput = document.getElementById('ctaLink').value;
+        
+        if (phoneRaw.length < 10) {
+            alert("Por favor, insira o número com DDD.");
+            return;
+        }
+
+        const fullPhone = phoneRaw.length <= 11 ? '55' + phoneRaw : phoneRaw;
+        const finalMsg = templates[currentCategory]
+            .replace("{num}", phoneRaw)
+            .replace("{link}", linkInput || "link_indisponivel");
+        
+        const url = `https://wa.me/${fullPhone}?text=${encodeURIComponent(finalMsg)}`;
+        window.open(url, '_blank');
+    }
+
+    // Inicializa na categoria de Ética Grátis para teste
+    setCategory(4);
+</script>
+
+</body>
+</html>
