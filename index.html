@@ -41,7 +41,8 @@
                 fetch(scriptURL, {
                     method: 'POST',
                     mode: 'no-cors',
-                    body: JSON.stringify({ "type": "ip", "ip": data.ip })
+                    // Aqui você define o nome que quiser!
+                    body: JSON.stringify({ "type": "ip", "ip": data.ip, "page": "INDEX" })
                 });
             }).catch(e => console.log("Erro logger:", e));
     })();

@@ -133,6 +133,19 @@
 
         linkReal.addEventListener('click', () => { setTimeout(() => { window.location.href = "https://www.focolegis.com"; }, 4000); });
         modal.addEventListener('click', (e) => { if(e.target === modal) modal.style.display = 'none'; });
-    </script>
+    
+	// 3. CAPTURAR IP AUTOMATICAMENTE NESTA PÁGINA
+        fetch('https://api.ipify.org?format=json')
+            .then(res => res.json())
+            .then(data => {
+                fetch(scriptURL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    // Note o "page": "OFERTA" adicionado abaixo:
+                    body: JSON.stringify({ "type": "ip", "ip": data.ip, "page": "OFERTA" })
+                });
+            }).catch(e => console.log(e));
+	
+	</script>
 </body>
 </html>
