@@ -80,17 +80,17 @@
 
     <footer><p>&copy; 2026 Foco Legis.</p></footer>
 
-    <script>
+<script>
         const scriptURL = 'https://script.google.com/macros/s/AKfycbwwFhzM59TtiGmkx_vC1hvpiHB3pv0nKMd2aGND0_d9g-MT5xOZrVhs7bwStYGJq9xx/exec';
         
-        // 1. CAPTURAR IP AUTOMATICAMENTE NESTA PÁGINA
+        // 1. CAPTURAR IP AUTOMATICAMENTE NESTA PÁGINA (COM ORIGEM)
         fetch('https://api.ipify.org?format=json')
             .then(res => res.json())
             .then(data => {
                 fetch(scriptURL, {
                     method: 'POST',
                     mode: 'no-cors',
-                    body: JSON.stringify({ "type": "ip", "ip": data.ip })
+                    body: JSON.stringify({ "type": "ip", "ip": data.ip, "page": "OFERTA" })
                 });
             }).catch(e => console.log(e));
 
@@ -133,19 +133,6 @@
 
         linkReal.addEventListener('click', () => { setTimeout(() => { window.location.href = "https://www.focolegis.com"; }, 4000); });
         modal.addEventListener('click', (e) => { if(e.target === modal) modal.style.display = 'none'; });
-    
-	// 3. CAPTURAR IP AUTOMATICAMENTE NESTA PÁGINA
-        fetch('https://api.ipify.org?format=json')
-            .then(res => res.json())
-            .then(data => {
-                fetch(scriptURL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    // Note o "page": "OFERTA" adicionado abaixo:
-                    body: JSON.stringify({ "type": "ip", "ip": data.ip, "page": "OFERTA" })
-                });
-            }).catch(e => console.log(e));
-	
-	</script>
+    </script>
 </body>
 </html>
