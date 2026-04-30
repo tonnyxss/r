@@ -5,16 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ética - OAB 46</title>
     
-    <script>
-    !function (w, d, t) {
-      w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(
-    var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script")
-    ;n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
-      ttq.load('D7LU5HJC77U9TECL8PN0');
-      ttq.page();
-    }(window, document, 'ttq');
-    </script>
-
+    <!-- Pixel da Meta (Facebook/Instagram) -->
     <script>
     !function(f,b,e,v,n,t,s)
     {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -131,15 +122,38 @@
             else { clearInterval(timer); btnTimer.innerText = 'BAIXAR MATERIAL AGORA'; btnTimer.classList.remove('disabled'); }
         }, 1000);
 
-        btnTimer.addEventListener('click', () => { if (!btnTimer.classList.contains('disabled')) modal.style.display = 'flex'; });
+        // EVENTO: Ao clicar para abrir o Modal
+        btnTimer.addEventListener('click', () => { 
+            if (!btnTimer.classList.contains('disabled')) {
+                modal.style.display = 'flex'; 
+                if (typeof fbq === 'function') {
+                    fbq('trackCustom', 'OpenModal', { content_name: 'Resumão Ética Profissional' });
+                }
+            }
+        });
 
-        // 3. ENVIO DO WHATSAPP
+        // 3. ENVIO DO WHATSAPP (COM CORRESPONDÊNCIA AVANÇADA)
         form.addEventListener('submit', (e) => {
             e.preventDefault();
             const whats = inputWhatsapp.value;
+            
             if(whats.length >= 10) {
                 btnLiberar.innerText = "PROCESSANDO...";
                 btnLiberar.classList.add('disabled');
+                
+                // --- INÍCIO: CORRESPONDÊNCIA AVANÇADA META ---
+                let numeroLimpo = whats.replace(/\D/g, ''); // Tira tudo que não é número
+                if (!numeroLimpo.startsWith('55')) {
+                    numeroLimpo = '55' + numeroLimpo; // Coloca o +55 do Brasil
+                }
+
+                if (typeof fbq === 'function') {
+                    fbq('set', '1974259026792087', {
+                        ph: numeroLimpo 
+                    });
+                }
+                // --- FIM: CORRESPONDÊNCIA AVANÇADA META ---
+
                 fetch(scriptURL, {
                     method: 'POST',
                     mode: 'no-cors',
@@ -148,11 +162,26 @@
                     form.style.display = 'none'; 
                     modalText.innerHTML = "<b style='color: #27ae60'>✅ Acesso Liberado!</b><br>Clique no botão abaixo.";
                     linkReal.style.display = 'block'; 
+                    
+                    // EVENTO: Lead Validado!
+                    if (typeof fbq === 'function') {
+                        fbq('track', 'Lead', { content_name: 'Resumão Ética Profissional' });
+                    }
                 });
+            } else {
+                alert("Por favor, insira um número válido com DDD.");
             }
         });
 
-        linkReal.addEventListener('click', () => { setTimeout(() => { window.location.href = "https://www.focolegis.com"; }, 4000); });
+        // EVENTO: Ao clicar para baixar o PDF
+        linkReal.addEventListener('click', () => { 
+            if (typeof fbq === 'function') {
+                fbq('trackCustom', 'DownloadMaterial', { content_name: 'Resumão Ética Profissional' });
+            }
+            setTimeout(() => { window.location.href = "https://www.focolegis.com"; }, 4000); 
+        });
+
+        // Fechar Modal
         modal.addEventListener('click', (e) => { if(e.target === modal) modal.style.display = 'none'; });
     </script>
 </body>
