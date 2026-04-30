@@ -72,9 +72,9 @@
     <footer><p>&copy; 2026 Foco Legis.</p></footer>
 
 <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbwUIukmvfXGdmjHCjUT_WS7icFl6dvIri473TFDnLIynX4tD4hP7OzNf3vts1KGNjim/exec';
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbz8JUdODkvtSt6x6xOFhOTtVQN1ajUxCcr4ufjOOlGfmDB5U7aYLXvsEwzwv8C-q5bg/exec';
         
-        // 1. CAPTURAR IP, DISPOSITIVO E UTM AUTOMATICAMENTE NESTA PÁGINA
+        // 1. CAPTURAR IP, LOCALIZAÇÃO, DISPOSITIVO E UTM AUTOMATICAMENTE
         let utmsUrl = window.location.search;
         if (!utmsUrl) utmsUrl = "Orgânico/Direto";
 
@@ -89,7 +89,8 @@
         else if (/Windows/i.test(ua)) { osType = "Windows"; } 
         else if (/Mac/i.test(ua)) { osType = "MacOS"; }
 
-        fetch('https://api.ipify.org?format=json')
+        // --- NOVO RASTREADOR DE GEOLOCALIZAÇÃO ---
+        fetch('https://ipapi.co/json/')
             .then(res => res.json())
             .then(data => {
                 fetch(scriptURL, {
@@ -97,14 +98,16 @@
                     mode: 'no-cors',
                     body: JSON.stringify({ 
                         "type": "ip", 
-                        "ip": data.ip, 
+                        "ip": data.ip,
+                        "estado": data.region,   // Captura o Estado
+                        "cidade": data.city,     // Captura a Cidade
                         "page": "OFERTA",
                         "utm": utmsUrl,
                         "device": deviceType,
                         "os": osType
                     })
                 });
-            }).catch(e => console.log(e));
+            }).catch(e => console.log("Erro geolocalização:", e));
 
         // 2. LÓGICA DO TIMER E MODAL
         const btnTimer = document.getElementById('btn-timer');
@@ -183,6 +186,6 @@
 
         // Fechar Modal
         modal.addEventListener('click', (e) => { if(e.target === modal) modal.style.display = 'none'; });
-    </script>
+</script>
 </body>
 </html>

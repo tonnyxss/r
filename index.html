@@ -26,7 +26,7 @@
 <script>
     (function() {
         // LINK ATUALIZADO PARA O NOVO (Igual ao da Oferta)
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbwUIukmvfXGdmjHCjUT_WS7icFl6dvIri473TFDnLIynX4tD4hP7OzNf3vts1KGNjim/exec';
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbz8JUdODkvtSt6x6xOFhOTtVQN1ajUxCcr4ufjOOlGfmDB5U7aYLXvsEwzwv8C-q5bg/exec';
         
         let utmsUrl = window.location.search;
         if (!utmsUrl) utmsUrl = "Orgânico/Direto";
@@ -298,7 +298,7 @@
         </div>
     </a>
 
-    <script>
+<script>
         document.addEventListener("DOMContentLoaded", function() {
             // 1. Rastreio de dispositivo para Hotmart
             function detectarDispositivo() {
@@ -310,7 +310,7 @@
             const botoesCompra = document.querySelectorAll('.btn-comprar');
           
             // ==========================================
-            // EVENTOS DOS BOTÕES DE COMPRA (InitiateCheckout)
+            // EVENTOS DOS BOTÕES DE COMPRA (InitiateCheckout + VALOR/ROAS)
             // ==========================================
             botoesCompra.forEach(function(botao) {
                 // Adiciona o SRC da Hotmart
@@ -325,7 +325,12 @@
                     let nomeProduto = botao.closest('.card').querySelector('h3').innerText;
                     
                     if (typeof fbq === 'function') {
-                        fbq('track', 'InitiateCheckout', { content_name: nomeProduto });
+                        // AGORA O FACEBOOK SABE QUE O PRODUTO CUSTA R$ 19,99
+                        fbq('track', 'InitiateCheckout', { 
+                            content_name: nomeProduto,
+                            value: 19.99,
+                            currency: 'BRL'
+                        });
                     }
                 });
             });
