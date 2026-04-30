@@ -309,7 +309,7 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // Rastreio de dispositivo para Hotmart
+            // 1. Rastreio de dispositivo para Hotmart
             function detectarDispositivo() {
                 const userAgent = navigator.userAgent || navigator.vendor || window.opera;
                 return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase()) ? 'celular' : 'pc';
@@ -318,13 +318,50 @@
             const dispositivo = detectarDispositivo();
             const botoesCompra = document.querySelectorAll('.btn-comprar');
           
+            // ==========================================
+            // EVENTOS DOS BOTÕES DE COMPRA (InitiateCheckout)
+            // ==========================================
             botoesCompra.forEach(function(botao) {
+                // Adiciona o SRC da Hotmart
                 let linkOriginal = botao.getAttribute('href');
                 if (linkOriginal && linkOriginal !== "#") {
                     let separador = linkOriginal.includes('?') ? '&' : '?';
                     botao.setAttribute('href', linkOriginal + separador + "src=" + dispositivo);
                 }
+
+                // Dispara o Evento do Pixel ao Clicar em Comprar
+                botao.addEventListener('click', function() {
+                    let nomeProduto = botao.closest('.card').querySelector('h3').innerText;
+                    
+                    if (typeof fbq === 'function') {
+                        fbq('track', 'InitiateCheckout', { content_name: nomeProduto });
+                    }
+                    if (typeof ttq === 'function') {
+                        ttq.track('InitiateCheckout', { content_name: nomeProduto });
+                    }
+                });
             });
+
+            // ==========================================
+            // EVENTOS DOS BOTÕES DE AMOSTRA (ViewContent)
+            // ==========================================
+            const botoesAmostra = document.querySelectorAll('.btn-amostra');
+            
+            botoesAmostra.forEach(function(botao) {
+                botao.addEventListener('click', function() {
+                    // Pega o título do produto que está no mesmo card do botão
+                    let nomeProduto = botao.closest('.card').querySelector('h3').innerText;
+                    
+                    // Avisa o Meta e o TikTok que a amostra foi vista
+                    if (typeof fbq === 'function') {
+                        fbq('track', 'ViewContent', { content_category: 'Amostra Grátis', content_name: nomeProduto });
+                    }
+                    if (typeof ttq === 'function') {
+                        ttq.track('ViewContent', { content_category: 'Amostra Grátis', content_name: nomeProduto });
+                    }
+                });
+            });
+            
         });
     </script>
 </body>
