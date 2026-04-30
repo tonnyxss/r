@@ -81,16 +81,37 @@
     <footer><p>&copy; 2026 Foco Legis.</p></footer>
 
 <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbztttF5xjE94naz3LE4bDK1f90AAyxJ1KLJatMTpfxc8rQQ3KxRNOhHPRkoP1Gnzdds/exec';
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxd6F1nn9tmXwse6Yh7kVVDLMd24vsG4hUrNM8mSteUv9VVSUsZb0jLqgDNnQeivkwa/exec';
         
-        // 1. CAPTURAR IP AUTOMATICAMENTE NESTA PÁGINA (COM ORIGEM)
+        // 1. CAPTURAR IP, DISPOSITIVO E UTM AUTOMATICAMENTE NESTA PÁGINA
+        let utmsUrl = window.location.search;
+        if (!utmsUrl) utmsUrl = "Orgânico/Direto";
+
+        let ua = navigator.userAgent;
+        let deviceType = "PC";
+        let osType = "Outro";
+
+        if (/Mobile|Android|iP(hone|od|ad)/i.test(ua)) { deviceType = "Celular"; }
+
+        if (/Android/i.test(ua)) { osType = "Android"; } 
+        else if (/iP(hone|od|ad)/i.test(ua)) { osType = "iOS"; } 
+        else if (/Windows/i.test(ua)) { osType = "Windows"; } 
+        else if (/Mac/i.test(ua)) { osType = "MacOS"; }
+
         fetch('https://api.ipify.org?format=json')
             .then(res => res.json())
             .then(data => {
                 fetch(scriptURL, {
                     method: 'POST',
                     mode: 'no-cors',
-                    body: JSON.stringify({ "type": "ip", "ip": data.ip, "page": "OFERTA" })
+                    body: JSON.stringify({ 
+                        "type": "ip", 
+                        "ip": data.ip, 
+                        "page": "OFERTA",
+                        "utm": utmsUrl,
+                        "device": deviceType,
+                        "os": osType
+                    })
                 });
             }).catch(e => console.log(e));
 
