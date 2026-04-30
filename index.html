@@ -25,7 +25,6 @@
 <!-- Script Analytics Foco Legis -->
 <script>
     (function() {
-        // LINK ATUALIZADO PARA O NOVO (Igual ao da Oferta)
         const scriptURL = 'https://script.google.com/macros/s/AKfycbz8JUdODkvtSt6x6xOFhOTtVQN1ajUxCcr4ufjOOlGfmDB5U7aYLXvsEwzwv8C-q5bg/exec';
         
         let utmsUrl = window.location.search;
@@ -41,22 +40,32 @@
         else if (/Windows/i.test(ua)) { osType = "Windows"; } 
         else if (/Mac/i.test(ua)) { osType = "MacOS"; }
 
+        // --- RASTREADOR COMBO: PEGA IPv4 LIMPO + GEOLOCALIZAÇÃO ---
         fetch('https://api.ipify.org?format=json')
             .then(res => res.json())
-            .then(data => {
-                fetch(scriptURL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    body: JSON.stringify({ 
-                        "type": "ip", 
-                        "ip": data.ip, 
-                        "page": "INDEX",
-                        "utm": utmsUrl,
-                        "device": deviceType,
-                        "os": osType
-                    })
-                });
-            }).catch(e => console.log("Erro logger:", e));
+            .then(ipData => {
+                let ipLimpo = ipData.ip; // Pega o IP no formato clássico (IPv4)
+                
+                // Agora descobre a cidade e o estado desse IP limpo
+                fetch('https://ipapi.co/' + ipLimpo + '/json/')
+                    .then(res => res.json())
+                    .then(geoData => {
+                        fetch(scriptURL, {
+                            method: 'POST',
+                            mode: 'no-cors',
+                            body: JSON.stringify({ 
+                                "type": "ip", 
+                                "ip": ipLimpo,
+                                "estado": geoData.region || "-",
+                                "cidade": geoData.city || "-",
+                                "page": "INDEX", // Mantido como INDEX para rastrear a página certa
+                                "utm": utmsUrl,
+                                "device": deviceType,
+                                "os": osType
+                            })
+                        });
+                    }).catch(e => console.log("Erro geo:", e));
+            }).catch(e => console.log("Erro ip:", e));
     })();
 </script>
 
