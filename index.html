@@ -7,7 +7,6 @@
     <meta property="og:image" content="https://www.focolegis.com/fundopreto.png">
     <meta property="og:type" content="website">
     
-    <!-- Pixel da Meta (Facebook/Instagram) -->
     <script>
     !function(f,b,e,v,n,t,s)
     {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -23,7 +22,6 @@
     </script>
     <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1974259026792087&ev=PageView&noscript=1"/></noscript>
 
-<!-- Script Analytics Foco Legis -->
 <script>
     // --- 1. GERAÇÃO DO ID DE VISITANTE ---
     let visitorId = localStorage.getItem('fl_visitor_id');
@@ -32,14 +30,13 @@
         localStorage.setItem('fl_visitor_id', visitorId);
     }
     window.visitorId = visitorId;
-    window.scriptURL = 'https://script.google.com/macros/s/AKfycbyEU16u1kkWWUT5umPqEh6ubBJLj7-q-MqO6nnc18mONF_EPn1NgP5f-TyKLXlWwoeF/exec'; // GOOGLE SCRIPT
+    window.scriptURL = 'https://script.google.com/macros/s/AKfycbzZ7HcqLFwxlrEf-0RZdvrfWaKjcCZetnOuwUcAp4VD_CezTbbnV3EkPZHDIADxfB61/exec'; // GOOGLE SCRIPT
 
     (function() {
         let urlParams = new URLSearchParams(window.location.search);
         let utmSource = urlParams.get('utm_source') || 'Organico';
         let utmCampaign = urlParams.get('utm_campaign') || 'Direto';
         let utmsUrl = window.location.search || "Orgânico/Direto";
-        let currentUrl = window.location.href;
 
         let ua = navigator.userAgent;
         let deviceType = "PC";
@@ -61,6 +58,8 @@
             .then(res => res.json())
             .then(ipData => {
                 let ipLimpo = ipData.ip; 
+                window.userIP = ipLimpo; // Salva o IP para caso precise depois
+                
                 fetch('https://ipapi.co/' + ipLimpo + '/json/')
                     .then(res => res.json())
                     .then(geoData => {
@@ -167,7 +166,6 @@
         <h2 class="section-title">Nossos Materiais</h2>
         <div class="grid-produtos">
             
-            <!-- PRODUTO GRATUITO COM TIMER -->
             <div class="card">
                 <span class="card-tag gratis">MATERIAL GRATUITO 🎁</span>
                 <div class="card-img-container">
@@ -184,7 +182,6 @@
                 </div>
             </div>
 
-            <!-- PRODUTO PAGO: PENAL -->
             <div class="card">
                 <span class="card-tag">DESTAQUE 🔥🔥</span>
                 <div class="card-img-container">
@@ -203,7 +200,6 @@
                 </div>
             </div>
 
-            <!-- PRODUTO PAGO: CONSTITUCIONAL -->
             <div class="card">
                 <span class="card-tag">DESTAQUE 🔥🔥</span>
                 <div class="card-img-container">
@@ -229,7 +225,6 @@
         <p>&copy; 2026 Foco Legis. Pagamento 100% Seguro. Acesso Imediato via E-mail.</p>
     </footer>
 
-    <!-- MODAL DO PRODUTO GRATUITO -->
     <div class="modal-overlay" id="modal">
         <div class="modal-content">
             <h3>Quase lá! 🚀</h3>
