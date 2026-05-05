@@ -9,14 +9,7 @@
     
     <!-- Pixel da Meta -->
     <script>
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
     fbq('init', '1974259026792087');
     </script>
     <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1974259026792087&ev=PageView&noscript=1"/></noscript>
@@ -46,7 +39,6 @@
         .btn-amostra:hover { background-color: #34495e; color: white; }
         .btn-download { background-color: #27ae60; color: white; text-decoration: none; padding: 12px 20px; border-radius: 5px; font-weight: bold; display: block; transition: 0.3s; font-size: 1em; border: none; cursor: pointer; width: 100%; box-sizing: border-box; text-transform: uppercase; }
         .btn-download.disabled { background-color: #95a5a6; cursor: not-allowed; }
-        .btn-download:hover:not(.disabled) { background-color: #219653; }
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 2000; }
         .modal-content { background: white; padding: 30px; border-radius: 10px; width: 90%; max-width: 400px; text-align: center; box-sizing: border-box; }
         .modal-content h3 { margin-top: 0; color: #1a252f; }
@@ -80,7 +72,7 @@
                 <div><span class="preco-antigo">R$ 19,99</span></div>
                 <div class="preco" style="margin-bottom: 15px; margin-top: -5px;">Por R$ 0,00</div>
                 <div class="area-botoes">
-                    <button class="btn-download disabled" id="btn-timer" data-id="ETICA">AGUARDE 10s...</button>
+                    <button class="btn-download disabled" id="btn-timer">AGUARDE 10s...</button>
                 </div>
             </div>
 
@@ -88,10 +80,10 @@
                 <span class="card-tag">DESTAQUE 🔥🔥</span>
                 <div class="card-img-container"><img src="PENAL.png" alt="Código Penal"></div>
                 <h3>Código Penal Completo (2026)</h3>
-                <p>Parte Geral e Especial Esquematizadas e Comentadas com foco em concursos.</p>
+                <p>Parte Geral e Especial Esquematizadas e Comentadas.</p>
                 <div class="preco">R$ 19,99</div>
                 <div class="area-botoes">
-                    <a href="https://www.focolegis.com/FocoLegis%20-%20AMOSTRA%20-%20Direito%20Penal.pdf" target="_blank" rel="noopener noreferrer" class="btn-amostra" data-id="PNL">👁️ Ver Amostra (PDF)</a>
+                    <a href="https://www.focolegis.com/FocoLegis%20-%20AMOSTRA%20-%20Direito%20Penal.pdf" target="_blank" class="btn-amostra" data-id="PNL">👁️ Ver Amostra</a>
                     <a href="https://pay.hotmart.com/B105246198A" target="_blank" class="btn-comprar" data-id="PNL">Comprar Agora</a>
                 </div>
             </div>
@@ -103,7 +95,7 @@
                 <p>Constituição Federal Comentada e Esquematizada ponto a ponto!</p>
                 <div class="preco">R$ 19,99</div>
                 <div class="area-botoes">
-                    <a href="https://www.focolegis.com/FocoLegis%20-%20AMOSTRA%20-%20Direito%20Constitucional.pdf" target="_blank" rel="noopener noreferrer" class="btn-amostra" data-id="CONST">👁️ Ver Amostra (PDF)</a>
+                    <a href="https://www.focolegis.com/FocoLegis%20-%20AMOSTRA%20-%20Direito%20Constitucional.pdf" target="_blank" class="btn-amostra" data-id="CONST">👁️ Ver Amostra</a>
                     <a href="https://pay.hotmart.com/B105423919E" target="_blank" class="btn-comprar" data-id="CONST">Comprar Agora</a>
                 </div>
             </div>
@@ -132,178 +124,91 @@
         <div class="btn-whatsapp-fixo"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp"></div>
     </a>
 
-<!-- Script Principal - Agora com "Caixinha" de envios -->
 <script>
-    let visitorId = localStorage.getItem('fl_visitor_id');
-    if (!visitorId) {
-        visitorId = 'V-' + Math.random().toString(36).substr(2, 9);
-        localStorage.setItem('fl_visitor_id', visitorId);
-    }
+    // 1. CONFIGURAÇÕES
+    let visitorId = localStorage.getItem('fl_visitor_id') || ('V-' + Math.random().toString(36).substr(2, 9));
+    localStorage.setItem('fl_visitor_id', visitorId);
     window.visitorId = visitorId;
-    
-    // COLOQUE SEU LINK DO GOOGLE SCRIPT AQUI
-    window.scriptURL = 'https://script.google.com/macros/s/AKfycbzzXSsgrPRV1vuuvyt8NRBFyyKJPi8xiEZ4Rk1oJO-f5x2jdp95F8iGWMjs7ZBCYxDO/exec'; 
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbx-z-wf1WDHmQGRvDS4rVjjLF-LXBxClePDFttdKNlpRE3U2VfJMlPecmZZQxiNUbE/exec'; 
 
-    // O "CARRINHO" DE AÇÕES (Evita travar a planilha mandando 10 coisas ao mesmo tempo)
-    window.actionQueue = [];
-    
-    function adicionarAcao(tipo, valor) {
-        window.actionQueue.push({ type: tipo, val: valor });
+    function enviarPlanilha(dados) {
+        dados.visitorId = window.visitorId;
+        fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(dados) });
     }
 
-    // A cada 3 segundos, ele vê se tem algo na fila e manda tudo de uma vez
-    setInterval(() => {
-        if (window.actionQueue.length > 0) {
-            let payload = {
-                visitorId: window.visitorId,
-                actions: window.actionQueue.slice() // Copia a fila
-            };
-            window.actionQueue = []; // Limpa a fila
-            
-            fetch(window.scriptURL, {
-                method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify(payload)
-            }).catch(e => console.log(e));
-        }
-    }, 3000);
-
+    // 2. RASTREIO INICIAL (IP E LOCALIZAÇÃO)
     (function() {
         let utmsUrl = window.location.search || "Orgânico/Direto";
         let ua = navigator.userAgent;
         let deviceType = /Mobile|Android|iP(hone|od|ad)/i.test(ua) ? "Celular" : "PC";
         let osType = /Android/i.test(ua) ? "Android" : (/iP(hone|od|ad)/i.test(ua) ? "iOS" : (/Windows/i.test(ua) ? "Windows" : "Outro"));
 
-        if (typeof fbq === 'function') fbq('track', 'PageView');
+        fbq('track', 'PageView');
 
-        // NOVA API MAIS FORTE PARA CIDADE/ESTADO
-        fetch('http://ip-api.com/json/')
+        fetch('https://api.ipify.org?format=json')
             .then(res => res.json())
-            .then(geoData => {
-                if (typeof fbq === 'function' && geoData.city) {
-                    fbq('set', '1974259026792087', {
-                        ct: geoData.city.toLowerCase().replace(/\s/g, ''),
-                        st: geoData.region ? geoData.region.toLowerCase() : ''
+            .then(ipData => {
+                let ip = ipData.ip;
+                fetch('https://ipapi.co/' + ip + '/json/')
+                    .then(res => res.json())
+                    .then(geo => {
+                        enviarPlanilha({ "type": "ip", "ip": ip, "estado": geo.region, "cidade": geo.city, "utm": utmsUrl, "device": deviceType, "os": osType });
                     });
-                }
-                
-                // Envia o acesso inicial
-                fetch(window.scriptURL, {
-                    method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({ 
-                        "isFirstAccess": true, "visitorId": window.visitorId, "ip": geoData.query,
-                        "estado": geoData.regionName || "-", "cidade": geoData.city || "-",
-                        "utm": utmsUrl, "device": deviceType, "os": osType
-                    })
-                });
-            })
-            .catch(() => {
-                fetch(window.scriptURL, {
-                    method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({ "isFirstAccess": true, "visitorId": window.visitorId, "ip": "Oculto", "estado": "-", "cidade": "-", "utm": utmsUrl, "device": deviceType, "os": osType })
-                });
-            });
+            }).catch(() => enviarPlanilha({ "type": "ip", "ip": "Oculto", "utm": utmsUrl, "device": deviceType, "os": osType }));
             
-        // --- RASTREIO DE ROLAGEM ---
-        let scrollMarks = { 25: false, 50: false, 75: false, 100: false };
+        let marks = { 25: false, 50: false, 75: false, 100: false };
         window.addEventListener('scroll', () => {
             let p = Math.round((window.scrollY / (document.body.offsetHeight - window.innerHeight)) * 100);
-            [25, 50, 75, 100].forEach(mark => {
-                if (p >= mark && !scrollMarks[mark]) {
-                    scrollMarks[mark] = true;
-                    adicionarAcao("scroll", mark + "%");
-                }
+            [25, 50, 75, 100].forEach(m => {
+                if (p >= m && !marks[m]) { marks[m] = true; enviarPlanilha({ "type": "scroll", "depth": m + "%" }); }
             });
         });
     })();
 
+    // 3. INTERAÇÕES
     document.addEventListener("DOMContentLoaded", function() {
-        let userAgent = navigator.userAgent || navigator.vendor || window.opera;
-        let dispositivo = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase()) ? 'celular' : 'pc';
-
         document.querySelectorAll('.btn-comprar').forEach(btn => {
-            let linkOriginal = btn.getAttribute('href');
-            if (linkOriginal && linkOriginal !== "#") {
-                let separador = linkOriginal.includes('?') ? '&' : '?';
-                btn.setAttribute('href', linkOriginal + separador + "src=" + dispositivo);
-            }
-
-            btn.addEventListener('click', function() {
-                let idProduto = btn.getAttribute('data-id');
-                if (typeof fbq === 'function') fbq('track', 'InitiateCheckout', { content_name: idProduto, value: 19.99, currency: 'BRL' });
-                adicionarAcao("checkout", idProduto);
+            btn.addEventListener('click', () => {
+                let id = btn.getAttribute('data-id');
+                fbq('track', 'InitiateCheckout', { content_name: id });
+                enviarPlanilha({ "type": "checkout", "produto": id });
             });
         });
 
         document.querySelectorAll('.btn-amostra').forEach(btn => {
-            btn.addEventListener('click', function() {
-                let idProduto = btn.getAttribute('data-id');
-                if (typeof fbq === 'function') fbq('track', 'ViewContent', { content_name: idProduto });
-                adicionarAcao("amostra", idProduto);
+            btn.addEventListener('click', () => {
+                let id = btn.getAttribute('data-id');
+                fbq('track', 'ViewContent', { content_name: id });
+                enviarPlanilha({ "type": "amostra", "produto": id });
             });
         });
 
         const btnTimer = document.getElementById('btn-timer');
-        const modal = document.getElementById('modal');
-        const form = document.getElementById('whatsapp-form');
-        const linkReal = document.getElementById('link-real');
-        const inputWhatsapp = document.getElementById('whatsapp-input');
-        const btnLiberar = document.getElementById('btn-liberar');
+        let timeLeft = 10;
+        const timer = setInterval(() => {
+            timeLeft--;
+            if (timeLeft > 0) btnTimer.innerText = `AGUARDE ${timeLeft}s...`;
+            else { clearInterval(timer); btnTimer.innerText = 'BAIXAR MATERIAL'; btnTimer.classList.remove('disabled'); }
+        }, 1000);
 
-        if(btnTimer) {
-            let timeLeft = 10;
-            const timer = setInterval(() => {
-                timeLeft--;
-                if (timeLeft > 0) { btnTimer.innerText = `AGUARDE ${timeLeft}s...`; } 
-                else { clearInterval(timer); btnTimer.innerText = 'BAIXAR MATERIAL'; btnTimer.classList.remove('disabled'); }
-            }, 1000);
+        btnTimer.addEventListener('click', () => {
+            if (!btnTimer.classList.contains('disabled')) document.getElementById('modal').style.display = 'flex';
+        });
 
-            btnTimer.addEventListener('click', () => { 
-                if (!btnTimer.classList.contains('disabled')) {
-                    modal.style.display = 'flex'; 
-                    if (typeof fbq === 'function') fbq('trackCustom', 'OpenModal', { content_name: 'ETICA' });
-                }
-            });
-
-            if(form) {
-                form.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    const whats = inputWhatsapp.value;
-                    
-                    if(whats.length >= 10) {
-                        btnLiberar.innerText = "PROCESSANDO...";
-                        btnLiberar.classList.add('disabled');
-                        
-                        let numeroLimpo = whats.replace(/\D/g, ''); 
-                        if (!numeroLimpo.startsWith('55')) numeroLimpo = '55' + numeroLimpo; 
-                        
-                        if (typeof fbq === 'function') fbq('set', '1974259026792087', { ph: numeroLimpo });
-
-                        adicionarAcao("whatsapp", whats);
-                        
-                        form.style.display = 'none'; 
-                        document.getElementById('modal-text').innerHTML = "<b style='color: #27ae60'>✅ Acesso Liberado!</b><br>Clique no botão abaixo para baixar o seu PDF.";
-                        linkReal.style.display = 'block'; 
-                        
-                        if (typeof fbq === 'function') fbq('track', 'Lead', { content_name: 'ETICA', value: 0.00, currency: 'BRL' });
-                    } else {
-                        alert("Por favor, insira um número válido com DDD.");
-                        btnLiberar.innerText = "LIBERAR ACESSO";
-                        btnLiberar.classList.remove('disabled');
-                    }
-                });
+        document.getElementById('whatsapp-form').onsubmit = (e) => {
+            e.preventDefault();
+            let w = document.getElementById('whatsapp-input').value;
+            if(w.length >= 10) {
+                enviarPlanilha({ "type": "whatsapp", "whatsapp": w });
+                fbq('track', 'Lead');
+                document.getElementById('whatsapp-form').style.display = 'none';
+                document.getElementById('modal-text').innerHTML = "✅ Liberado!";
+                document.getElementById('link-real').style.display = 'block';
             }
-
-            if(linkReal) {
-                linkReal.addEventListener('click', () => { 
-                    if (typeof fbq === 'function') fbq('trackCustom', 'DownloadMaterial', { content_name: 'ETICA' });
-                    modal.style.display = 'none'; 
-                });
-            }
-
-            if(modal) {
-                modal.addEventListener('click', (e) => { if(e.target === modal) modal.style.display = 'none'; });
-            }
-        }
+        };
+        
+        document.getElementById('link-real').onclick = () => document.getElementById('modal').style.display = 'none';
+        window.onclick = (e) => { if(e.target == document.getElementById('modal')) document.getElementById('modal').style.display = 'none'; };
     });
 </script>
 </body>
