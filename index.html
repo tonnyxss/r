@@ -17,8 +17,9 @@
     t.src=v;s=b.getElementsByTagName(e)[0];
     s.parentNode.insertBefore(t,s)}(window, document,'script',
     'https://connect.facebook.net/en_US/fbevents.js');
+    
+    // Inicializa o pixel (O PageView está no script abaixo para ser enriquecido)
     fbq('init', '1974259026792087');
-    fbq('track', 'PageView');
     </script>
     <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1974259026792087&ev=PageView&noscript=1"/></noscript>
 
@@ -27,8 +28,13 @@
     (function() {
         const scriptURL = 'https://script.google.com/macros/s/AKfycbw0H50s38jUfAXmmal9zotsFwWgqHPTkQgWCDTNoD7V1TB018JzXTBmLdoSMvIrEQ/exec';
         
-        let utmsUrl = window.location.search;
-        if (!utmsUrl) utmsUrl = "Orgânico/Direto";
+        // Variável global para guardar o IP do usuário para usar no WhatsApp depois
+        window.userIP = ""; 
+        
+        let urlParams = new URLSearchParams(window.location.search);
+        let utmSource = urlParams.get('utm_source') || 'Organico';
+        let utmCampaign = urlParams.get('utm_campaign') || 'Direto';
+        let utmsUrl = window.location.search || "Orgânico/Direto";
 
         let ua = navigator.userAgent;
         let deviceType = "PC";
@@ -40,16 +46,36 @@
         else if (/Windows/i.test(ua)) { osType = "Windows"; } 
         else if (/Mac/i.test(ua)) { osType = "MacOS"; }
 
+        // --- 1. DISPARA O PAGEVIEW ENRIQUECIDO PARA A META ---
+        if (typeof fbq === 'function') {
+            fbq('track', 'PageView', {
+                device: deviceType,
+                os: osType,
+                utm_source: utmSource,
+                utm_campaign: utmCampaign
+            });
+        }
+
         // --- RASTREADOR COMBO: PEGA IPv4 LIMPO + GEOLOCALIZAÇÃO ---
         fetch('https://api.ipify.org?format=json')
             .then(res => res.json())
             .then(ipData => {
-                let ipLimpo = ipData.ip; // Pega o IP no formato clássico (IPv4)
+                let ipLimpo = ipData.ip; 
+                window.userIP = ipLimpo; // Salva o IP na variável global
                 
-                // Agora descobre a cidade e o estado desse IP limpo
                 fetch('https://ipapi.co/' + ipLimpo + '/json/')
                     .then(res => res.json())
                     .then(geoData => {
+                        
+                        // --- 2. ALIMENTA O PIXEL COM LOCALIZAÇÃO (Correspondência Avançada) ---
+                        if (typeof fbq === 'function' && geoData.city) {
+                            fbq('set', '1974259026792087', {
+                                ct: geoData.city.toLowerCase().replace(/\s/g, ''),
+                                st: geoData.region_code ? geoData.region_code.toLowerCase() : ''
+                            });
+                        }
+
+                        // Envia o acesso para o Google Sheets
                         fetch(scriptURL, {
                             method: 'POST',
                             mode: 'no-cors',
@@ -58,7 +84,7 @@
                                 "ip": ipLimpo,
                                 "estado": geoData.region || "-",
                                 "cidade": geoData.city || "-",
-                                "page": "INDEX", // Mantido como INDEX para rastrear a página certa
+                                "page": "INDEX_COM_OFERTA", 
                                 "utm": utmsUrl,
                                 "device": deviceType,
                                 "os": osType
@@ -117,7 +143,6 @@
             transition: transform 0.3s ease;
             display: flex;
             flex-direction: column;
-            /* Garante que o card tenha uma altura mínima para ficarem iguais */
             min-height: 480px; 
         }
         .card:hover {
@@ -134,6 +159,9 @@
             margin-bottom: 15px;
             font-weight: bold;
             align-self: center;
+        }
+        .card-tag.gratis {
+            background-color: #3498db;
         }
         .card-img-container {
             width: 160px;
@@ -156,7 +184,6 @@
             margin: 10px 0;
             color: #2c3e50;
             font-size: 1.3em;
-            /* Limita o título para não quebrar o layout */
             min-height: 3em; 
             display: flex;
             align-items: center;
@@ -166,7 +193,7 @@
             color: #7f8c8d;
             font-size: 0.9em;
             margin-bottom: 20px;
-            flex-grow: 1; /* Faz a descrição ocupar o espaço restante */
+            flex-grow: 1; 
         }
         .preco {
             font-size: 1.5em;
@@ -174,11 +201,19 @@
             color: #27ae60;
             margin-bottom: 15px;
         }
+        .preco-antigo {
+            text-decoration: line-through;
+            text-decoration-color: #e74c3c;
+            text-decoration-thickness: 3px;
+            color: #95a5a6;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
         .area-botoes {
             display: flex;
             flex-direction: column;
             gap: 10px;
-            margin-top: auto; /* Joga os botões para o final do card */
+            margin-top: auto; 
         }
         .btn-comprar {
             background-color: #27ae60;
@@ -208,6 +243,22 @@
             background-color: #34495e;
             color: white;
         }
+
+        /* --- ESTILOS ESPECÍFICOS DO BOTÃO E MODAL GRATUITOS --- */
+        .btn-download { 
+            background-color: #27ae60; color: white; text-decoration: none; padding: 12px 20px; 
+            border-radius: 5px; font-weight: bold; display: block; transition: 0.3s; font-size: 1em; 
+            border: none; cursor: pointer; width: 100%; box-sizing: border-box; text-transform: uppercase;
+        }
+        .btn-download.disabled { background-color: #95a5a6; cursor: not-allowed; }
+        .btn-download:hover:not(.disabled) { background-color: #219653; }
+        
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 2000; }
+        .modal-content { background: white; padding: 30px; border-radius: 10px; width: 90%; max-width: 400px; text-align: center; box-sizing: border-box; }
+        .modal-content h3 { margin-top: 0; color: #1a252f; }
+        .modal-content input { width: 100%; padding: 15px; margin: 20px 0; border: 2px solid #ecf0f1; border-radius: 5px; font-size: 1em; box-sizing: border-box; }
+        #link-real { display: none; margin-top: 20px; background-color: #2c3e50; }
+        #link-real:hover { background-color: #1a252f;}
 
         .oculto { display: none !important; }
         footer { text-align: center; padding: 40px 20px; color: #7f8c8d; }
@@ -257,6 +308,24 @@
         <h2 class="section-title">Nossos Materiais</h2>
         <div class="grid-produtos">
             
+            <!-- PRODUTO GRATUITO COM TIMER -->
+            <div class="card">
+                <span class="card-tag gratis">MATERIAL GRATUITO 🎁</span>
+                <div class="card-img-container">
+                    <img src="OAB.png" alt="Capa OAB">
+                </div>
+                <h3>Resumão Ética Profissional - OAB 46</h3>
+                <p>O conteúdo essencial de Ética para gabaritar na 1ª fase.</p>
+                <div>
+                    <span class="preco-antigo">R$ 19,99</span>
+                </div>
+                <div class="preco" style="margin-bottom: 15px; margin-top: -5px;">Por R$ 0,00</div>
+                <div class="area-botoes">
+                    <button class="btn-download disabled" id="btn-timer">AGUARDE 10s...</button>
+                </div>
+            </div>
+
+            <!-- PRODUTO PAGO: PENAL -->
             <div class="card">
                 <span class="card-tag">DESTAQUE 🔥🔥</span>
                 <div class="card-img-container">
@@ -275,6 +344,7 @@
                 </div>
             </div>
 
+            <!-- PRODUTO PAGO: CONSTITUCIONAL -->
             <div class="card">
                 <span class="card-tag">DESTAQUE 🔥🔥</span>
                 <div class="card-img-container">
@@ -300,6 +370,20 @@
         <p>&copy; 2026 Foco Legis. Pagamento 100% Seguro. Acesso Imediato via E-mail.</p>
     </footer>
 
+    <!-- MODAL DO PRODUTO GRATUITO -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal-content">
+            <h3>Quase lá! 🚀</h3>
+            <p id="modal-text">Informe seu WhatsApp para liberar o download gratuito.</p>
+            <form id="whatsapp-form">
+                <input type="tel" id="whatsapp-input" placeholder="(00) 90000-0000" required>
+                <button type="submit" class="btn-download" id="btn-liberar">LIBERAR ACESSO</button>
+            </form>
+            <a href="OAB46.pdf" target="_blank" class="btn-download" id="link-real">CLIQUE PARA BAIXAR PDF</a>
+        </div>
+    </div>
+
+    <!-- BOTÃO FLUTUANTE DO WHATSAPP -->
     <a href="https://wa.me/5522998223640?text=Ol%C3%A1%2C%20estou%20com%20d%C3%BAvida!" class="container-whatsapp" target="_blank">
         <div class="mensagem-whatsapp">DÚVIDA? ENTRE EM CONTATO!</div>
         <div class="btn-whatsapp-fixo">
@@ -309,7 +393,6 @@
 
 <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // 1. Rastreio de dispositivo para Hotmart
             function detectarDispositivo() {
                 const userAgent = navigator.userAgent || navigator.vendor || window.opera;
                 return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase()) ? 'celular' : 'pc';
@@ -319,24 +402,24 @@
             const botoesCompra = document.querySelectorAll('.btn-comprar');
           
             // ==========================================
-            // EVENTOS DOS BOTÕES DE COMPRA (InitiateCheckout + VALOR/ROAS)
+            // EVENTOS DOS BOTÕES DE COMPRA E AMOSTRA
             // ==========================================
             botoesCompra.forEach(function(botao) {
-                // Adiciona o SRC da Hotmart
                 let linkOriginal = botao.getAttribute('href');
                 if (linkOriginal && linkOriginal !== "#") {
                     let separador = linkOriginal.includes('?') ? '&' : '?';
                     botao.setAttribute('href', linkOriginal + separador + "src=" + dispositivo);
                 }
 
-                // Dispara o Evento do Pixel ao Clicar em Comprar
                 botao.addEventListener('click', function() {
                     let nomeProduto = botao.closest('.card').querySelector('h3').innerText;
                     
+                    // --- EVENTO INITIATE CHECKOUT ENRIQUECIDO ---
                     if (typeof fbq === 'function') {
-                        // AGORA O FACEBOOK SABE QUE O PRODUTO CUSTA R$ 19,99
                         fbq('track', 'InitiateCheckout', { 
                             content_name: nomeProduto,
+                            content_category: 'Resumo OAB',
+                            content_type: 'product',
                             value: 19.99,
                             currency: 'BRL'
                         });
@@ -344,24 +427,105 @@
                 });
             });
 
-            // ==========================================
-            // EVENTOS DOS BOTÕES DE AMOSTRA (ViewContent)
-            // ==========================================
             const botoesAmostra = document.querySelectorAll('.btn-amostra');
-            
             botoesAmostra.forEach(function(botao) {
                 botao.addEventListener('click', function() {
-                    // Pega o título do produto que está no mesmo card do botão
                     let nomeProduto = botao.closest('.card').querySelector('h3').innerText;
-                    
-                    // Avisa a Meta que a amostra foi vista
                     if (typeof fbq === 'function') {
-                        fbq('track', 'ViewContent', { content_category: 'Amostra Grátis', content_name: nomeProduto });
+                        fbq('track', 'ViewContent', { content_category: 'Amostra', content_name: nomeProduto });
                     }
                 });
             });
-            
+
+            // ==========================================
+            // LÓGICA DO PRODUTO GRATUITO (TIMER E MODAL)
+            // ==========================================
+            const btnTimer = document.getElementById('btn-timer');
+            const modal = document.getElementById('modal');
+            const form = document.getElementById('whatsapp-form');
+            const linkReal = document.getElementById('link-real');
+            const inputWhatsapp = document.getElementById('whatsapp-input');
+            const modalText = document.getElementById('modal-text');
+            const btnLiberar = document.getElementById('btn-liberar');
+
+            if(btnTimer) {
+                let timeLeft = 10;
+                const timer = setInterval(() => {
+                    timeLeft--;
+                    if (timeLeft > 0) { btnTimer.innerText = `AGUARDE ${timeLeft}s...`; } 
+                    else { clearInterval(timer); btnTimer.innerText = 'BAIXAR MATERIAL'; btnTimer.classList.remove('disabled'); }
+                }, 1000);
+
+                btnTimer.addEventListener('click', () => { 
+                    if (!btnTimer.classList.contains('disabled')) {
+                        modal.style.display = 'flex'; 
+                        if (typeof fbq === 'function') {
+                            fbq('trackCustom', 'OpenModal', { content_name: 'Resumão Ética Profissional OAB 46' });
+                        }
+                    }
+                });
+
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const whats = inputWhatsapp.value;
+                    
+                    if(whats.length >= 10) {
+                        btnLiberar.innerText = "PROCESSANDO...";
+                        btnLiberar.classList.add('disabled');
+                        
+                        let numeroLimpo = whats.replace(/\D/g, ''); 
+                        if (!numeroLimpo.startsWith('55')) {
+                            numeroLimpo = '55' + numeroLimpo; 
+                        }
+
+                        // --- 3. ALIMENTA O PIXEL COM O TELEFONE DO LEAD ---
+                        if (typeof fbq === 'function') {
+                            fbq('set', '1974259026792087', { ph: numeroLimpo });
+                        }
+
+                        const scriptURL = 'https://script.google.com/macros/s/AKfycbyjGSWimBPhfGvuzHiVSos38ZBTgAj4G2VQAlAs0jdBmp_zV3_5H2zEOw0ID2tcZax-/exec';
+
+                        // --- 4. ENVIA O WHATSAPP E O IP PARA A PLANILHA ---
+                        fetch(scriptURL, {
+                            method: 'POST',
+                            mode: 'no-cors',
+                            body: JSON.stringify({ 
+                                "type": "whatsapp", 
+                                "whatsapp": whats,
+                                "ip": window.userIP // IP passado aqui para unir com o acesso!
+                            })
+                        }).then(() => {
+                            form.style.display = 'none'; 
+                            modalText.innerHTML = "<b style='color: #27ae60'>✅ Acesso Liberado!</b><br>Clique no botão abaixo.";
+                            linkReal.style.display = 'block'; 
+                            
+                            // --- EVENTO LEAD ENRIQUECIDO ---
+                            if (typeof fbq === 'function') {
+                                fbq('track', 'Lead', { 
+                                    content_name: 'Resumão Ética Profissional OAB 46',
+                                    content_category: 'Material Gratuito',
+                                    value: 0.00,
+                                    currency: 'BRL'
+                                });
+                            }
+                        });
+                    } else {
+                        alert("Por favor, insira um número válido com DDD.");
+                        btnLiberar.innerText = "LIBERAR ACESSO";
+                        btnLiberar.classList.remove('disabled');
+                    }
+                });
+
+                linkReal.addEventListener('click', () => { 
+                    if (typeof fbq === 'function') {
+                        fbq('trackCustom', 'DownloadMaterial', { content_name: 'Resumão Ética Profissional OAB 46' });
+                    }
+                    setTimeout(() => { window.location.reload(); }, 4000); 
+                });
+
+                modal.addEventListener('click', (e) => { if(e.target === modal) modal.style.display = 'none'; });
+            }
         });
-    </script>
+</script>
 </body>
 </html>
