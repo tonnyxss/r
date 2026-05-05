@@ -4,343 +4,128 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Foco Legis - Lei Seca Comentada e Esquematizada!</title>
-    <meta property="og:image" content="https://www.focolegis.com/fundopreto.png">
-    <meta property="og:type" content="website">
-    
-    <!-- Pixel da Meta -->
     <script>
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
     fbq('init', '1974259026792087');
     </script>
-    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1974259026792087&ev=PageView&noscript=1"/></noscript>
-
-<!-- Script Analytics -->
-<script>
-    let visitorId = localStorage.getItem('fl_visitor_id');
-    if (!visitorId) {
-        visitorId = 'V-' + Math.random().toString(36).substr(2, 9);
-        localStorage.setItem('fl_visitor_id', visitorId);
-    }
-    window.visitorId = visitorId;
-    
-    // COLOQUE SEU LINK TESTADO AQUI
-    window.scriptURL = 'https://script.google.com/macros/s/AKfycbyTCzJVSgEKLjMlzDWxVssymCfBUqgZCWK9-U0hMd2yySNz3kDLn49D82SpLaqA_OhwoQ/exec'; 
-
-    (function() {
-        let urlParams = new URLSearchParams(window.location.search);
-        let utmSource = urlParams.get('utm_source') || 'Organico';
-        let utmCampaign = urlParams.get('utm_campaign') || 'Direto';
-        let utmsUrl = window.location.search || "Orgânico/Direto";
-
-        let ua = navigator.userAgent;
-        let deviceType = "PC";
-        let osType = "Outro";
-
-        if (/Mobile|Android|iP(hone|od|ad)/i.test(ua)) { deviceType = "Celular"; }
-        if (/Android/i.test(ua)) { osType = "Android"; } 
-        else if (/iP(hone|od|ad)/i.test(ua)) { osType = "iOS"; } 
-        else if (/Windows/i.test(ua)) { osType = "Windows"; } 
-        else if (/Mac/i.test(ua)) { osType = "MacOS"; }
-
-        if (typeof fbq === 'function') {
-            fbq('track', 'PageView', { device: deviceType, os: osType, utm_source: utmSource, utm_campaign: utmCampaign });
-        }
-
-        let payloadAcesso = { 
-            "type": "ip", 
-            "visitorId": window.visitorId,
-            "ip": "Bloqueado/Oculto",
-            "estado": "-",
-            "cidade": "-",
-            "url": "INDEX", 
-            "utm": utmsUrl,
-            "device": deviceType,
-            "os": osType
-        };
-
-        function enviarParaPlanilha(payload) {
-            fetch(window.scriptURL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify(payload)
-            }).catch(e => console.log("Erro fetch:", e));
-        }
-
-        fetch('https://api.ipify.org?format=json')
-            .then(res => res.json())
-            .then(ipData => {
-                let ipLimpo = ipData.ip; 
-                payloadAcesso.ip = ipLimpo;
-                window.userIP = ipLimpo;
-                
-                return fetch('https://ipapi.co/' + ipLimpo + '/json/');
-            })
-            .then(res => res.json())
-            .then(geoData => {
-                payloadAcesso.estado = geoData.region || "-";
-                payloadAcesso.cidade = geoData.city || "-";
-
-                if (typeof fbq === 'function' && geoData.city) {
-                    fbq('set', '1974259026792087', {
-                        ct: geoData.city.toLowerCase().replace(/\s/g, ''),
-                        st: geoData.region_code ? geoData.region_code.toLowerCase() : ''
-                    });
-                }
-                enviarParaPlanilha(payloadAcesso); 
-            })
-            .catch(e => {
-                enviarParaPlanilha(payloadAcesso);
-            });
-            
-        let scrollMarks = { 25: false, 50: false, 75: false, 100: false };
-        window.addEventListener('scroll', () => {
-            let scrollTop = window.scrollY;
-            let docHeight = document.body.offsetHeight;
-            let winHeight = window.innerHeight;
-            let scrollPercent = Math.round((scrollTop / (docHeight - winHeight)) * 100);
-            
-            [25, 50, 75, 100].forEach(mark => {
-                if (scrollPercent >= mark && !scrollMarks[mark]) {
-                    scrollMarks[mark] = true;
-                    enviarParaPlanilha({ "type": "scroll", "visitorId": window.visitorId, "depth": mark + "%" });
-                }
-            });
-        });
-    })();
-</script>
-
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
-        header { background-color: #1a252f; color: #ffffff; text-align: center; padding: 40px 20px; }
-        header h1 { margin: 0; font-size: 2.2em; color: #f1c40f; }
-        header p { font-size: 1.1em; margin-top: 10px; }
-        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
-        .section-title { text-align: center; margin-bottom: 40px; font-size: 1.8em; color: #2c3e50; }
-        .grid-produtos { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
-        .card { background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 25px; text-align: center; transition: transform 0.3s ease; display: flex; flex-direction: column; min-height: 480px; }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
-        .card-tag { background-color: #e74c3c; color: white; font-size: 0.8em; padding: 4px 8px; border-radius: 4px; display: inline-block; margin-bottom: 15px; font-weight: bold; align-self: center; }
-        .card-tag.gratis { background-color: #3498db; }
-        .card-img-container { width: 160px; height: 160px; margin: 0 auto 15px auto; overflow: hidden; border-radius: 8px; display: flex; justify-content: center; align-items: center; background-color: #ecf0f1; flex-shrink: 0; }
-        .card-img-container img { width: 100%; height: 100%; object-fit: cover; }
-        .card h3 { margin: 10px 0; color: #2c3e50; font-size: 1.3em; min-height: 3em; display: flex; align-items: center; justify-content: center; }
-        .card p { color: #7f8c8d; font-size: 0.9em; margin-bottom: 20px; flex-grow: 1; }
-        .preco { font-size: 1.5em; font-weight: bold; color: #27ae60; margin-bottom: 15px; }
-        .preco-antigo { text-decoration: line-through; text-decoration-color: #e74c3c; text-decoration-thickness: 3px; color: #95a5a6; font-size: 1.1em; font-weight: bold; }
-        .area-botoes { display: flex; flex-direction: column; gap: 10px; margin-top: auto; }
-        .btn-comprar { background-color: #27ae60; color: white; text-decoration: none; padding: 12px 20px; border-radius: 5px; font-weight: bold; display: block; transition: background-color 0.3s; }
-        .btn-comprar:hover { background-color: #219653; }
-        .btn-amostra { background-color: transparent; color: #34495e; border: 2px solid #34495e; padding: 10px 20px; border-radius: 5px; font-weight: bold; text-decoration: none; display: block; transition: 0.3s; font-size: 0.9em; }
-        .btn-amostra:hover { background-color: #34495e; color: white; }
-        
-        .btn-download { background-color: #27ae60; color: white; text-decoration: none; padding: 12px 20px; border-radius: 5px; font-weight: bold; display: block; transition: 0.3s; font-size: 1em; border: none; cursor: pointer; width: 100%; box-sizing: border-box; text-transform: uppercase; }
-        .btn-download.disabled { background-color: #95a5a6; cursor: not-allowed; }
-        .btn-download:hover:not(.disabled) { background-color: #219653; }
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 2000; }
-        .modal-content { background: white; padding: 30px; border-radius: 10px; width: 90%; max-width: 400px; text-align: center; box-sizing: border-box; }
-        .modal-content h3 { margin-top: 0; color: #1a252f; }
-        .modal-content input { width: 100%; padding: 15px; margin: 20px 0; border: 2px solid #ecf0f1; border-radius: 5px; font-size: 1em; box-sizing: border-box; }
-        #link-real { display: none; margin-top: 20px; background-color: #2c3e50; }
-        #link-real:hover { background-color: #1a252f;}
-        .oculto { display: none !important; }
-        footer { text-align: center; padding: 40px 20px; color: #7f8c8d; }
-        
-        .container-whatsapp { position: fixed; bottom: 20px; right: 20px; display: flex; align-items: center; gap: 12px; z-index: 1000; text-decoration: none; }
-        .mensagem-whatsapp { background-color: #ffffff; color: #2c3e50; padding: 10px 15px; border-radius: 8px; font-size: 0.9em; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
-        .btn-whatsapp-fixo { width: 60px; height: 60px; background-color: #25d366; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .btn-whatsapp-fixo img { width: 35px; height: 35px; }
-    </style>
 </head>
 <body>
+    <script>
+        let visitorId = localStorage.getItem('fl_visitor_id');
+        if (!visitorId) {
+            visitorId = 'V-' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem('fl_visitor_id', visitorId);
+        }
+        window.visitorId = visitorId;
+        window.scriptURL = 'https://script.google.com/macros/s/AKfycbyRkjc2Th75EV1ah4qjlVAphce_TyvG268aXtMRwBQqiV3G6XU1Hc9tOEmBbw_9k4AAVw/exec'; 
 
-    <header>
-        <h1>Foco Legis - Legislação Comentada e Esquematizada</h1>
-        <p>Acelere sua aprovação com lei seca comentada e esquematizada!</p>
-        <p>✅ Atualizado 2026 | ✅ Acesso Imediato | ✅ Download Liberado</p>
-    </header>
+        (function() {
+            let urlParams = new URLSearchParams(window.location.search);
+            let utmsUrl = window.location.search || "Orgânico/Direto";
 
-    <div class="container">
-        <h2 class="section-title">Nossos Materiais</h2>
-        <div class="grid-produtos">
-            
-            <div class="card">
-                <span class="card-tag gratis">MATERIAL GRATUITO 🎁</span>
-                <div class="card-img-container"><img src="OAB.png" alt="Capa OAB"></div>
-                <h3>Resumão Ética Profissional - OAB 46</h3>
-                <p>O conteúdo essencial de Ética para gabaritar na 1ª fase.</p>
-                <div><span class="preco-antigo">R$ 19,99</span></div>
-                <div class="preco" style="margin-bottom: 15px; margin-top: -5px;">Por R$ 0,00</div>
-                <div class="area-botoes">
-                    <button class="btn-download disabled" id="btn-timer">AGUARDE 10s...</button>
-                </div>
-            </div>
+            let ua = navigator.userAgent;
+            let deviceType = /Mobile|Android|iP(hone|od|ad)/i.test(ua) ? "Celular" : "PC";
+            let osType = "Outro";
+            if (/Android/i.test(ua)) osType = "Android";
+            else if (/iP(hone|od|ad)/i.test(ua)) osType = "iOS";
+            else if (/Windows/i.test(ua)) osType = "Windows";
 
-            <div class="card">
-                <span class="card-tag">DESTAQUE 🔥🔥</span>
-                <div class="card-img-container"><img src="PENAL.png" alt="Código Penal"></div>
-                <h3>Código Penal Completo (2026)</h3>
-                <p>Parte Geral e Especial Esquematizadas e Comentadas com foco em concursos.</p>
-                <div class="preco">R$ 19,99</div>
-                <div class="area-botoes">
-                    <a href="https://www.focolegis.com/FocoLegis%20-%20AMOSTRA%20-%20Direito%20Penal.pdf" target="_blank" rel="noopener noreferrer" class="btn-amostra">👁️ Ver Amostra (PDF)</a>
-                    <a href="https://pay.hotmart.com/B105246198A" target="_blank" class="btn-comprar">Comprar Agora</a>
-                </div>
-            </div>
+            fbq('track', 'PageView');
 
-            <div class="card">
-                <span class="card-tag">DESTAQUE 🔥🔥</span>
-                <div class="card-img-container"><img src="CONSTITUCIONAL.png" alt="Direito Constitucional"></div>
-                <h3>Direito Constitucional (2026)</h3>
-                <p>Constituição Federal Comentada e Esquematizada ponto a ponto!</p>
-                <div class="preco">R$ 19,99</div>
-                <div class="area-botoes">
-                    <a href="https://www.focolegis.com/FocoLegis%20-%20AMOSTRA%20-%20Direito%20Constitucional.pdf" target="_blank" rel="noopener noreferrer" class="btn-amostra">👁️ Ver Amostra (PDF)</a>
-                    <a href="https://pay.hotmart.com/B105423919E" target="_blank" class="btn-comprar">Comprar Agora</a>
-                </div>
-            </div>
+            let payloadAcesso = { 
+                "type": "ip", "visitorId": window.visitorId, "ip": "Oculto",
+                "estado": "-", "cidade": "-", "url": "INDEX", 
+                "utm": utmsUrl, "device": deviceType, "os": osType
+            };
 
-        </div>
-    </div>
+            function enviarParaPlanilha(p) {
+                fetch(window.scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(p) });
+            }
 
-    <footer>
-        <p>&copy; 2026 Foco Legis. Pagamento 100% Seguro. Acesso Imediato via E-mail.</p>
-    </footer>
+            fetch('https://api.ipify.org?format=json')
+                .then(res => res.json())
+                .then(ipData => {
+                    payloadAcesso.ip = ipData.ip;
+                    return fetch('https://ipwhois.app/json/' + ipData.ip);
+                })
+                .then(res => res.json())
+                .then(geo => {
+                    payloadAcesso.estado = geo.region || "-";
+                    payloadAcesso.cidade = geo.city || "-";
+                    enviarParaPlanilha(payloadAcesso);
+                })
+                .catch(() => enviarParaPlanilha(payloadAcesso));
+                
+            // RASTREIO DE ROLAGEM
+            let scrollMarks = { 25: false, 50: false, 75: false, 100: false };
+            window.addEventListener('scroll', () => {
+                let scrollPercent = Math.round((window.scrollY / (document.body.offsetHeight - window.innerHeight)) * 100);
+                [25, 50, 75, 100].forEach(mark => {
+                    if (scrollPercent >= mark && !scrollMarks[mark]) {
+                        scrollMarks[mark] = true;
+                        fetch(window.scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ "type": "scroll", "visitorId": window.visitorId, "depth": mark + "%" }) });
+                    }
+                });
+            });
+        })();
 
-    <div class="modal-overlay" id="modal">
-        <div class="modal-content">
-            <h3>Quase lá! 🚀</h3>
-            <p id="modal-text">Informe seu WhatsApp para liberar o download gratuito.</p>
-            <form id="whatsapp-form">
-                <input type="tel" id="whatsapp-input" placeholder="(00) 90000-0000" required>
-                <button type="submit" class="btn-download" id="btn-liberar">LIBERAR ACESSO</button>
-            </form>
-            <a href="OAB46.pdf" target="_blank" class="btn-download" id="link-real">CLIQUE PARA BAIXAR PDF</a>
-        </div>
-    </div>
-
-    <a href="https://wa.me/5522998223640?text=Ol%C3%A1%2C%20estou%20com%20d%C3%BAvida!" class="container-whatsapp" target="_blank">
-        <div class="mensagem-whatsapp">DÚVIDA? ENTRE EM CONTATO!</div>
-        <div class="btn-whatsapp-fixo"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp"></div>
-    </a>
-
-<script>
+        // LOGICA DOS BOTÕES E MODAL
         document.addEventListener("DOMContentLoaded", function() {
-            function detectarDispositivo() {
-                const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-                return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase()) ? 'celular' : 'pc';
+            function registrarAcao(tipo, extra) {
+                let p = { "type": tipo, "visitorId": window.visitorId };
+                if (extra.produto) p.produto = extra.produto;
+                if (extra.whatsapp) p.whatsapp = extra.whatsapp;
+                fetch(window.scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(p) });
             }
-            
-            const dispositivo = detectarDispositivo();
-            
-            // Função central para envio dos botões
-            function enviarAcaoPlanilha(payload) {
-                fetch(window.scriptURL, {
-                    method: 'POST', mode: 'no-cors',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify(payload)
-                }).catch(e => console.log("Erro btn:", e));
-            }
-            
-            const botoesCompra = document.querySelectorAll('.btn-comprar');
-            botoesCompra.forEach(function(botao) {
-                let linkOriginal = botao.getAttribute('href');
-                if (linkOriginal && linkOriginal !== "#") {
-                    let separador = linkOriginal.includes('?') ? '&' : '?';
-                    botao.setAttribute('href', linkOriginal + separador + "src=" + dispositivo);
-                }
 
-                botao.addEventListener('click', function() {
-                    let nomeProduto = botao.closest('.card').querySelector('h3').innerText;
-                    if (typeof fbq === 'function') {
-                        fbq('track', 'InitiateCheckout', { content_name: nomeProduto, content_category: 'Resumo OAB', content_type: 'product', value: 19.99, currency: 'BRL' });
-                    }
-                    enviarAcaoPlanilha({ "type": "checkout", "visitorId": window.visitorId, "produto": nomeProduto });
+            document.querySelectorAll('.btn-comprar').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    let nome = btn.closest('.card').querySelector('h3').innerText;
+                    fbq('track', 'InitiateCheckout', { content_name: nome, value: 19.99, currency: 'BRL' });
+                    registrarAcao("checkout", { produto: nome });
                 });
             });
 
-            const botoesAmostra = document.querySelectorAll('.btn-amostra');
-            botoesAmostra.forEach(function(botao) {
-                botao.addEventListener('click', function() {
-                    let nomeProduto = botao.closest('.card').querySelector('h3').innerText;
-                    if (typeof fbq === 'function') {
-                        fbq('track', 'ViewContent', { content_category: 'Amostra', content_name: nomeProduto });
-                    }
-                    enviarAcaoPlanilha({ "type": "amostra", "visitorId": window.visitorId, "produto": nomeProduto });
+            document.querySelectorAll('.btn-amostra').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    let nome = btn.closest('.card').querySelector('h3').innerText;
+                    fbq('track', 'ViewContent', { content_name: nome });
+                    registrarAcao("amostra", { produto: nome });
                 });
             });
 
-            const btnTimer = document.getElementById('btn-timer');
-            const modal = document.getElementById('modal');
             const form = document.getElementById('whatsapp-form');
-            const linkReal = document.getElementById('link-real');
-            const inputWhatsapp = document.getElementById('whatsapp-input');
-            const modalText = document.getElementById('modal-text');
-            const btnLiberar = document.getElementById('btn-liberar');
-
-            if(btnTimer) {
-                let timeLeft = 10;
-                const timer = setInterval(() => {
-                    timeLeft--;
-                    if (timeLeft > 0) { btnTimer.innerText = `AGUARDE ${timeLeft}s...`; } 
-                    else { clearInterval(timer); btnTimer.innerText = 'BAIXAR MATERIAL'; btnTimer.classList.remove('disabled'); }
-                }, 1000);
-
-                btnTimer.addEventListener('click', () => { 
-                    if (!btnTimer.classList.contains('disabled')) {
-                        modal.style.display = 'flex'; 
-                        if (typeof fbq === 'function') fbq('trackCustom', 'OpenModal', { content_name: 'Resumão Ética Profissional OAB 46' });
-                    }
-                });
-
+            if(form) {
                 form.addEventListener('submit', (e) => {
                     e.preventDefault();
-                    const whats = inputWhatsapp.value;
-                    
+                    let whats = document.getElementById('whatsapp-input').value;
                     if(whats.length >= 10) {
-                        btnLiberar.innerText = "PROCESSANDO...";
-                        btnLiberar.classList.add('disabled');
-                        
-                        let numeroLimpo = whats.replace(/\D/g, ''); 
-                        if (!numeroLimpo.startsWith('55')) numeroLimpo = '55' + numeroLimpo; 
-                        if (typeof fbq === 'function') fbq('set', '1974259026792087', { ph: numeroLimpo });
-
-                        fetch(window.scriptURL, {
-                            method: 'POST', mode: 'no-cors',
-                            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                            body: JSON.stringify({ "type": "whatsapp", "visitorId": window.visitorId, "whatsapp": whats })
-                        }).then(() => {
-                            form.style.display = 'none'; 
-                            modalText.innerHTML = "<b style='color: #27ae60'>✅ Acesso Liberado!</b><br>Clique no botão abaixo para baixar o seu PDF.";
-                            linkReal.style.display = 'block'; 
-                            
-                            if (typeof fbq === 'function') {
-                                fbq('track', 'Lead', { content_name: 'Resumão Ética Profissional OAB 46', content_category: 'Material Gratuito', value: 0.00, currency: 'BRL', whatsapp_fornecido: numeroLimpo });
-                            }
-                        });
-                    } else {
-                        alert("Por favor, insira um número válido com DDD.");
-                        btnLiberar.innerText = "LIBERAR ACESSO";
-                        btnLiberar.classList.remove('disabled');
+                        registrarAcao("whatsapp", { whatsapp: whats });
+                        fbq('track', 'Lead', { content_name: 'Resumão Ética' });
+                        form.style.display = 'none';
+                        document.getElementById('modal-text').innerHTML = "✅ Acesso Liberado! Clique abaixo.";
+                        document.getElementById('link-real').style.display = 'block';
                     }
                 });
-
-                linkReal.addEventListener('click', () => { 
-                    if (typeof fbq === 'function') fbq('trackCustom', 'DownloadMaterial', { content_name: 'Resumão Ética Profissional OAB 46' });
-                    modal.style.display = 'none'; 
-                });
-
-                modal.addEventListener('click', (e) => { if(e.target === modal) modal.style.display = 'none'; });
             }
+            
+            // Timer e abertura do modal mantidos como você já tem...
+            let timeLeft = 10;
+            const timer = setInterval(() => {
+                let btn = document.getElementById('btn-timer');
+                timeLeft--;
+                if (timeLeft > 0) { btn.innerText = `AGUARDE ${timeLeft}s...`; } 
+                else { clearInterval(timer); btn.innerText = 'BAIXAR MATERIAL'; btn.classList.remove('disabled'); }
+            }, 1000);
+
+            document.getElementById('btn-timer').addEventListener('click', function() {
+                if (!this.classList.contains('disabled')) document.getElementById('modal').style.display = 'flex';
+            });
+            
+            document.getElementById('link-real').addEventListener('click', () => {
+                document.getElementById('modal').style.display = 'none';
+            });
         });
-</script>
+    </script>
 </body>
 </html>
