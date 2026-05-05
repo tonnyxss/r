@@ -4,111 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Foco Legis - Lei Seca Comentada e Esquematizada!</title>
-    <meta property="og:image" content="https://www.focolegis.com/fundopreto.png">
-    <meta property="og:type" content="website">
-    
     <script>
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    
-    // Inicializa o pixel
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
     fbq('init', '1974259026792087');
     </script>
-    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1974259026792087&ev=PageView&noscript=1"/></noscript>
-
-    <script>
-        // --- 1. GERAÇÃO DO ID DE VISITANTE ---
-        let visitorId = localStorage.getItem('fl_visitor_id');
-        if (!visitorId) {
-            visitorId = 'V-' + Math.random().toString(36).substr(2, 9);
-            localStorage.setItem('fl_visitor_id', visitorId);
-        }
-        window.visitorId = visitorId;
-        window.scriptURL = 'https://script.google.com/macros/s/AKfycbx_7bTEOPBudwjqaHWCk2IDkeyNdQqy_pDfFQUJ5c0xKXauVYhLA1aqI7T7M2vVtqRGsA/exec'; // SEU GOOGLE SCRIPT
-
-        (function() {
-            let urlParams = new URLSearchParams(window.location.search);
-            let utmSource = urlParams.get('utm_source') || 'Organico';
-            let utmCampaign = urlParams.get('utm_campaign') || 'Direto';
-            let utmsUrl = window.location.search || "Orgânico/Direto";
-
-            let ua = navigator.userAgent;
-            let deviceType = "PC";
-            let osType = "Outro";
-
-            if (/Mobile|Android|iP(hone|od|ad)/i.test(ua)) { deviceType = "Celular"; }
-            if (/Android/i.test(ua)) { osType = "Android"; } 
-            else if (/iP(hone|od|ad)/i.test(ua)) { osType = "iOS"; } 
-            else if (/Windows/i.test(ua)) { osType = "Windows"; } 
-            else if (/Mac/i.test(ua)) { osType = "MacOS"; }
-
-            // Dispara o PageView da Meta
-            if (typeof fbq === 'function') {
-                fbq('track', 'PageView', { device: deviceType, os: osType, utm_source: utmSource, utm_campaign: utmCampaign });
-            }
-
-            // Variável base para enviar (caso o IP seja bloqueado)
-            let payloadAcesso = { 
-                "type": "ip", 
-                "visitorId": window.visitorId,
-                "ip": "Oculto",
-                "estado": "-",
-                "cidade": "-",
-                "url": "INDEX", 
-                "utm": utmsUrl,
-                "device": deviceType,
-                "os": osType
-            };
-
-            function enviarParaPlanilha(p) {
-                fetch(window.scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(p) });
-            }
-
-            // --- 2. RASTREIO DE IP, CIDADE E ESTADO (Via ipwhois para ser mais rápido e não falhar) ---
-            fetch('https://ipwhois.app/json/')
-                .then(res => res.json())
-                .then(geo => {
-                    payloadAcesso.ip = geo.ip || "Oculto";
-                    payloadAcesso.estado = geo.region || "-";
-                    payloadAcesso.cidade = geo.city || "-";
-                    
-                    if (typeof fbq === 'function' && geo.city) {
-                        fbq('set', '1974259026792087', {
-                            ct: geo.city.toLowerCase().replace(/\s/g, ''),
-                            st: geo.region_code ? geo.region_code.toLowerCase() : ''
-                        });
-                    }
-                    enviarParaPlanilha(payloadAcesso);
-                })
-                .catch(() => {
-                    // Se falhar (AdBlock pesado), envia pelo menos que acessou
-                    enviarParaPlanilha(payloadAcesso);
-                });
-                
-            // --- 3. RASTREIO DE ROLAGEM DE PÁGINA (SCROLL DEPTH) ---
-            let scrollMarks = { 25: false, 50: false, 75: false, 100: false };
-            window.addEventListener('scroll', () => {
-                let scrollTop = window.scrollY;
-                let docHeight = document.body.offsetHeight;
-                let winHeight = window.innerHeight;
-                let scrollPercent = Math.round((scrollTop / (docHeight - winHeight)) * 100);
-                
-                [25, 50, 75, 100].forEach(mark => {
-                    if (scrollPercent >= mark && !scrollMarks[mark]) {
-                        scrollMarks[mark] = true;
-                        fetch(window.scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ "type": "scroll", "visitorId": window.visitorId, "depth": mark + "%" }) });
-                    }
-                });
-            });
-        })();
-    </script>
-
+    
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
         header { background-color: #1a252f; color: #ffffff; text-align: center; padding: 40px 20px; }
@@ -133,7 +33,6 @@
         .btn-amostra { background-color: transparent; color: #34495e; border: 2px solid #34495e; padding: 10px 20px; border-radius: 5px; font-weight: bold; text-decoration: none; display: block; transition: 0.3s; font-size: 0.9em; }
         .btn-amostra:hover { background-color: #34495e; color: white; }
         
-        /* Modais e Whatsapp */
         .btn-download { background-color: #27ae60; color: white; text-decoration: none; padding: 12px 20px; border-radius: 5px; font-weight: bold; display: block; transition: 0.3s; font-size: 1em; border: none; cursor: pointer; width: 100%; box-sizing: border-box; text-transform: uppercase; }
         .btn-download.disabled { background-color: #95a5a6; cursor: not-allowed; }
         .btn-download:hover:not(.disabled) { background-color: #219653; }
@@ -143,7 +42,6 @@
         .modal-content input { width: 100%; padding: 15px; margin: 20px 0; border: 2px solid #ecf0f1; border-radius: 5px; font-size: 1em; box-sizing: border-box; }
         #link-real { display: none; margin-top: 20px; background-color: #2c3e50; }
         #link-real:hover { background-color: #1a252f;}
-        .oculto { display: none !important; }
         footer { text-align: center; padding: 40px 20px; color: #7f8c8d; }
         
         .container-whatsapp { position: fixed; bottom: 20px; right: 20px; display: flex; align-items: center; gap: 12px; z-index: 1000; text-decoration: none; }
@@ -157,196 +55,144 @@
     <header>
         <h1>Foco Legis - Legislação Comentada e Esquematizada</h1>
         <p>Acelere sua aprovação com lei seca comentada e esquematizada!</p>
-        <p>✅ Atualizado 2026 | ✅ Acesso Imediato | ✅ Download Liberado</p>
     </header>
 
     <div class="container">
         <h2 class="section-title">Nossos Materiais</h2>
         <div class="grid-produtos">
-            
             <div class="card">
                 <span class="card-tag gratis">MATERIAL GRATUITO 🎁</span>
-                <div class="card-img-container">
-                    <img src="OAB.png" alt="Capa OAB">
-                </div>
+                <div class="card-img-container"><img src="OAB.png"></div>
                 <h3>Resumão Ética Profissional - OAB 46</h3>
                 <p>O conteúdo essencial de Ética para gabaritar na 1ª fase.</p>
-                <div>
-                    <span class="preco-antigo">R$ 19,99</span>
-                </div>
+                <div><span class="preco-antigo">R$ 19,99</span></div>
                 <div class="preco" style="margin-bottom: 15px; margin-top: -5px;">Por R$ 0,00</div>
-                <div class="area-botoes">
-                    <button class="btn-download disabled" id="btn-timer">AGUARDE 10s...</button>
-                </div>
+                <div class="area-botoes"><button class="btn-download disabled" id="btn-timer">AGUARDE 10s...</button></div>
             </div>
 
             <div class="card">
                 <span class="card-tag">DESTAQUE 🔥🔥</span>
-                <div class="card-img-container">
-                    <img src="PENAL.png" alt="Código Penal">
-                </div>
+                <div class="card-img-container"><img src="PENAL.png"></div>
                 <h3>Código Penal Completo (2026)</h3>
-                <p>Parte Geral e Especial Esquematizadas e Comentadas com foco em concursos.</p>
+                <p>Parte Geral e Especial Esquematizadas e Comentadas.</p>
                 <div class="preco">R$ 19,99</div>
                 <div class="area-botoes">
-                    <a href="https://www.focolegis.com/FocoLegis%20-%20AMOSTRA%20-%20Direito%20Penal.pdf" target="_blank" rel="noopener noreferrer" class="btn-amostra">
-                        👁️ Ver Amostra (PDF)
-                    </a>
-                    <a href="https://pay.hotmart.com/B105246198A" target="_blank" class="btn-comprar">
-                        Comprar Agora
-                    </a>
+                    <a href="URL_AMOSTRA_PENAL" target="_blank" class="btn-amostra">👁️ Ver Amostra</a>
+                    <a href="URL_COMPRA_PENAL" target="_blank" class="btn-comprar">Comprar Agora</a>
                 </div>
             </div>
-
+            
             <div class="card">
                 <span class="card-tag">DESTAQUE 🔥🔥</span>
-                <div class="card-img-container">
-                    <img src="CONSTITUCIONAL.png" alt="Direito Constitucional">
-                </div>
+                <div class="card-img-container"><img src="CONSTITUCIONAL.png"></div>
                 <h3>Direito Constitucional (2026)</h3>
-                <p>Constituição Federal Comentada e Esquematizada ponto a ponto!</p>
+                <p>Constituição Federal Comentada ponto a ponto.</p>
                 <div class="preco">R$ 19,99</div>
                 <div class="area-botoes">
-                    <a href="https://www.focolegis.com/FocoLegis%20-%20AMOSTRA%20-%20Direito%20Constitucional.pdf" target="_blank" rel="noopener noreferrer" class="btn-amostra">
-                        👁️ Ver Amostra (PDF)
-                    </a>
-                    <a href="https://pay.hotmart.com/B105423919E" target="_blank" class="btn-comprar">
-                        Comprar Agora
-                    </a>
+                    <a href="URL_AMOSTRA_CONST" target="_blank" class="btn-amostra">👁️ Ver Amostra</a>
+                    <a href="URL_COMPRA_CONST" target="_blank" class="btn-comprar">Comprar Agora</a>
                 </div>
             </div>
-
         </div>
     </div>
-
-    <footer>
-        <p>&copy; 2026 Foco Legis. Pagamento 100% Seguro. Acesso Imediato via E-mail.</p>
-    </footer>
 
     <div class="modal-overlay" id="modal">
         <div class="modal-content">
             <h3>Quase lá! 🚀</h3>
-            <p id="modal-text">Informe seu WhatsApp para liberar o download gratuito.</p>
+            <p id="modal-text">Informe seu WhatsApp para liberar o download.</p>
             <form id="whatsapp-form">
                 <input type="tel" id="whatsapp-input" placeholder="(00) 90000-0000" required>
-                <button type="submit" class="btn-download" id="btn-liberar">LIBERAR ACESSO</button>
+                <button type="submit" class="btn-download">LIBERAR ACESSO</button>
             </form>
-            <a href="OAB46.pdf" target="_blank" class="btn-download" id="link-real">CLIQUE PARA BAIXAR PDF</a>
+            <a href="OAB46.pdf" target="_blank" class="btn-download" id="link-real">BAIXAR PDF</a>
         </div>
     </div>
 
-    <a href="https://wa.me/5522998223640?text=Ol%C3%A1%2C%20estou%20com%20d%C3%BAvida!" class="container-whatsapp" target="_blank">
-        <div class="mensagem-whatsapp">DÚVIDA? ENTRE EM CONTATO!</div>
-        <div class="btn-whatsapp-fixo">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
-        </div>
-    </a>
-
     <script>
+        // --- CONFIGURAÇÃO INICIAL ---
+        let visitorId = localStorage.getItem('fl_visitor_id') || ('V-' + Math.random().toString(36).substr(2, 9));
+        localStorage.setItem('fl_visitor_id', visitorId);
+        window.visitorId = visitorId;
+        window.scriptURL = 'https://script.google.com/macros/s/AKfycbx_7bTEOPBudwjqaHWCk2IDkeyNdQqy_pDfFQUJ5c0xKXauVYhLA1aqI7T7M2vVtqRGsA/exec'; 
+
+        // --- RASTREIO DE ACESSO E LOCALIZAÇÃO ---
+        (function() {
+            let utms = window.location.search || "Orgânico/Direto";
+            let ua = navigator.userAgent;
+            let dev = /Mobile|Android|iP(hone|od|ad)/i.test(ua) ? "Celular" : "PC";
+            let os = /Android/i.test(ua) ? "Android" : (/iP(hone|od|ad)/i.test(ua) ? "iOS" : (/Windows/i.test(ua) ? "Windows" : "Outro"));
+
+            fbq('track', 'PageView');
+
+            fetch('https://ipwhois.app/json/')
+                .then(r => r.json())
+                .then(geo => {
+                    fetch(window.scriptURL, {
+                        method: 'POST', mode: 'no-cors',
+                        body: JSON.stringify({
+                            "type": "ip", "visitorId": window.visitorId, "ip": geo.ip,
+                            "estado": geo.region, "cidade": geo.city, "utm": utms, "device": dev, "os": os
+                        })
+                    });
+                }).catch(() => {
+                    fetch(window.scriptURL, {
+                        method: 'POST', mode: 'no-cors',
+                        body: JSON.stringify({ "type": "ip", "visitorId": window.visitorId, "ip": "Oculto", "utm": utms, "device": dev, "os": os })
+                    });
+                });
+        })();
+
+        // --- RASTREIO DE ROLAGEM ---
+        let marks = { 25: false, 50: false, 75: false, 100: false };
+        window.addEventListener('scroll', () => {
+            let p = Math.round((window.scrollY / (document.body.offsetHeight - window.innerHeight)) * 100);
+            [25, 50, 75, 100].forEach(m => {
+                if (p >= m && !marks[m]) {
+                    marks[m] = true;
+                    fetch(window.scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ "type": "scroll", "visitorId": window.visitorId, "depth": m + "%" }) });
+                }
+            });
+        });
+
+        // --- BOTÕES E MODAL ---
         document.addEventListener("DOMContentLoaded", function() {
-            function registrarAcao(tipo, extra) {
-                let p = { "type": tipo, "visitorId": window.visitorId };
-                if (extra.produto) p.produto = extra.produto;
-                if (extra.whatsapp) p.whatsapp = extra.whatsapp;
-                fetch(window.scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(p) });
-            }
+            const timerBtn = document.getElementById('btn-timer');
+            let sec = 10;
+            const t = setInterval(() => {
+                sec--;
+                if(sec > 0) timerBtn.innerText = `AGUARDE ${sec}s...`;
+                else { clearInterval(t); timerBtn.innerText = 'BAIXAR AGORA'; timerBtn.classList.remove('disabled'); }
+            }, 1000);
 
-            document.querySelectorAll('.btn-comprar').forEach(btn => {
-                let userAgent = navigator.userAgent || navigator.vendor || window.opera;
-                let dispositivo = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase()) ? 'celular' : 'pc';
-                
-                let linkOriginal = btn.getAttribute('href');
-                if (linkOriginal && linkOriginal !== "#") {
-                    let separador = linkOriginal.includes('?') ? '&' : '?';
-                    btn.setAttribute('href', linkOriginal + separador + "src=" + dispositivo);
-                }
+            timerBtn.onclick = () => { if(!timerBtn.classList.contains('disabled')) document.getElementById('modal').style.display = 'flex'; };
 
-                btn.addEventListener('click', function() {
-                    let nomeProduto = btn.closest('.card').querySelector('h3').innerText;
-                    if (typeof fbq === 'function') {
-                        fbq('track', 'InitiateCheckout', { content_name: nomeProduto, content_category: 'Resumo OAB', content_type: 'product', value: 19.99, currency: 'BRL' });
-                    }
-                    registrarAcao("checkout", { produto: nomeProduto });
-                });
+            document.getElementById('whatsapp-form').onsubmit = (e) => {
+                e.preventDefault();
+                let w = document.getElementById('whatsapp-input').value;
+                fetch(window.scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ "type": "whatsapp", "visitorId": window.visitorId, "whatsapp": w }) });
+                fbq('track', 'Lead');
+                document.getElementById('whatsapp-form').style.display = 'none';
+                document.getElementById('modal-text').innerHTML = "✅ Liberado!";
+                document.getElementById('link-real').style.display = 'block';
+            };
+
+            document.getElementById('link-real').onclick = () => document.getElementById('modal').style.display = 'none';
+
+            document.querySelectorAll('.btn-comprar').forEach(b => {
+                b.onclick = () => {
+                    let n = b.closest('.card').querySelector('h3').innerText;
+                    fbq('track', 'InitiateCheckout', { content_name: n });
+                    fetch(window.scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ "type": "checkout", "visitorId": window.visitorId, "produto": n }) });
+                };
             });
 
-            document.querySelectorAll('.btn-amostra').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    let nomeProduto = btn.closest('.card').querySelector('h3').innerText;
-                    if (typeof fbq === 'function') {
-                        fbq('track', 'ViewContent', { content_category: 'Amostra', content_name: nomeProduto });
-                    }
-                    registrarAcao("amostra", { produto: nomeProduto });
-                });
+            document.querySelectorAll('.btn-amostra').forEach(b => {
+                b.onclick = () => {
+                    let n = b.closest('.card').querySelector('h3').innerText;
+                    fbq('track', 'ViewContent', { content_name: n });
+                    fetch(window.scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ "type": "amostra", "visitorId": window.visitorId, "produto": n }) });
+                };
             });
-
-            const btnTimer = document.getElementById('btn-timer');
-            const modal = document.getElementById('modal');
-            const form = document.getElementById('whatsapp-form');
-            const linkReal = document.getElementById('link-real');
-            const inputWhatsapp = document.getElementById('whatsapp-input');
-            const modalText = document.getElementById('modal-text');
-            const btnLiberar = document.getElementById('btn-liberar');
-
-            if(btnTimer) {
-                let timeLeft = 10;
-                const timer = setInterval(() => {
-                    timeLeft--;
-                    if (timeLeft > 0) { btnTimer.innerText = `AGUARDE ${timeLeft}s...`; } 
-                    else { clearInterval(timer); btnTimer.innerText = 'BAIXAR MATERIAL'; btnTimer.classList.remove('disabled'); }
-                }, 1000);
-
-                btnTimer.addEventListener('click', () => { 
-                    if (!btnTimer.classList.contains('disabled')) {
-                        modal.style.display = 'flex'; 
-                        if (typeof fbq === 'function') {
-                            fbq('trackCustom', 'OpenModal', { content_name: 'Resumão Ética Profissional OAB 46' });
-                        }
-                    }
-                });
-
-                if(form) {
-                    form.addEventListener('submit', (e) => {
-                        e.preventDefault();
-                        const whats = inputWhatsapp.value;
-                        
-                        if(whats.length >= 10) {
-                            btnLiberar.innerText = "PROCESSANDO...";
-                            btnLiberar.classList.add('disabled');
-                            
-                            let numeroLimpo = whats.replace(/\D/g, ''); 
-                            if (!numeroLimpo.startsWith('55')) numeroLimpo = '55' + numeroLimpo; 
-                            
-                            if (typeof fbq === 'function') fbq('set', '1974259026792087', { ph: numeroLimpo });
-
-                            registrarAcao("whatsapp", { whatsapp: whats });
-                            
-                            form.style.display = 'none'; 
-                            modalText.innerHTML = "<b style='color: #27ae60'>✅ Acesso Liberado!</b><br>Clique no botão abaixo para baixar o seu PDF.";
-                            linkReal.style.display = 'block'; 
-                            
-                            if (typeof fbq === 'function') {
-                                fbq('track', 'Lead', { content_name: 'Resumão Ética Profissional OAB 46', content_category: 'Material Gratuito', value: 0.00, currency: 'BRL', whatsapp_fornecido: numeroLimpo });
-                            }
-                        } else {
-                            alert("Por favor, insira um número válido com DDD.");
-                            btnLiberar.innerText = "LIBERAR ACESSO";
-                            btnLiberar.classList.remove('disabled');
-                        }
-                    });
-                }
-
-                if(linkReal) {
-                    linkReal.addEventListener('click', () => { 
-                        if (typeof fbq === 'function') fbq('trackCustom', 'DownloadMaterial', { content_name: 'Resumão Ética Profissional OAB 46' });
-                        modal.style.display = 'none'; 
-                    });
-                }
-
-                if(modal) {
-                    modal.addEventListener('click', (e) => { if(e.target === modal) modal.style.display = 'none'; });
-                }
-            }
         });
     </script>
 </body>
