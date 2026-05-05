@@ -18,23 +18,28 @@
     s.parentNode.insertBefore(t,s)}(window, document,'script',
     'https://connect.facebook.net/en_US/fbevents.js');
     
-    // Inicializa o pixel (O PageView está no script abaixo para ser enriquecido)
+    // Inicializa o pixel
     fbq('init', '1974259026792087');
     </script>
     <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1974259026792087&ev=PageView&noscript=1"/></noscript>
 
 <!-- Script Analytics Foco Legis -->
 <script>
+    // --- 1. GERAÇÃO DO ID DE VISITANTE ---
+    let visitorId = localStorage.getItem('fl_visitor_id');
+    if (!visitorId) {
+        visitorId = 'V-' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('fl_visitor_id', visitorId);
+    }
+    window.visitorId = visitorId;
+    window.scriptURL = 'https://script.google.com/macros/s/AKfycbyEU16u1kkWWUT5umPqEh6ubBJLj7-q-MqO6nnc18mONF_EPn1NgP5f-TyKLXlWwoeF/exec'; // GOOGLE SCRIPT
+
     (function() {
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbw0H50s38jUfAXmmal9zotsFwWgqHPTkQgWCDTNoD7V1TB018JzXTBmLdoSMvIrEQ/exec';
-        
-        // Variável global para guardar o IP do usuário para usar no WhatsApp depois
-        window.userIP = ""; 
-        
         let urlParams = new URLSearchParams(window.location.search);
         let utmSource = urlParams.get('utm_source') || 'Organico';
         let utmCampaign = urlParams.get('utm_campaign') || 'Direto';
         let utmsUrl = window.location.search || "Orgânico/Direto";
+        let currentUrl = window.location.href;
 
         let ua = navigator.userAgent;
         let deviceType = "PC";
@@ -46,28 +51,20 @@
         else if (/Windows/i.test(ua)) { osType = "Windows"; } 
         else if (/Mac/i.test(ua)) { osType = "MacOS"; }
 
-        // --- 1. DISPARA O PAGEVIEW ENRIQUECIDO PARA A META ---
+        // Dispara o PageView da Meta
         if (typeof fbq === 'function') {
-            fbq('track', 'PageView', {
-                device: deviceType,
-                os: osType,
-                utm_source: utmSource,
-                utm_campaign: utmCampaign
-            });
+            fbq('track', 'PageView', { device: deviceType, os: osType, utm_source: utmSource, utm_campaign: utmCampaign });
         }
 
-        // --- RASTREADOR COMBO: PEGA IPv4 LIMPO + GEOLOCALIZAÇÃO ---
+        // --- 2. RASTREIO INICIAL E CRIAÇÃO DA LINHA NO GOOGLE SHEETS ---
         fetch('https://api.ipify.org?format=json')
             .then(res => res.json())
             .then(ipData => {
                 let ipLimpo = ipData.ip; 
-                window.userIP = ipLimpo; // Salva o IP na variável global
-                
                 fetch('https://ipapi.co/' + ipLimpo + '/json/')
                     .then(res => res.json())
                     .then(geoData => {
-                        
-                        // --- 2. ALIMENTA O PIXEL COM LOCALIZAÇÃO (Correspondência Avançada) ---
+                        // Correspondência Avançada Meta
                         if (typeof fbq === 'function' && geoData.city) {
                             fbq('set', '1974259026792087', {
                                 ct: geoData.city.toLowerCase().replace(/\s/g, ''),
@@ -75,16 +72,17 @@
                             });
                         }
 
-                        // Envia o acesso para o Google Sheets
-                        fetch(scriptURL, {
+                        // Envia para o Sheets criar a linha do usuário (Coluna A até K + Q)
+                        fetch(window.scriptURL, {
                             method: 'POST',
                             mode: 'no-cors',
                             body: JSON.stringify({ 
                                 "type": "ip", 
+                                "visitorId": window.visitorId, // ID Único
                                 "ip": ipLimpo,
                                 "estado": geoData.region || "-",
                                 "cidade": geoData.city || "-",
-                                "page": "INDEX_COM_OFERTA", 
+                                "url": currentUrl, 
                                 "utm": utmsUrl,
                                 "device": deviceType,
                                 "os": osType
@@ -92,207 +90,68 @@
                         });
                     }).catch(e => console.log("Erro geo:", e));
             }).catch(e => console.log("Erro ip:", e));
+            
+        // --- 3. RASTREIO DE ROLAGEM DE PÁGINA (SCROLL DEPTH) ---
+        let scrollMarks = { 25: false, 50: false, 75: false, 100: false };
+        window.addEventListener('scroll', () => {
+            let scrollTop = window.scrollY;
+            let docHeight = document.body.offsetHeight;
+            let winHeight = window.innerHeight;
+            let scrollPercent = Math.round((scrollTop / (docHeight - winHeight)) * 100);
+            
+            [25, 50, 75, 100].forEach(mark => {
+                if (scrollPercent >= mark && !scrollMarks[mark]) {
+                    scrollMarks[mark] = true;
+                    fetch(window.scriptURL, {
+                        method: 'POST', mode: 'no-cors',
+                        body: JSON.stringify({ "type": "scroll", "visitorId": window.visitorId, "depth": mark + "%" })
+                    });
+                }
+            });
+        });
     })();
 </script>
 
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f7f6;
-            color: #333;
-        }
-        header {
-            background-color: #1a252f;
-            color: #ffffff;
-            text-align: center;
-            padding: 40px 20px;
-        }
-        header h1 {
-            margin: 0;
-            font-size: 2.2em;
-            color: #f1c40f;
-        }
-        header p {
-            font-size: 1.1em;
-            margin-top: 10px;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-        .section-title {
-            text-align: center;
-            margin-bottom: 40px;
-            font-size: 1.8em;
-            color: #2c3e50;
-        }
-        .grid-produtos {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-        }
-        .card {
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            padding: 25px;
-            text-align: center;
-            transition: transform 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            min-height: 480px; 
-        }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-        }
-        .card-tag {
-            background-color: #e74c3c;
-            color: white;
-            font-size: 0.8em;
-            padding: 4px 8px;
-            border-radius: 4px;
-            display: inline-block;
-            margin-bottom: 15px;
-            font-weight: bold;
-            align-self: center;
-        }
-        .card-tag.gratis {
-            background-color: #3498db;
-        }
-        .card-img-container {
-            width: 160px;
-            height: 160px;
-            margin: 0 auto 15px auto;
-            overflow: hidden;
-            border-radius: 8px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #ecf0f1;
-            flex-shrink: 0;
-        }
-        .card-img-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .card h3 {
-            margin: 10px 0;
-            color: #2c3e50;
-            font-size: 1.3em;
-            min-height: 3em; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .card p {
-            color: #7f8c8d;
-            font-size: 0.9em;
-            margin-bottom: 20px;
-            flex-grow: 1; 
-        }
-        .preco {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #27ae60;
-            margin-bottom: 15px;
-        }
-        .preco-antigo {
-            text-decoration: line-through;
-            text-decoration-color: #e74c3c;
-            text-decoration-thickness: 3px;
-            color: #95a5a6;
-            font-size: 1.1em;
-            font-weight: bold;
-        }
-        .area-botoes {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: auto; 
-        }
-        .btn-comprar {
-            background-color: #27ae60;
-            color: white;
-            text-decoration: none;
-            padding: 12px 20px;
-            border-radius: 5px;
-            font-weight: bold;
-            display: block;
-            transition: background-color 0.3s;
-        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+        header { background-color: #1a252f; color: #ffffff; text-align: center; padding: 40px 20px; }
+        header h1 { margin: 0; font-size: 2.2em; color: #f1c40f; }
+        header p { font-size: 1.1em; margin-top: 10px; }
+        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+        .section-title { text-align: center; margin-bottom: 40px; font-size: 1.8em; color: #2c3e50; }
+        .grid-produtos { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+        .card { background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 25px; text-align: center; transition: transform 0.3s ease; display: flex; flex-direction: column; min-height: 480px; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
+        .card-tag { background-color: #e74c3c; color: white; font-size: 0.8em; padding: 4px 8px; border-radius: 4px; display: inline-block; margin-bottom: 15px; font-weight: bold; align-self: center; }
+        .card-tag.gratis { background-color: #3498db; }
+        .card-img-container { width: 160px; height: 160px; margin: 0 auto 15px auto; overflow: hidden; border-radius: 8px; display: flex; justify-content: center; align-items: center; background-color: #ecf0f1; flex-shrink: 0; }
+        .card-img-container img { width: 100%; height: 100%; object-fit: cover; }
+        .card h3 { margin: 10px 0; color: #2c3e50; font-size: 1.3em; min-height: 3em; display: flex; align-items: center; justify-content: center; }
+        .card p { color: #7f8c8d; font-size: 0.9em; margin-bottom: 20px; flex-grow: 1; }
+        .preco { font-size: 1.5em; font-weight: bold; color: #27ae60; margin-bottom: 15px; }
+        .preco-antigo { text-decoration: line-through; text-decoration-color: #e74c3c; text-decoration-thickness: 3px; color: #95a5a6; font-size: 1.1em; font-weight: bold; }
+        .area-botoes { display: flex; flex-direction: column; gap: 10px; margin-top: auto; }
+        .btn-comprar { background-color: #27ae60; color: white; text-decoration: none; padding: 12px 20px; border-radius: 5px; font-weight: bold; display: block; transition: background-color 0.3s; }
         .btn-comprar:hover { background-color: #219653; }
-
-        .btn-amostra {
-            background-color: transparent;
-            color: #34495e;
-            border: 2px solid #34495e;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-weight: bold;
-            text-decoration: none;
-            display: block;
-            transition: 0.3s;
-            font-size: 0.9em;
-        }
-        .btn-amostra:hover {
-            background-color: #34495e;
-            color: white;
-        }
-
-        /* --- ESTILOS ESPECÍFICOS DO BOTÃO E MODAL GRATUITOS --- */
-        .btn-download { 
-            background-color: #27ae60; color: white; text-decoration: none; padding: 12px 20px; 
-            border-radius: 5px; font-weight: bold; display: block; transition: 0.3s; font-size: 1em; 
-            border: none; cursor: pointer; width: 100%; box-sizing: border-box; text-transform: uppercase;
-        }
+        .btn-amostra { background-color: transparent; color: #34495e; border: 2px solid #34495e; padding: 10px 20px; border-radius: 5px; font-weight: bold; text-decoration: none; display: block; transition: 0.3s; font-size: 0.9em; }
+        .btn-amostra:hover { background-color: #34495e; color: white; }
+        
+        /* Modais e Whatsapp */
+        .btn-download { background-color: #27ae60; color: white; text-decoration: none; padding: 12px 20px; border-radius: 5px; font-weight: bold; display: block; transition: 0.3s; font-size: 1em; border: none; cursor: pointer; width: 100%; box-sizing: border-box; text-transform: uppercase; }
         .btn-download.disabled { background-color: #95a5a6; cursor: not-allowed; }
         .btn-download:hover:not(.disabled) { background-color: #219653; }
-        
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 2000; }
         .modal-content { background: white; padding: 30px; border-radius: 10px; width: 90%; max-width: 400px; text-align: center; box-sizing: border-box; }
         .modal-content h3 { margin-top: 0; color: #1a252f; }
         .modal-content input { width: 100%; padding: 15px; margin: 20px 0; border: 2px solid #ecf0f1; border-radius: 5px; font-size: 1em; box-sizing: border-box; }
         #link-real { display: none; margin-top: 20px; background-color: #2c3e50; }
         #link-real:hover { background-color: #1a252f;}
-
         .oculto { display: none !important; }
         footer { text-align: center; padding: 40px 20px; color: #7f8c8d; }
         
-        /* WhatsApp */
-        .container-whatsapp {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            z-index: 1000;
-            text-decoration: none;
-        }
-        .mensagem-whatsapp {
-            background-color: #ffffff;
-            color: #2c3e50;
-            padding: 10px 15px;
-            border-radius: 8px;
-            font-size: 0.9em;
-            font-weight: bold;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-        }
-        .btn-whatsapp-fixo {
-            width: 60px;
-            height: 60px;
-            background-color: #25d366;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
+        .container-whatsapp { position: fixed; bottom: 20px; right: 20px; display: flex; align-items: center; gap: 12px; z-index: 1000; text-decoration: none; }
+        .mensagem-whatsapp { background-color: #ffffff; color: #2c3e50; padding: 10px 15px; border-radius: 8px; font-size: 0.9em; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+        .btn-whatsapp-fixo { width: 60px; height: 60px; background-color: #25d366; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         .btn-whatsapp-fixo img { width: 35px; height: 35px; }
     </style>
 </head>
@@ -383,7 +242,6 @@
         </div>
     </div>
 
-    <!-- BOTÃO FLUTUANTE DO WHATSAPP -->
     <a href="https://wa.me/5522998223640?text=Ol%C3%A1%2C%20estou%20com%20d%C3%BAvida!" class="container-whatsapp" target="_blank">
         <div class="mensagem-whatsapp">DÚVIDA? ENTRE EM CONTATO!</div>
         <div class="btn-whatsapp-fixo">
@@ -399,11 +257,11 @@
             }
             
             const dispositivo = detectarDispositivo();
+            
+            // ==========================================
+            // EVENTOS DOS BOTÕES DE COMPRA E AMOSTRA PARA ATUALIZAR O GOOGLE SHEETS
+            // ==========================================
             const botoesCompra = document.querySelectorAll('.btn-comprar');
-          
-            // ==========================================
-            // EVENTOS DOS BOTÕES DE COMPRA E AMOSTRA
-            // ==========================================
             botoesCompra.forEach(function(botao) {
                 let linkOriginal = botao.getAttribute('href');
                 if (linkOriginal && linkOriginal !== "#") {
@@ -414,16 +272,15 @@
                 botao.addEventListener('click', function() {
                     let nomeProduto = botao.closest('.card').querySelector('h3').innerText;
                     
-                    // --- EVENTO INITIATE CHECKOUT ENRIQUECIDO ---
                     if (typeof fbq === 'function') {
-                        fbq('track', 'InitiateCheckout', { 
-                            content_name: nomeProduto,
-                            content_category: 'Resumo OAB',
-                            content_type: 'product',
-                            value: 19.99,
-                            currency: 'BRL'
-                        });
+                        fbq('track', 'InitiateCheckout', { content_name: nomeProduto, content_category: 'Resumo OAB', content_type: 'product', value: 19.99, currency: 'BRL' });
                     }
+                    
+                    // Atualiza a Coluna N na Planilha (Produtos Clicados)
+                    fetch(window.scriptURL, {
+                        method: 'POST', mode: 'no-cors',
+                        body: JSON.stringify({ "type": "checkout", "visitorId": window.visitorId, "produto": nomeProduto })
+                    });
                 });
             });
 
@@ -431,9 +288,16 @@
             botoesAmostra.forEach(function(botao) {
                 botao.addEventListener('click', function() {
                     let nomeProduto = botao.closest('.card').querySelector('h3').innerText;
+                    
                     if (typeof fbq === 'function') {
                         fbq('track', 'ViewContent', { content_category: 'Amostra', content_name: nomeProduto });
                     }
+
+                    // Atualiza a Coluna O na Planilha (Amostras Visualizadas)
+                    fetch(window.scriptURL, {
+                        method: 'POST', mode: 'no-cors',
+                        body: JSON.stringify({ "type": "amostra", "visitorId": window.visitorId, "produto": nomeProduto })
+                    });
                 });
             });
 
@@ -478,35 +342,26 @@
                             numeroLimpo = '55' + numeroLimpo; 
                         }
 
-                        // --- 3. ALIMENTA O PIXEL COM O TELEFONE DO LEAD ---
                         if (typeof fbq === 'function') {
                             fbq('set', '1974259026792087', { ph: numeroLimpo });
                         }
 
-                        const scriptURL = 'https://script.google.com/macros/s/AKfycbyjGSWimBPhfGvuzHiVSos38ZBTgAj4G2VQAlAs0jdBmp_zV3_5H2zEOw0ID2tcZax-/exec';
-
-                        // --- 4. ENVIA O WHATSAPP E O IP PARA A PLANILHA ---
-                        fetch(scriptURL, {
+                        // Envia WhatsApp para o Google Sheets atualizar a linha do Visitante (Coluna L)
+                        fetch(window.scriptURL, {
                             method: 'POST',
                             mode: 'no-cors',
                             body: JSON.stringify({ 
                                 "type": "whatsapp", 
-                                "whatsapp": whats,
-                                "ip": window.userIP // IP passado aqui para unir com o acesso!
+                                "visitorId": window.visitorId, 
+                                "whatsapp": whats 
                             })
                         }).then(() => {
                             form.style.display = 'none'; 
-                            modalText.innerHTML = "<b style='color: #27ae60'>✅ Acesso Liberado!</b><br>Clique no botão abaixo.";
+                            modalText.innerHTML = "<b style='color: #27ae60'>✅ Acesso Liberado!</b><br>Clique no botão abaixo para baixar o seu PDF.";
                             linkReal.style.display = 'block'; 
                             
-                            // --- EVENTO LEAD ENRIQUECIDO ---
                             if (typeof fbq === 'function') {
-                                fbq('track', 'Lead', { 
-                                    content_name: 'Resumão Ética Profissional OAB 46',
-                                    content_category: 'Material Gratuito',
-                                    value: 0.00,
-                                    currency: 'BRL'
-                                });
+                                fbq('track', 'Lead', { content_name: 'Resumão Ética Profissional OAB 46', content_category: 'Material Gratuito', value: 0.00, currency: 'BRL', whatsapp_fornecido: numeroLimpo });
                             }
                         });
                     } else {
@@ -520,7 +375,10 @@
                     if (typeof fbq === 'function') {
                         fbq('trackCustom', 'DownloadMaterial', { content_name: 'Resumão Ética Profissional OAB 46' });
                     }
-                    setTimeout(() => { window.location.reload(); }, 4000); 
+                    
+                    // Aqui fechamos o modal suavemente. O link do PDF vai abrir em nova guia (target="_blank")
+                    // O usuário continua no site, não tem recarregamento da página!
+                    modal.style.display = 'none';
                 });
 
                 modal.addEventListener('click', (e) => { if(e.target === modal) modal.style.display = 'none'; });
