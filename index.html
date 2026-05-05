@@ -72,7 +72,6 @@
         <h2 class="section-title">Nossos Materiais</h2>
         <div class="grid-produtos">
             
-            <!-- PRODUTO GRATUITO: ID ETICA -->
             <div class="card">
                 <span class="card-tag gratis">MATERIAL GRATUITO 🎁</span>
                 <div class="card-img-container"><img src="OAB.png" alt="Capa OAB"></div>
@@ -81,12 +80,10 @@
                 <div><span class="preco-antigo">R$ 19,99</span></div>
                 <div class="preco" style="margin-bottom: 15px; margin-top: -5px;">Por R$ 0,00</div>
                 <div class="area-botoes">
-                    <!-- O data-id="ETICA" não é estritamente necessário aqui pois o código do WhatsApp cuida disso, mas mantemos o padrão -->
                     <button class="btn-download disabled" id="btn-timer" data-id="ETICA">AGUARDE 10s...</button>
                 </div>
             </div>
 
-            <!-- PRODUTO PAGO: ID PNL -->
             <div class="card">
                 <span class="card-tag">DESTAQUE 🔥🔥</span>
                 <div class="card-img-container"><img src="PENAL.png" alt="Código Penal"></div>
@@ -94,13 +91,11 @@
                 <p>Parte Geral e Especial Esquematizadas e Comentadas com foco em concursos.</p>
                 <div class="preco">R$ 19,99</div>
                 <div class="area-botoes">
-                    <!-- ADICIONADO DATA-ID="PNL" -->
                     <a href="https://www.focolegis.com/FocoLegis%20-%20AMOSTRA%20-%20Direito%20Penal.pdf" target="_blank" rel="noopener noreferrer" class="btn-amostra" data-id="PNL">👁️ Ver Amostra (PDF)</a>
                     <a href="https://pay.hotmart.com/B105246198A" target="_blank" class="btn-comprar" data-id="PNL">Comprar Agora</a>
                 </div>
             </div>
 
-            <!-- PRODUTO PAGO: ID CONST -->
             <div class="card">
                 <span class="card-tag">DESTAQUE 🔥🔥</span>
                 <div class="card-img-container"><img src="CONSTITUCIONAL.png" alt="Direito Constitucional"></div>
@@ -108,7 +103,6 @@
                 <p>Constituição Federal Comentada e Esquematizada ponto a ponto!</p>
                 <div class="preco">R$ 19,99</div>
                 <div class="area-botoes">
-                    <!-- ADICIONADO DATA-ID="CONST" -->
                     <a href="https://www.focolegis.com/FocoLegis%20-%20AMOSTRA%20-%20Direito%20Constitucional.pdf" target="_blank" rel="noopener noreferrer" class="btn-amostra" data-id="CONST">👁️ Ver Amostra (PDF)</a>
                     <a href="https://pay.hotmart.com/B105423919E" target="_blank" class="btn-comprar" data-id="CONST">Comprar Agora</a>
                 </div>
@@ -138,9 +132,8 @@
         <div class="btn-whatsapp-fixo"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp"></div>
     </a>
 
-<!-- Script Principal -->
+<!-- Script Principal - Agora com "Caixinha" de envios -->
 <script>
-    // --- 1. GERAÇÃO DO ID DE VISITANTE E SCRIPT URL ---
     let visitorId = localStorage.getItem('fl_visitor_id');
     if (!visitorId) {
         visitorId = 'V-' + Math.random().toString(36).substr(2, 9);
@@ -148,17 +141,31 @@
     }
     window.visitorId = visitorId;
     
-    // COLOQUE O SEU LINK DA PLANILHA AQUI
-    window.scriptURL = 'https://script.google.com/macros/s/AKfycbxd3tn_xx5Ce22bhvl8tqrlJ6hJNkCMudhb1f0WY3cKzCxRSpGkCqaEq7b3kdaCGAVj/exec'; 
+    // COLOQUE SEU LINK DO GOOGLE SCRIPT AQUI
+    window.scriptURL = 'https://script.google.com/macros/s/AKfycbzD-axXu7BbPun6uvab9SGEFYvpGqkLsaCg7BDCLCDjgHcDbbsSf-WD6Ncwx0lWmTvJ/exec'; 
 
-    function enviarAcaoPlanilha(payload) {
-        fetch(window.scriptURL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify(payload)
-        }).catch(e => console.log("Erro envio:", e));
+    // O "CARRINHO" DE AÇÕES (Evita travar a planilha mandando 10 coisas ao mesmo tempo)
+    window.actionQueue = [];
+    
+    function adicionarAcao(tipo, valor) {
+        window.actionQueue.push({ type: tipo, val: valor });
     }
+
+    // A cada 3 segundos, ele vê se tem algo na fila e manda tudo de uma vez
+    setInterval(() => {
+        if (window.actionQueue.length > 0) {
+            let payload = {
+                visitorId: window.visitorId,
+                actions: window.actionQueue.slice() // Copia a fila
+            };
+            window.actionQueue = []; // Limpa a fila
+            
+            fetch(window.scriptURL, {
+                method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(payload)
+            }).catch(e => console.log(e));
+        }
+    }, 3000);
 
     (function() {
         let utmsUrl = window.location.search || "Orgânico/Direto";
@@ -168,42 +175,42 @@
 
         if (typeof fbq === 'function') fbq('track', 'PageView');
 
-        // --- 2. RASTREIO DE IP, CIDADE E ESTADO (ipwho.is é imune a bloqueios leves) ---
-        fetch('https://api.ipify.org?format=json')
+        // NOVA API MAIS FORTE PARA CIDADE/ESTADO
+        fetch('http://ip-api.com/json/')
             .then(res => res.json())
-            .then(ipData => {
-                let ipLimpo = ipData.ip; 
-                fetch('https://ipwho.is/' + ipLimpo)
-                    .then(res => res.json())
-                    .then(geoData => {
-                        if (typeof fbq === 'function' && geoData.city) {
-                            fbq('set', '1974259026792087', {
-                                ct: geoData.city.toLowerCase().replace(/\s/g, ''),
-                                st: geoData.region ? geoData.region.toLowerCase() : ''
-                            });
-                        }
-                        enviarAcaoPlanilha({ 
-                            "type": "ip", "visitorId": window.visitorId, "ip": ipLimpo,
-                            "estado": geoData.region || "-", "cidade": geoData.city || "-",
-                            "utm": utmsUrl, "device": deviceType, "os": osType
-                        });
-                    })
-                    .catch(() => {
-                        enviarAcaoPlanilha({ "type": "ip", "visitorId": window.visitorId, "ip": ipLimpo, "estado": "-", "cidade": "-", "utm": utmsUrl, "device": deviceType, "os": osType });
+            .then(geoData => {
+                if (typeof fbq === 'function' && geoData.city) {
+                    fbq('set', '1974259026792087', {
+                        ct: geoData.city.toLowerCase().replace(/\s/g, ''),
+                        st: geoData.region ? geoData.region.toLowerCase() : ''
                     });
+                }
+                
+                // Envia o acesso inicial
+                fetch(window.scriptURL, {
+                    method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ 
+                        "isFirstAccess": true, "visitorId": window.visitorId, "ip": geoData.query,
+                        "estado": geoData.regionName || "-", "cidade": geoData.city || "-",
+                        "utm": utmsUrl, "device": deviceType, "os": osType
+                    })
+                });
             })
             .catch(() => {
-                enviarAcaoPlanilha({ "type": "ip", "visitorId": window.visitorId, "ip": "Oculto", "estado": "-", "cidade": "-", "utm": utmsUrl, "device": deviceType, "os": osType });
+                fetch(window.scriptURL, {
+                    method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ "isFirstAccess": true, "visitorId": window.visitorId, "ip": "Oculto", "estado": "-", "cidade": "-", "utm": utmsUrl, "device": deviceType, "os": osType })
+                });
             });
             
-        // --- 3. RASTREIO DE ROLAGEM ---
+        // --- RASTREIO DE ROLAGEM ---
         let scrollMarks = { 25: false, 50: false, 75: false, 100: false };
         window.addEventListener('scroll', () => {
             let p = Math.round((window.scrollY / (document.body.offsetHeight - window.innerHeight)) * 100);
             [25, 50, 75, 100].forEach(mark => {
                 if (p >= mark && !scrollMarks[mark]) {
                     scrollMarks[mark] = true;
-                    enviarAcaoPlanilha({ "type": "scroll", "visitorId": window.visitorId, "depth": mark + "%" });
+                    adicionarAcao("scroll", mark + "%");
                 }
             });
         });
@@ -213,7 +220,6 @@
         let userAgent = navigator.userAgent || navigator.vendor || window.opera;
         let dispositivo = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase()) ? 'celular' : 'pc';
 
-        // --- CLIQUES DE COMPRA ---
         document.querySelectorAll('.btn-comprar').forEach(btn => {
             let linkOriginal = btn.getAttribute('href');
             if (linkOriginal && linkOriginal !== "#") {
@@ -222,22 +228,20 @@
             }
 
             btn.addEventListener('click', function() {
-                let idProduto = btn.getAttribute('data-id') || "Desconhecido"; // PEGA O ID CURTO (PNL, CONST)
+                let idProduto = btn.getAttribute('data-id');
                 if (typeof fbq === 'function') fbq('track', 'InitiateCheckout', { content_name: idProduto, value: 19.99, currency: 'BRL' });
-                enviarAcaoPlanilha({ "type": "checkout", "visitorId": window.visitorId, "produto": idProduto });
+                adicionarAcao("checkout", idProduto);
             });
         });
 
-        // --- CLIQUES DE AMOSTRA ---
         document.querySelectorAll('.btn-amostra').forEach(btn => {
             btn.addEventListener('click', function() {
-                let idProduto = btn.getAttribute('data-id') || "Desconhecido"; // PEGA O ID CURTO (PNL, CONST)
+                let idProduto = btn.getAttribute('data-id');
                 if (typeof fbq === 'function') fbq('track', 'ViewContent', { content_name: idProduto });
-                enviarAcaoPlanilha({ "type": "amostra", "visitorId": window.visitorId, "produto": idProduto });
+                adicionarAcao("amostra", idProduto);
             });
         });
 
-        // --- LÓGICA DO PRODUTO GRATUITO ---
         const btnTimer = document.getElementById('btn-timer');
         const modal = document.getElementById('modal');
         const form = document.getElementById('whatsapp-form');
@@ -274,10 +278,10 @@
                         
                         if (typeof fbq === 'function') fbq('set', '1974259026792087', { ph: numeroLimpo });
 
-                        enviarAcaoPlanilha({ "type": "whatsapp", "visitorId": window.visitorId, "whatsapp": whats });
+                        adicionarAcao("whatsapp", whats);
                         
                         form.style.display = 'none'; 
-                        document.getElementById('modal-text').innerHTML = "<b style='color: #27ae60'>✅ Acesso Liberado!</b><br>Clique no botão abaixo.";
+                        document.getElementById('modal-text').innerHTML = "<b style='color: #27ae60'>✅ Acesso Liberado!</b><br>Clique no botão abaixo para baixar o seu PDF.";
                         linkReal.style.display = 'block'; 
                         
                         if (typeof fbq === 'function') fbq('track', 'Lead', { content_name: 'ETICA', value: 0.00, currency: 'BRL' });
