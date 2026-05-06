@@ -93,7 +93,7 @@
     let visitorId = localStorage.getItem('fl_visitor_id') || ('V-' + Math.random().toString(36).substr(2, 9));
     localStorage.setItem('fl_visitor_id', visitorId);
     window.visitorId = visitorId;
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbwXR8i6d6U8AIxGlOlw0BthW9KVspOct_wqDAv65uQy28ZKhETWyV6jzWH-l1KxcJXN/exec'; 
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzt6DODyeSYmTatxOZNXHdu7RwCp_mcjxdI1D9vCjvT4P9IZpa5N7nGJ97hKwpb0GO9/exec'; 
 
     function enviarPlanilha(dados) {
         dados.visitorId = window.visitorId;
