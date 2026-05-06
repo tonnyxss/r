@@ -2,13 +2,12 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>FocoLegis Studio - v26</title>
+    <title>FocoLegis Studio - v28 (Stories Otimizado)</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        /* Configurações de exibição do site */
         body { font-family: 'Segoe UI', sans-serif; background: #1a1a1a; display: flex; flex-direction: column; align-items: center; padding: 20px; color: white; margin: 0; }
         
-        /* Sidebar de Emojis Lateral */
+        /* Sidebar de Emojis */
         .emoji-sidebar { position: fixed; left: 15px; top: 50%; transform: translateY(-50%); background: #fff; padding: 12px; border-radius: 12px; display: flex; flex-direction: column; gap: 5px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); color: #333; z-index: 100; max-height: 90vh; overflow-y: auto; }
         .emoji-item { font-size: 20px; cursor: pointer; text-align: center; padding: 5px; border-radius: 5px; transition: 0.2s; }
         .emoji-item:hover { background: #eee; transform: scale(1.2); }
@@ -18,44 +17,50 @@
         .control-group { display: flex; flex-direction: column; gap: 8px; font-size: 11px; font-weight: bold; border-right: 1px solid #ddd; padding-right: 20px; }
         .control-group:last-child { border-right: none; }
         
-        /* Tabela de Cores de Grifo */
         .color-grid { display: grid; grid-template-columns: repeat(8, 20px); gap: 4px; }
         .btn-color { width: 20px; height: 20px; border: 1px solid #ddd; border-radius: 3px; cursor: pointer; padding: 0; }
 
-        /* Sliders de ajuste */
         .range-group { display: flex; flex-direction: column; gap: 2px; }
         .range-group label { font-size: 9px; color: #666; margin-bottom: 2px; }
         input[type="range"] { width: 130px; cursor: pointer; }
 
         .btn-tool { padding: 6px 10px; cursor: pointer; background: #eee; border: 1px solid #ccc; border-radius: 4px; font-weight: bold; font-size: 12px; }
+        .btn-mode { background: #3498db !important; color: white !important; border: none; }
 
-        /* QUADRADO DO POST (800x800) */
+        /* AREA DO POST / STORIES */
         #post-area { 
-            width: 800px; height: 800px; 
-            background: white; position: relative; 
-            overflow: hidden; display: flex; 
-            flex-direction: column; align-items: center; 
+            background: white; 
+            position: relative; 
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
             justify-content: flex-start; 
             box-sizing: border-box;
-            padding: 20px 40px; /* Margens iniciais */
+            transition: width 0.3s, height 0.3s;
         }
+
+        /* Formatos */
+        .mode-feed { width: 800px; height: 800px; padding: 20px 40px; }
+        .mode-stories { width: 450px; height: 800px; padding: 60px 30px; }
 
         .logo-area { width: 100%; display: flex; justify-content: center; margin-bottom: 10px; z-index: 10; }
         .logo-area img { max-width: 170px; height: auto; pointer-events: none; }
         
-        /* O EDITOR DE TEXTO */
         #text-editor { 
             width: 100%; flex-grow: 1; outline: none; 
             font-size: 32px; color: #000; z-index: 5; 
-            text-align: center; 
-            line-height: 1.3; /* Ajustado globalmente pelo slider */
+            text-align: center; line-height: 1.3;
             word-wrap: break-word;
         }
 
-        /* Rodapé social */
         .footer-area { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; margin-top: auto; padding-bottom: 15px; z-index: 10; }
-        .social-icons img { width: 32px; height: 32px; margin: 0 4px; }
-        .social-tag { font-weight: 800; font-size: 20px; color: #333; }
+        .social-icons { display: flex; gap: 8px; }
+        .social-icons img { width: 28px; height: 28px; margin: 0 4px; }
+        .social-tag { font-weight: 800; font-size: 18px; color: #333; }
+
+        /* Ocultar ícones no modo stories */
+        .mode-stories .social-icons { display: none; }
 
         .btn-save { background: #27ae60 !important; color: white !important; cursor: pointer; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; }
     </style>
@@ -66,95 +71,87 @@
 
     <div class="toolbar">
         <div class="control-group">
-            Formatação Seletiva
+            Alternar Formato
+            <button class="btn-tool btn-mode" id="toggleMode" onclick="toggleFormat()">MODO: FEED</button>
+        </div>
+
+        <div class="control-group">
+            Estilos
             <div style="display:flex; gap:4px;">
                 <button class="btn-tool" onmousedown="event.preventDefault(); document.execCommand('bold')">B</button>
                 <button class="btn-tool" onmousedown="event.preventDefault(); document.execCommand('italic')">I</button>
                 <button class="btn-tool" onmousedown="event.preventDefault(); document.execCommand('underline')">S</button>
-                <input type="color" oninput="applySelectionStyle('color', this.value)" title="Cor da Letra">
+                <input type="color" oninput="applySelectionStyle('color', this.value)">
             </div>
             <div class="range-group">
-                <label>Tamanho da Fonte (Seleção)</label>
+                <label>Fonte (Seleção)</label>
                 <input type="range" min="12" max="150" value="32" oninput="applySelectionStyle('fontSize', this.value + 'px')">
             </div>
         </div>
 
         <div class="control-group">
-            Espaçamento Global
-            <div style="display:flex; gap:4px; margin-bottom:5px;">
-                <button class="btn-tool" onmousedown="event.preventDefault(); document.execCommand('justifyLeft')">⬅</button>
-                <button class="btn-tool" onmousedown="event.preventDefault(); document.execCommand('justifyCenter')">⏺</button>
-                <button class="btn-tool" onmousedown="event.preventDefault(); document.execCommand('justifyRight')">➡</button>
-            </div>
-            <div class="range-group">
-                <label>Altura entre Linhas (Post Todo)</label>
-                <input type="range" min="0.5" max="2.5" step="0.1" value="1.3" oninput="document.getElementById('text-editor').style.lineHeight = this.value">
-            </div>
-        </div>
-
-        <div class="control-group">
-            Tabela de Grifos (32 Cores)
+            Grifos (Marca-Texto)
             <div class="color-grid" id="colorGrid"></div>
         </div>
 
         <div class="control-group">
-            Margens e Logo
-            <div class="range-group">
-                <label>Topo / Laterais</label>
-                <div style="display:flex; gap:5px;">
-                    <input type="range" min="0" max="300" value="20" oninput="changeMargin('v', this.value)" title="Topo/Base">
-                    <input type="range" min="0" max="300" value="40" oninput="changeMargin('h', this.value)" title="Laterais">
-                </div>
-            </div>
-            <div class="range-group">
-                <label>Aproximar Texto da Logo</label>
-                <input type="range" min="-100" max="150" value="10" oninput="document.querySelector('.logo-area').style.marginBottom = this.value + 'px'">
-            </div>
-        </div>
-
-        <div class="control-group" style="border:none;">
             Ações
-            <button class="btn-tool" onclick="document.getElementById('bgInput').click()" style="margin-bottom:5px;">Mudar Fundo</button>
+            <button class="btn-tool" onclick="document.getElementById('bgInput').click()" style="margin-bottom:5px;">Fundo</button>
             <input type="file" id="bgInput" hidden onchange="updateBgImg(event)">
             <button class="btn-save" onclick="handleSave()">SALVAR PNG</button>
         </div>
     </div>
 
-    <div id="post-area">
+    <div id="post-area" class="mode-feed">
         <div class="logo-area">
-            <img src="https://i.imgur.com/RKYXdCJ.png" alt="Logo">
+            <img id="mainLogo" src="https://i.imgur.com/RKYXdCJ.png" alt="Logo">
         </div>
         <div id="text-editor" contenteditable="true">
-            
+            Digite sua questão aqui...
         </div>
         <div class="footer-area">
             <div class="social-icons">
                 <img src="https://i.imgur.com/GSpLtVa.png" alt="IG">
                 <img src="https://i.imgur.com/jkajxFs.png" alt="X">
             </div>
-            <!-- RODAPÉ ATUALIZADO AQUI -->
-            <div class="social-tag">@FocoLegis | www.focolegis.com</div>
+            <div class="social-tag">@FocoLegis</div>
         </div>
     </div>
 
     <script>
-        // Cores e Emojis
-        const colors = [
-            '#bfe0ff','#a9d4ff','#82caff','#3399ff','#c8f7c5','#b8f0c2','#7cfc00','#228b22',
-            '#fff3a6','#fff7bf','#ffd966','#ffcc00','#ffd1a6','#ffc48c','#ffb347','#ff8c00',
-            '#ffc1d6','#ffcadc','#f498ad','#ff1493','#dcc6ff','#d2b8ff','#c08dfa','#9400d3',
-            '#c2fff0','#c2f0ff','#e6ffc2','#ffd9c2','#ffffff','#f0f0f0','#d3d3d3','#000000'
-        ];
-        
+        let currentMode = 'feed';
+        const logoFeed = "https://i.imgur.com/RKYXdCJ.png";
+        const logoStories = "https://i.imgur.com/R1WPGdm.png";
+
+        function toggleFormat() {
+            const area = document.getElementById('post-area');
+            const btn = document.getElementById('toggleMode');
+            const img = document.getElementById('mainLogo');
+
+            if (currentMode === 'feed') {
+                area.classList.replace('mode-feed', 'mode-stories');
+                img.src = logoStories;
+                btn.innerText = "MODO: STORIES";
+                currentMode = 'stories';
+            } else {
+                area.classList.replace('mode-stories', 'mode-feed');
+                img.src = logoFeed;
+                btn.innerText = "MODO: FEED";
+                currentMode = 'feed';
+            }
+        }
+
+        // Gerar Cores
+        const colors = ['#bfe0ff','#a9d4ff','#82caff','#3399ff','#c8f7c5','#b8f0c2','#7cfc00','#228b22','#fff3a6','#fff7bf','#ffd966','#ffcc00','#ffd1a6','#ffc48c','#ffb347','#ff8c00','#ffc1d6','#ffcadc','#f498ad','#ff1493','#dcc6ff','#d2b8ff','#c08dfa','#9400d3','#c2fff0','#c2f0ff','#e6ffc2','#ffd9c2','#ffffff','#f0f0f0','#d3d3d3','#000000'];
         const grid = document.getElementById('colorGrid');
         colors.forEach(c => {
             const btn = document.createElement('button');
             btn.className = 'btn-color'; btn.style.backgroundColor = c;
-            // ATUALIZADO: Chama a função inteligente de grifo
-            btn.onmousedown = (e) => { e.preventDefault(); applyHighlight(c); };
+            btn.onmousedown = (e) => { e.preventDefault(); document.execCommand('hiliteColor', false, c); };
             grid.appendChild(btn);
         });
 
+        // Gerar Emojis
         const emojis = ["🙏🏻","👏🏻","👀","🤓","⭐","🔥","🥇","🏆","🚨","🚀","✏️","🔍","📢","💥","💪🏻","👉🏻","👇🏻","👆🏻","👈🏻","✍🏻","🎯","❌","✅"];
         const sidebar = document.getElementById('emojiBoard');
         emojis.forEach(em => {
@@ -164,38 +161,6 @@
             sidebar.appendChild(div);
         });
 
-        // FORMATAÇÃO INTELIGENTE DO GRIFO (Correção do Caixotão Azul)
-        function applyHighlight(color) {
-            document.execCommand('styleWithCSS', false, true);
-            if (!document.execCommand('hiliteColor', false, color)) {
-                document.execCommand('backColor', false, color);
-            }
-            
-            const editor = document.getElementById('text-editor');
-            
-            // Remove a cor da <div> inteira se o navegador errar
-            const blocos = editor.querySelectorAll('div, p');
-            blocos.forEach(bloco => {
-                if (bloco.style.backgroundColor) {
-                    const cor = bloco.style.backgroundColor;
-                    bloco.style.backgroundColor = ''; 
-                    bloco.innerHTML = `<span style="background-color: ${cor};">${bloco.innerHTML}</span>`;
-                }
-            });
-
-            // Adiciona o visual "Marca-Texto" aos spans grifados
-            const spans = editor.querySelectorAll('span');
-            spans.forEach(span => {
-                if (span.style.backgroundColor && span.style.backgroundColor !== 'transparent' && span.style.backgroundColor !== 'rgba(0, 0, 0, 0)') {
-                    span.style.padding = "2px 8px";
-                    span.style.borderRadius = "6px";
-                    span.style.webkitBoxDecorationBreak = "clone";
-                    span.style.boxDecorationBreak = "clone";
-                }
-            });
-        }
-
-        // Formatação Seletiva (Apenas Cor e Tamanho)
         function applySelectionStyle(property, value) {
             const selection = window.getSelection();
             if (!selection.rangeCount || selection.isCollapsed) return;
@@ -207,43 +172,36 @@
             range.insertNode(span);
         }
 
-        // Margens do Quadrado
-        function changeMargin(type, val) {
-            const post = document.getElementById('post-area');
-            if (type === 'v') { post.style.paddingTop = val + "px"; post.style.paddingBottom = val + "px"; }
-            else { post.style.paddingLeft = val + "px"; post.style.paddingRight = val + "px"; }
-        }
-
-        // Fundo
         function updateBgImg(e) {
             const reader = new FileReader();
             reader.onload = () => { 
-                const area = document.getElementById('post-area');
-                area.style.backgroundImage = `url(${reader.result})`;
-                area.style.backgroundSize = 'cover'; area.style.backgroundPosition = 'center';
+                document.getElementById('post-area').style.backgroundImage = `url(${reader.result})`;
+                document.getElementById('post-area').style.backgroundSize = 'cover';
             };
             reader.readAsDataURL(e.target.files[0]);
         }
 
-        // Salvar em PNG (v26)
         async function handleSave() {
             const post = document.getElementById('post-area');
             const btn = document.querySelector('.btn-save');
-            btn.innerText = "PROCESSANDO...";
-            await new Promise(r => setTimeout(r, 400));
+            btn.innerText = "GERANDO...";
+            
+            // Proporção de exportação real
+            const scale = currentMode === 'stories' ? 1080 / post.offsetWidth : 2;
+
             html2canvas(post, { 
                 useCORS: true, 
-                scale: 2, 
-                backgroundColor: "#ffffff",
-                logging: false
+                scale: scale, 
+                backgroundColor: "#ffffff"
             }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = 'focolegis-post-' + Date.now() + '.png';
+                link.download = `focolegis-${currentMode}-${Date.now()}.png`;
                 link.href = canvas.toDataURL("image/png");
                 link.click();
                 btn.innerText = "SALVAR PNG";
             });
         }
+        function copyEmoji(emoji) { navigator.clipboard.writeText(emoji); }
     </script>
 </body>
 </html>
