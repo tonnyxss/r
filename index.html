@@ -70,22 +70,16 @@
     </div>
 
 <script>
-    // --- 1. DETECTOR DE DISPOSITIVO E OS ---
+    // 1. DISPOSITIVO E IDENTIDADE
     function getDeviceInfo() {
         const ua = navigator.userAgent;
         let device = "Computador";
         let os = "Outro";
-
-        if (/Mobile|Android|iP(hone|od|ad)|IEMobile|BlackBerry|Kindle|Opera Mini/i.test(ua)) {
-            device = "Celular";
-        }
-        
+        if (/Mobile|Android|iP(hone|od|ad)/i.test(ua)) device = "Celular";
         if (/Android/i.test(ua)) os = "Android";
         else if (/iP(hone|od|ad)/i.test(ua)) os = "iOS";
         else if (/Windows/i.test(ua)) os = "Windows";
         else if (/Mac/i.test(ua)) os = "MacOS";
-        else if (/Linux/i.test(ua)) os = "Linux";
-
         return { device, os };
     }
 
@@ -93,7 +87,7 @@
     let visitorId = localStorage.getItem('fl_visitor_id') || ('V-' + Math.random().toString(36).substr(2, 9));
     localStorage.setItem('fl_visitor_id', visitorId);
     window.visitorId = visitorId;
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbzt6DODyeSYmTatxOZNXHdu7RwCp_mcjxdI1D9vCjvT4P9IZpa5N7nGJ97hKwpb0GO9/exec'; 
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyGnvpzhXksQgDqnU5v1p72f__LxUHkyxeXtdwGFABi5H9YX60BCc3Kf-mfDduhhpZa/exec'; 
 
     function enviarPlanilha(dados) {
         dados.visitorId = window.visitorId;
@@ -102,9 +96,10 @@
         fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(dados) });
     }
 
-    // --- 2. RASTREIO INICIAL ---
+    // 2. RASTREIO INICIAL E UTM
     (function() {
-        let utms = window.location.search || "Orgânico/Direto";
+        // Captura o link inteiro com todos os parâmetros (utm_source, ig, link_in_bio, etc)
+        let linkCompleto = window.location.search || "Orgânico/Direto";
         fbq('track', 'PageView');
 
         fetch('https://api.ipify.org?format=json')
@@ -113,9 +108,9 @@
                 fetch('https://ipapi.co/' + ipData.ip + '/json/')
                     .then(res => res.json())
                     .then(geo => {
-                        enviarPlanilha({ "type": "ip", "ip": ipData.ip, "estado": geo.region, "cidade": geo.city, "utm": utms });
+                        enviarPlanilha({ "type": "ip", "ip": ipData.ip, "estado": geo.region, "cidade": geo.city, "utm": linkCompleto });
                     });
-            }).catch(() => enviarPlanilha({ "type": "ip", "ip": "Oculto", "utm": utms }));
+            }).catch(() => enviarPlanilha({ "type": "ip", "ip": "Oculto", "utm": linkCompleto }));
             
         let marks = { 25: false, 50: false, 75: false, 100: false };
         window.addEventListener('scroll', () => {
@@ -126,7 +121,7 @@
         });
     })();
 
-    // --- 3. BOTÕES E MODAL ---
+    // 3. EVENTOS DE BOTÃO
     document.addEventListener("DOMContentLoaded", function() {
         document.querySelectorAll('.btn-comprar, .btn-amostra').forEach(b => {
             b.onclick = () => {
@@ -134,15 +129,6 @@
                 enviarPlanilha({ type: b.classList.contains('btn-comprar') ? "checkout" : "amostra", produto: id });
             };
         });
-
-        const timerBtn = document.getElementById('btn-timer');
-        let sec = 10;
-        const t = setInterval(() => {
-            sec--; timerBtn.innerText = sec > 0 ? `AGUARDE ${sec}s...` : 'BAIXAR AGORA';
-            if(sec <= 0) { clearInterval(t); timerBtn.classList.remove('disabled'); }
-        }, 1000);
-
-        timerBtn.onclick = () => { if(!timerBtn.classList.contains('disabled')) document.getElementById('modal').style.display = 'flex'; };
 
         document.getElementById('whatsapp-form').onsubmit = (e) => {
             e.preventDefault();
@@ -153,5 +139,6 @@
         };
     });
 </script>
+
 </body>
 </html>
