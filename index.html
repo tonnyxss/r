@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Foco Legis - Lei Seca Comentada e Esquematizada!</title>
+    <title>Foco Legis - Lei Seca Comentada!</title>
     
     <!-- Pixel da Meta -->
     <script>
@@ -12,181 +12,106 @@
     </script>
 
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background-color: #f4f7f6; color: #333; }
         header { background-color: #1a252f; color: #ffffff; text-align: center; padding: 40px 20px; }
         header h1 { margin: 0; font-size: 2.2em; color: #f1c40f; }
         .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
         .grid-produtos { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
-        .card { background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 25px; text-align: center; display: flex; flex-direction: column; min-height: 480px; }
-        .card img { width: 160px; height: 160px; margin: 0 auto 15px auto; object-fit: cover; border-radius: 8px; }
-        
-        .preco-antigo { color: #e74c3c; text-decoration: line-through; font-size: 1.1em; font-weight: bold; margin-bottom: 5px; display: block; }
+        .card { background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 25px; text-align: center; display: flex; flex-direction: column; }
+        .card img { width: 150px; margin: 0 auto 15px auto; border-radius: 8px; }
+        .preco-antigo { color: #e74c3c; text-decoration: line-through; font-weight: bold; margin-bottom: 5px; display: block; }
         .preco-novo { color: #27ae60; font-size: 1.6em; font-weight: bold; margin-bottom: 15px; display: block; }
-        
-        .btn-comprar { background-color: #27ae60; color: white; padding: 12px; border-radius: 5px; text-decoration: none; font-weight: bold; margin-top: 10px; display: block; border: none; cursor: pointer; }
+        .btn-comprar { background-color: #27ae60; color: white; padding: 12px; border-radius: 5px; text-decoration: none; font-weight: bold; margin-top: 10px; display: block; }
         .btn-amostra { border: 2px solid #34495e; color: #34495e; padding: 10px; border-radius: 5px; text-decoration: none; font-weight: bold; display: block; margin-top: 5px; }
-        
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 2000; }
-        .modal-content { background: white; padding: 30px; border-radius: 10px; text-align: center; width: 90%; max-width: 400px; }
-        .btn-download { background-color: #27ae60; color: white; padding: 12px; border-radius: 5px; width: 100%; border: none; cursor: pointer; font-weight: bold; text-decoration: none; display: block; margin-top: 10px; }
-        .btn-download.disabled { background-color: #ccc !important; cursor: not-allowed; }
-
-        .whatsapp-fixo { position: fixed; bottom: 20px; right: 20px; display: flex; align-items: center; gap: 10px; text-decoration: none; z-index: 1000; }
-        .whatsapp-balao { background: white; color: #2c3e50; padding: 8px 15px; border-radius: 20px; font-weight: bold; font-size: 0.85em; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
-        .whatsapp-icon { width: 60px; height: 60px; background-color: #25d366; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .whatsapp-icon img { width: 35px; height: 35px; }
+        .btn-download { background-color: #27ae60; color: white; padding: 12px; border-radius: 5px; width: 100%; border: none; cursor: pointer; font-weight: bold; }
+        .btn-download.disabled { background-color: #ccc; cursor: not-allowed; }
+        /* WhatsApp Fixo */
+        .wa-fixo { position: fixed; bottom: 20px; right: 20px; display: flex; align-items: center; text-decoration: none; z-index: 1000; }
+        .wa-balao { background: white; color: #2c3e50; padding: 8px 15px; border-radius: 20px; font-weight: bold; font-size: 0.85em; box-shadow: 0 4px 10px rgba(0,0,0,0.15); margin-right: 10px; }
+        .wa-icon { width: 60px; height: 60px; background-color: #25d366; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Foco Legis - Legislação Comentada e Esquematizada</h1>
-        <p>Gabarite a Lei Seca com resumos estratégicos!</p>
-    </header>
+    <header><h1>Foco Legis</h1></header>
 
     <div class="container">
         <div class="grid-produtos">
-            <!-- PRODUTO OAB 46 GRATUITO -->
             <div class="card">
-                <div style="background:#3498db; color:white; padding:5px; border-radius:4px; font-size:0.8em; font-weight:bold; margin-bottom:15px;">MATERIAL GRATUITO 🎁</div>
-                <img src="OAB.png" alt="OAB 46">
+                <img src="OAB.png">
                 <h3>Resumão Ética - OAB 46</h3>
-                <p>O conteúdo essencial para gabaritar ética na sua prova.</p>
                 <span class="preco-antigo">R$ 19,99</span>
                 <span class="preco-novo">R$ 0,00</span>
                 <button class="btn-download disabled" id="btn-timer">AGUARDE 10s...</button>
             </div>
-
-            <!-- PENAL -->
-            <div class="card">
-                <div style="background:#e74c3c; color:white; padding:5px; border-radius:4px; font-size:0.8em; font-weight:bold; margin-bottom:15px;">DESTAQUE 🔥</div>
-                <img src="PENAL.png" alt="Direito Penal">
-                <h3>Código Penal Completo</h3>
-                <p>Parte Geral e Especial esquematizadas.</p>
-                <span class="preco-novo">R$ 19,99</span>
-                <a href="https://pay.hotmart.com/B105246198A" target="_blank" class="btn-comprar" data-id="PENAL">Comprar Agora</a>
-                <a href="https://www.focolegis.com/FocoLegis%20-%20AMOSTRA%20-%20Direito%20Penal.pdf" target="_blank" class="btn-amostra" data-id="PENAL">Ver Amostra</a>
-            </div>
-
-            <!-- CONSTITUCIONAL -->
-            <div class="card">
-                <div style="background:#e74c3c; color:white; padding:5px; border-radius:4px; font-size:0.8em; font-weight:bold; margin-bottom:15px;">DESTAQUE 🔥</div>
-                <img src="CONSTITUCIONAL.png" alt="Constitucional">
-                <h3>Direito Constitucional</h3>
-                <p>CF/88 comentada ponto a ponto.</p>
-                <span class="preco-novo">R$ 19,99</span>
-                <a href="https://pay.hotmart.com/B105423919E" target="_blank" class="btn-comprar" data-id="CONST">Comprar Agora</a>
-                <a href="https://www.focolegis.com/FocoLegis%20-%20AMOSTRA%20-%20Direito%20Constitucional.pdf" target="_blank" class="btn-amostra" data-id="CONST">Ver Amostra</a>
-            </div>
+            <!-- Outros produtos -->
         </div>
     </div>
 
-    <!-- Modal Download -->
-    <div class="modal-overlay" id="modal">
-        <div class="modal-content">
-            <h3>Quase lá! 🚀</h3>
-            <p id="modal-text">Informe seu WhatsApp para liberar o download.</p>
+    <!-- Modal WhatsApp -->
+    <div id="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); align-items:center; justify-content:center; z-index:2000;">
+        <div style="background:white; padding:30px; border-radius:10px; text-align:center; width:90%; max-width:400px;">
+            <h3>Informe seu WhatsApp</h3>
             <form id="whatsapp-form">
-                <input type="tel" id="whatsapp-input" placeholder="(00) 90000-0000" style="width: 100%; padding: 12px; margin: 15px 0; border: 1px solid #ccc; border-radius: 5px;" required>
-                <button type="submit" class="btn-download">LIBERAR ACESSO</button>
+                <input type="tel" id="whatsapp-input" placeholder="(00) 90000-0000" style="width:100%; padding:12px; margin-bottom:15px; border:1px solid #ccc; border-radius:5px;" required>
+                <button type="submit" class="btn-download">LIBERAR PDF</button>
             </form>
-            <a href="OAB46.pdf" target="_blank" id="link-real" class="btn-download" style="display:none;">BAIXAR PDF AGORA</a>
+            <a href="OAB46.pdf" id="link-real" class="btn-download" style="display:none; text-decoration:none;">BAIXAR AGORA</a>
         </div>
     </div>
 
-    <!-- Botão WhatsApp Fixo -->
-    <a href="https://wa.me/5522998223640?text=Olá, estou com uma dúvida sobre os materiais!" class="whatsapp-fixo" target="_blank">
-        <div class="whatsapp-balao">DÚVIDAS? CHAME NO WHATSAPP!</div>
-        <div class="whatsapp-icon">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
-        </div>
+    <a href="https://wa.me/5522998223640" class="wa-fixo" target="_blank">
+        <div class="wa-balao">DÚVIDAS? CHAME NO WHATSAPP!</div>
+        <div class="wa-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="35"></div>
     </a>
 
 <script>
-    // 1. CONFIGURAÇÕES E IDENTIDADE ÚNICA (A-ID por acesso)
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbwRYDVpuZEF_rdnzR4ziUaufOdXnfoaV56b2yceYC9aaYZaUrdQCEIhdt-anhvs19LR/exec';
-    const visitorId = 'A-' + Math.random().toString(36).substr(2, 9) + '-' + Date.now();
-    
-    let utmsUrl = window.location.search || "Orgânico/Direto";
-    let ua = navigator.userAgent;
-    let deviceType = /Mobile|Android|iP(hone|od|ad)/i.test(ua) ? "Celular" : "PC";
-    let osType = /Android/i.test(ua) ? "Android" : (/iP(hone|od|ad)/i.test(ua) ? "iOS" : "Computador");
-
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyPLXPNiYFBRFt7pIsLrz8SOE024S8sGeiH-wX7gMbeClhTTychntfgCPVuBwKK40JNWQ/exec';
     window.currentLoc = { ip: "", estado: "", cidade: "" };
 
     function enviarParaPlanilha(dados) {
-        const payload = {
-            visitorId: visitorId,
-            ip: window.currentLoc.ip,
-            estado: window.currentLoc.estado,
-            cidade: window.currentLoc.cidade,
-            device: deviceType,
-            os: osType,
-            utm: utmsUrl,
-            ...dados
-        };
-        fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+        fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({
+            ip: window.currentLoc.ip, estado: window.currentLoc.estado, cidade: window.currentLoc.cidade,
+            device: /Mobile/i.test(navigator.userAgent) ? "Celular" : "PC",
+            os: /Android/i.test(navigator.userAgent) ? "Android" : (/iPhone/i.test(navigator.userAgent) ? "iOS" : "Computador"),
+            utm: window.location.search || "Orgânico/Direto", ...dados
+        })});
     }
 
-    // 2. RASTREADOR COMBO (IP + LOCALIZAÇÃO)
-    fetch('https://api.ipify.org?format=json')
-        .then(res => res.json())
-        .then(ipData => {
-            let ipLimpo = ipData.ip;
-            fetch('https://ipapi.co/' + ipLimpo + '/json/')
-                .then(res => res.json())
-                .then(geoData => {
-                    window.currentLoc = { 
-                        ip: ipLimpo, 
-                        estado: geoData.region || "-", 
-                        cidade: geoData.city || "-" 
-                    };
-                    enviarParaPlanilha({ type: "ip" });
-                    if (typeof fbq === 'function') fbq('track', 'PageView');
-                });
-        }).catch(() => enviarParaPlanilha({ type: "ip" }));
-
-    // 3. EVENTOS EM TEMPO REAL
-    document.addEventListener("DOMContentLoaded", function() {
-        // Timer do botão OAB
-        const btnTimer = document.getElementById('btn-timer');
-        let timeLeft = 10;
-        const timer = setInterval(() => {
-            timeLeft--;
-            if (timeLeft > 0) btnTimer.innerText = `AGUARDE ${timeLeft}s...`;
-            else { clearInterval(timer); btnTimer.innerText = 'BAIXAR MATERIAL'; btnTimer.classList.remove('disabled'); }
-        }, 1000);
-
-        btnTimer.onclick = () => { if(!btnTimer.classList.contains('disabled')) document.getElementById('modal').style.display = 'flex'; };
-
-        // Rastreio de Scroll
-        let marks = { 25: false, 50: false, 75: false, 100: false };
-        window.addEventListener('scroll', () => {
-            let p = Math.round((window.scrollY / (document.body.offsetHeight - window.innerHeight)) * 100);
-            [25, 50, 75, 100].forEach(m => {
-                if (p >= m && !marks[m]) { marks[m] = true; enviarParaPlanilha({ type: "scroll", depth: m + "%" }); }
-            });
+    // Localização
+    fetch('https://api.ipify.org?format=json').then(r => r.json()).then(ipD => {
+        fetch('https://ipapi.co/' + ipD.ip + '/json/').then(r => r.json()).then(geo => {
+            window.currentLoc = { ip: ipD.ip, estado: geo.region, cidade: geo.city };
+            enviarParaPlanilha({ type: "ip" });
+            if (typeof fbq === 'function') fbq('track', 'PageView');
         });
+    }).catch(() => enviarParaPlanilha({ type: "ip" }));
 
-        // Cliques e WhatsApp
-        document.querySelectorAll('.btn-comprar, .btn-amostra').forEach(b => {
-            b.onclick = () => {
-                let id = b.getAttribute('data-id');
-                enviarParaPlanilha({ type: b.classList.contains('btn-comprar') ? "checkout" : "amostra", produto: id });
-                if (typeof fbq === 'function') fbq('track', b.classList.contains('btn-comprar') ? 'InitiateCheckout' : 'ViewContent', { content_name: id });
-            };
+    // Scroll e Cliques
+    let marks = { 25: false, 50: false, 75: false, 100: false };
+    window.onscroll = () => {
+        let p = Math.round((window.scrollY / (document.body.offsetHeight - window.innerHeight)) * 100);
+        [25, 50, 75, 100].forEach(m => {
+            if (p >= m && !marks[m]) { marks[m] = true; enviarParaPlanilha({ type: "scroll", depth: m + "%" }); }
         });
+    };
 
-        document.getElementById('whatsapp-form').onsubmit = (e) => {
-            e.preventDefault();
-            const whats = document.getElementById('whatsapp-input').value;
-            enviarParaPlanilha({ type: "whatsapp", whatsapp: whats });
-            document.getElementById('whatsapp-form').style.display = 'none';
-            document.getElementById('modal-text').innerHTML = "✅ Liberado!";
-            document.getElementById('link-real').style.display = 'block';
-            if (typeof fbq === 'function') fbq('track', 'Lead');
-        };
-    });
+    document.getElementById('btn-timer').onclick = function() {
+        if(!this.classList.contains('disabled')) document.getElementById('modal').style.display = 'flex';
+    };
+
+    let sec = 10;
+    const t = setInterval(() => {
+        sec--; document.getElementById('btn-timer').innerText = sec > 0 ? `AGUARDE ${sec}s...` : 'BAIXAR AGORA';
+        if(sec <= 0) { clearInterval(t); document.getElementById('btn-timer').classList.remove('disabled'); }
+    }, 1000);
+
+    document.getElementById('whatsapp-form').onsubmit = function(e) {
+        e.preventDefault();
+        enviarParaPlanilha({ type: "whatsapp", whatsapp: document.getElementById('whatsapp-input').value });
+        this.style.display = 'none'; document.getElementById('link-real').style.display = 'block';
+        if (typeof fbq === 'function') fbq('track', 'Lead');
+    };
 </script>
 </body>
 </html>
