@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>FocoLegis Studio - v25</title>
+    <title>FocoLegis Studio - v26</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         /* Configurações de exibição do site */
@@ -55,7 +55,7 @@
         /* Rodapé social */
         .footer-area { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; margin-top: auto; padding-bottom: 15px; z-index: 10; }
         .social-icons img { width: 32px; height: 32px; margin: 0 4px; }
-        .social-tag { font-weight: 800; font-size: 22px; color: #333; }
+        .social-tag { font-weight: 800; font-size: 20px; color: #333; }
 
         .btn-save { background: #27ae60 !important; color: white !important; cursor: pointer; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; }
     </style>
@@ -125,14 +125,15 @@
             <img src="https://i.imgur.com/RKYXdCJ.png" alt="Logo">
         </div>
         <div id="text-editor" contenteditable="true">
-            90% ERRA ISSO NAS PROVAS!
+            
         </div>
         <div class="footer-area">
             <div class="social-icons">
                 <img src="https://i.imgur.com/GSpLtVa.png" alt="IG">
                 <img src="https://i.imgur.com/jkajxFs.png" alt="X">
             </div>
-            <div class="social-tag">@FocoLegis</div>
+            <!-- RODAPÉ ATUALIZADO AQUI -->
+            <div class="social-tag">@FocoLegis | www.focolegis.com</div>
         </div>
     </div>
 
@@ -144,11 +145,13 @@
             '#ffc1d6','#ffcadc','#f498ad','#ff1493','#dcc6ff','#d2b8ff','#c08dfa','#9400d3',
             '#c2fff0','#c2f0ff','#e6ffc2','#ffd9c2','#ffffff','#f0f0f0','#d3d3d3','#000000'
         ];
+        
         const grid = document.getElementById('colorGrid');
         colors.forEach(c => {
             const btn = document.createElement('button');
             btn.className = 'btn-color'; btn.style.backgroundColor = c;
-            btn.onmousedown = (e) => { e.preventDefault(); document.execCommand('hiliteColor', false, c); };
+            // ATUALIZADO: Chama a função inteligente de grifo
+            btn.onmousedown = (e) => { e.preventDefault(); applyHighlight(c); };
             grid.appendChild(btn);
         });
 
@@ -160,6 +163,37 @@
             div.onclick = () => { navigator.clipboard.writeText(em); };
             sidebar.appendChild(div);
         });
+
+        // FORMATAÇÃO INTELIGENTE DO GRIFO (Correção do Caixotão Azul)
+        function applyHighlight(color) {
+            document.execCommand('styleWithCSS', false, true);
+            if (!document.execCommand('hiliteColor', false, color)) {
+                document.execCommand('backColor', false, color);
+            }
+            
+            const editor = document.getElementById('text-editor');
+            
+            // Remove a cor da <div> inteira se o navegador errar
+            const blocos = editor.querySelectorAll('div, p');
+            blocos.forEach(bloco => {
+                if (bloco.style.backgroundColor) {
+                    const cor = bloco.style.backgroundColor;
+                    bloco.style.backgroundColor = ''; 
+                    bloco.innerHTML = `<span style="background-color: ${cor};">${bloco.innerHTML}</span>`;
+                }
+            });
+
+            // Adiciona o visual "Marca-Texto" aos spans grifados
+            const spans = editor.querySelectorAll('span');
+            spans.forEach(span => {
+                if (span.style.backgroundColor && span.style.backgroundColor !== 'transparent' && span.style.backgroundColor !== 'rgba(0, 0, 0, 0)') {
+                    span.style.padding = "2px 8px";
+                    span.style.borderRadius = "6px";
+                    span.style.webkitBoxDecorationBreak = "clone";
+                    span.style.boxDecorationBreak = "clone";
+                }
+            });
+        }
 
         // Formatação Seletiva (Apenas Cor e Tamanho)
         function applySelectionStyle(property, value) {
@@ -191,7 +225,7 @@
             reader.readAsDataURL(e.target.files[0]);
         }
 
-        // Salvar em PNG (v25 - Mais Estável)
+        // Salvar em PNG (v26)
         async function handleSave() {
             const post = document.getElementById('post-area');
             const btn = document.querySelector('.btn-save');
