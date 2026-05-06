@@ -20,20 +20,17 @@
         .card { background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 25px; text-align: center; display: flex; flex-direction: column; min-height: 480px; }
         .card img { width: 160px; height: 160px; margin: 0 auto 15px auto; object-fit: cover; border-radius: 8px; }
         
-        /* Estilização de Preços */
         .preco-antigo { color: #e74c3c; text-decoration: line-through; font-size: 1.1em; font-weight: bold; margin-bottom: 5px; display: block; }
         .preco-novo { color: #27ae60; font-size: 1.6em; font-weight: bold; margin-bottom: 15px; display: block; }
         
         .btn-comprar { background-color: #27ae60; color: white; padding: 12px; border-radius: 5px; text-decoration: none; font-weight: bold; margin-top: 10px; display: block; border: none; cursor: pointer; }
         .btn-amostra { border: 2px solid #34495e; color: #34495e; padding: 10px; border-radius: 5px; text-decoration: none; font-weight: bold; display: block; margin-top: 5px; }
         
-        /* Modal e Timer */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 2000; }
         .modal-content { background: white; padding: 30px; border-radius: 10px; text-align: center; width: 90%; max-width: 400px; }
         .btn-download { background-color: #27ae60; color: white; padding: 12px; border-radius: 5px; width: 100%; border: none; cursor: pointer; font-weight: bold; text-decoration: none; display: block; margin-top: 10px; }
         .btn-download.disabled { background-color: #ccc !important; cursor: not-allowed; }
 
-        /* Botão Flutuante WhatsApp */
         .whatsapp-fixo { position: fixed; bottom: 20px; right: 20px; display: flex; align-items: center; gap: 10px; text-decoration: none; z-index: 1000; }
         .whatsapp-balao { background: white; color: #2c3e50; padding: 8px 15px; border-radius: 20px; font-weight: bold; font-size: 0.85em; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
         .whatsapp-icon { width: 60px; height: 60px; background-color: #25d366; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
@@ -107,7 +104,7 @@
 
 <script>
     // 1. CONFIGURAÇÕES E IDENTIDADE ÚNICA (A-ID por acesso)
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxrhd-lRYkm6CuU7Zz15Utd0Kx5Oadf-eCVOpojAJwQ2d5iaDYrGs8GQVxhvM94i7ou/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwRYDVpuZEF_rdnzR4ziUaufOdXnfoaV56b2yceYC9aaYZaUrdQCEIhdt-anhvs19LR/exec';
     const visitorId = 'A-' + Math.random().toString(36).substr(2, 9) + '-' + Date.now();
     
     let utmsUrl = window.location.search || "Orgânico/Direto";
@@ -131,7 +128,7 @@
         fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
     }
 
-    // 2. RASTREADOR COMBO (IP + LOCALIZAÇÃO) - SUA API VALIDADA
+    // 2. RASTREADOR COMBO (IP + LOCALIZAÇÃO)
     fetch('https://api.ipify.org?format=json')
         .then(res => res.json())
         .then(ipData => {
@@ -176,6 +173,7 @@
             b.onclick = () => {
                 let id = b.getAttribute('data-id');
                 enviarParaPlanilha({ type: b.classList.contains('btn-comprar') ? "checkout" : "amostra", produto: id });
+                if (typeof fbq === 'function') fbq('track', b.classList.contains('btn-comprar') ? 'InitiateCheckout' : 'ViewContent', { content_name: id });
             };
         });
 
