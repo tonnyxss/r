@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel de Cobranças</title>
+    <title>Painel de Cobranças | @focolegis</title>
     <style>
         :root {
             --bg-body: #050505;
@@ -54,7 +54,8 @@
         }
 
         .seletor-modelo {
-            display: flex;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 8px;
             margin-bottom: 25px;
         }
@@ -63,14 +64,14 @@
             background: transparent;
             border: 1px solid var(--border-color);
             color: var(--text-secondary);
-            padding: 12px 8px;
+            padding: 10px 5px;
             cursor: pointer;
             border-radius: 2px;
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             font-weight: 600;
             letter-spacing: 1px;
             transition: 0.3s;
-            flex: 1;
+            text-align: center;
         }
 
         .tipo-btn.active {
@@ -163,7 +164,6 @@
             color: #000;
         }
 
-        /* Painel de Mensagem Estilizado */
         .msg-box {
             background: #080808;
             padding: 20px;
@@ -198,7 +198,6 @@
             font-weight: bold;
         }
 
-        /* Scrollbar customizada */
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #222; border-radius: 10px; }
@@ -213,7 +212,8 @@
     <div class="seletor-modelo">
         <button class="tipo-btn" data-cat="parcial" onclick="mudarTipo('parcial', this)">DISPARO PAGAMENTO PARCIAL</button>
         <button class="tipo-btn" data-cat="calote" onclick="mudarTipo('calote1', this)">DISPARO CALOTE 01 - APRESENTAÇÃO</button>
-        <button class="tipo-btn active" data-cat="calote" onclick="mudarTipo('calote2', this)">DISPARO CALOTE 02 - NOTIFICAÇÃO</button>
+        <button class="tipo-btn" data-cat="calote" onclick="mudarTipo('calote2', this)">DISPARO CALOTE 02 - NOTIFICAÇÃO</button>
+        <button class="tipo-btn active" data-cat="calote" onclick="mudarTipo('calote3', this)">DISPARO CALOTE 03 - CRIME</button>
     </div>
 
     <textarea id="inputDados" placeholder="Cole os dados brutos da planilha aqui..." oninput="processarDados()"></textarea>
@@ -227,7 +227,7 @@
 </div>
 
 <script>
-    let tipoMensagem = 'calote2';
+    let tipoMensagem = 'calote3';
     let categoriaAtual = 'calote';
 
     function mudarTipo(tipo, btn) {
@@ -245,7 +245,7 @@
     }
 
     function gerarTexto(nome, valor, genero) {
-        const nomeUpper = nome.toUpperCase(); // Força o nome para maiúsculo
+        const nomeUpper = nome.toUpperCase();
         const saudacao = genero === 'F' ? 'sra.' : 'sr.';
         const pronome = genero === 'F' ? 'a' : 'o';
         const artigoJudicial = genero === 'F' ? 'sua' : 'seu';
@@ -256,9 +256,13 @@
         if (tipoMensagem === 'calote1') {
             return `Boa tarde, ${saudacao} ${nomeUpper}, tudo bem? Aqui é o dr. Carlos Augusto, sou advogado na area CÍVEL e CRIMINAL.\n\nPreciso conversar com ${pronome} ${saudacao} sobre sua dívida de ${valor} do seu Avenóbis.\n\nPoderia me responder por favor?\n\nAguardo retorno!\n\n - Departamento Jurídico`;
         }
-        // Calote 2 - Judicial
-        const saudacaoJudicial = genero === 'F' ? 'SRA.' : 'SR.';
-        return `⚠️ *NOTIFICAÇÃO EXTRAJUDICIAL DE COBRANÇA - URGENTE*\n\n${saudacaoJudicial} ${nomeUpper},\n\nDiante da ausência de regularização do débito pendente e do esgotamento de todas as tentativas de resolução amigável, servimo-nos da presente para *NOTIFICAR EXTRAJUDICIALMENTE*.\n\nO não pagamento do produto *AVENÓBIS*, no valor de *${valor}* no prazo improrrogável de *48 horas* a partir do recebimento desta mensagem acarretará o envio imediato do ${artigoJudicial} contrato para o Departamento Jurídico.`;
+        if (tipoMensagem === 'calote2') {
+            const saudacaoJudicial = genero === 'F' ? 'SRA.' : 'SR.';
+            return `⚠️ *NOTIFICAÇÃO EXTRAJUDICIAL DE COBRANÇA - URGENTE*\n\n${saudacaoJudicial} ${nomeUpper},\n\nDiante da ausência de regularização do débito pendente e do esgotamento de todas as tentativas de resolução amigável, servimo-nos da presente para *NOTIFICAR EXTRAJUDICIALMENTE*.\n\nO não pagamento do produto *AVENÓBIS*, no valor de *${valor}* no prazo improrrogável de *48 horas* a partir do recebimento desta mensagem acarretará o envio imediato do ${artigoJudicial} contrato para o Departamento Jurídico.`;
+        }
+        
+        // Calote 3 - Crime
+        return `OLÁ, ${nomeUpper}, DEMOS ENTRADA NO PROCESSO DE ROUBO CONTRA VOCÊ.\n\nRECEBEU EM SUA CASA O PRODUTO AVENÓBIS NO VALOR DE ${valor} E DESDE ENTÃO SUBTRAIU O PRODUTO SEM O PAGAMENTO.\n\nO CRIME DE ROUBO TEM PENA DE 3 A 10 ANOS DE PRISÃO.`;
     }
 
     function processarDados() {
@@ -274,7 +278,6 @@
             if (linha.trim() === '') return;
 
             let nome = "", fone = "", valor = "";
-            
             const matchValor = linha.match(/(R\$\s?[\d.,]+)/i);
             if (!matchValor) return;
             valor = matchValor[0].trim();
@@ -295,7 +298,7 @@
 
             if (nome && fone && valor) {
                 if(nome.endsWith(' R')) nome = nome.slice(0, -2);
-                nome = nome.toUpperCase(); // Garante o nome em maiúsculo no card também
+                nome = nome.toUpperCase(); 
                 
                 const primeiroNome = nome.split(' ')[0].toLowerCase();
                 const genero = (primeiroNome.endsWith('a') || primeiroNome.endsWith('as')) ? 'F' : 'M';
