@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Foco Legis - Lei Seca Comentada e Esquematizada!</title>
     
-    <!-- Pixel da Meta -->
     <script>
     !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
     fbq('init', '1974259026792087');
@@ -46,7 +45,6 @@
 
     <div class="container">
         <div class="grid-produtos">
-            <!-- ÉTICA -->
             <div class="card">
                 <div style="background:#3498db; color:white; padding:5px; border-radius:4px; font-size:0.8em; font-weight:bold; margin-bottom:15px;">MATERIAL GRATUITO 🎁</div>
                 <img src="OAB.png" alt="OAB 46">
@@ -57,7 +55,6 @@
                 <button class="btn-download disabled" id="btn-timer">AGUARDE 10s...</button>
             </div>
 
-            <!-- PENAL -->
             <div class="card">
                 <div style="background:#e74c3c; color:white; padding:5px; border-radius:4px; font-size:0.8em; font-weight:bold; margin-bottom:15px;">DESTAQUE 🔥</div>
                 <img src="PENAL.png" alt="Direito Penal">
@@ -68,7 +65,6 @@
                 <a href="https://www.focolegis.com/FocoLegis%20-%20AMOSTRA%20-%20Direito%20Penal.pdf" target="_blank" class="btn-amostra" data-id="PENAL">Ver Amostra</a>
             </div>
 
-            <!-- CONSTITUCIONAL -->
             <div class="card">
                 <div style="background:#e74c3c; color:white; padding:5px; border-radius:4px; font-size:0.8em; font-weight:bold; margin-bottom:15px;">DESTAQUE 🔥</div>
                 <img src="CONSTITUCIONAL.png" alt="Constitucional">
@@ -81,7 +77,6 @@
         </div>
     </div>
 
-    <!-- Modal Download -->
     <div class="modal-overlay" id="modal">
         <div class="modal-content">
             <h3>Quase lá! 🚀</h3>
@@ -90,11 +85,10 @@
                 <input type="tel" id="whatsapp-input" placeholder="(00) 90000-0000" style="width: 100%; padding: 12px; margin: 15px 0; border: 1px solid #ccc; border-radius: 5px;" required>
                 <button type="submit" class="btn-download">LIBERAR ACESSO</button>
             </form>
-            <a href="OAB46.pdf" target="_blank" id="link-real" class="btn-download" style="display:none;">BAIXAR PDF AGORA</a>
+            <a href="OAB46.pdf" target="_blank" id="link-real" class="btn-download" style="display:none;" onclick="document.getElementById('modal').style.display='none';">BAIXAR PDF AGORA</a>
         </div>
     </div>
 
-    <!-- Botão WhatsApp Fixo -->
     <a href="https://wa.me/5522998223640?text=Olá, estou com uma dúvida sobre os materiais!" class="whatsapp-fixo" target="_blank">
         <div class="whatsapp-balao">DÚVIDAS? CHAME NO WHATSAPP!</div>
         <div class="whatsapp-icon">
@@ -105,7 +99,6 @@
 <script>
     // Configurações
     const scriptURL = 'https://script.google.com/macros/s/AKfycbw_UtqJ7y3AA5FuwaLK77zy9GQ7zGt-SL3QO50P-7fAO7VxAugIymIVGbdLWShj2S4bfw/exec';
-    // VisitorId único por aba carregada para garantir isolamento de acesso
     const visitorId = 'ACC-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5);
     
     window.currentLoc = { ip: "", estado: "", cidade: "" };
@@ -144,7 +137,7 @@
 
         btnTimer.onclick = () => { if(!btnTimer.classList.contains('disabled')) document.getElementById('modal').style.display = 'flex'; };
 
-        // Scroll (apenas envia se atingir o marco)
+        // Scroll
         let marks = { 25: false, 50: false, 75: false, 100: false };
         window.addEventListener('scroll', () => {
             let p = Math.round((window.scrollY / (document.body.offsetHeight - window.innerHeight)) * 100);
