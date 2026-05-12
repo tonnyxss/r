@@ -113,11 +113,19 @@
     window.currentLoc = { ip: "", estado: "", cidade: "" };
 
     function enviarParaPlanilha(dados) {
+        let ua = navigator.userAgent;
+        let sistema = "Outro";
+        
+        if (/Android/i.test(ua)) sistema = "Android";
+        else if (/iP(hone|od|ad)/i.test(ua)) sistema = "iOS";
+        else if (/Windows/i.test(ua)) sistema = "Windows";
+        else if (/Mac/i.test(ua)) sistema = "Mac";
+
         fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({
             visitorId: visitorId,
             ip: window.currentLoc.ip, estado: window.currentLoc.estado, cidade: window.currentLoc.cidade,
-            device: /Mobile|Android|iP(hone|od|ad)/i.test(navigator.userAgent) ? "Celular" : "PC",
-            os: /Android/i.test(navigator.userAgent) ? "Android" : (/iP(hone|od|ad)/i.test(navigator.userAgent) ? "iOS" : "Computador"),
+            device: /Mobile|Android|iP(hone|od|ad)/i.test(ua) ? "Celular" : "PC",
+            os: sistema,
             utm: window.location.search || "Orgânico/Direto", ...dados
         })});
     }
