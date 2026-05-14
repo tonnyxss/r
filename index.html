@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Foco Legis - Lei Seca Comentada e Esquematizada!</title>
     
+    <!-- Pixel da Meta -->
     <script>
     !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
     fbq('init', '1974259026792087');
@@ -63,7 +64,12 @@
             .card { padding: 10px; min-height: 380px; }
             .card h3 { font-size: 0.95em; }
             .card p { display: none; } /* Oculta a descrição no celular para ganhar espaço */
-            .whatsapp-balao { display: none; } /* Oculta o texto do zap no celular para não cobrir os cards */
+            
+            /* Ajuste discreto para o balão no celular */
+            .whatsapp-fixo { gap: 5px; bottom: 15px; right: 15px; }
+            .whatsapp-balao { padding: 6px 10px; border-radius: 15px; font-size: 0.65em; }
+            .whatsapp-balao::before { content: "Dúvidas?"; } /* Texto resumido e discreto */
+            .whatsapp-balao span { display: none; } /* Oculta o texto longo original */
         }
     </style>
 </head>
@@ -140,7 +146,8 @@
     </div>
 
     <a href="https://wa.me/5522998223640?text=Olá, estou com uma dúvida sobre os materiais!" class="whatsapp-fixo" target="_blank">
-        <div class="whatsapp-balao">DÚVIDAS? CHAME NO WHATSAPP!</div>
+        <!-- Balão com span para controle discreto no celular -->
+        <div class="whatsapp-balao"><span>DÚVIDAS? CHAME NO WHATSAPP!</span></div>
         <div class="whatsapp-icon">
             <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
         </div>
@@ -179,7 +186,7 @@
 
     document.addEventListener("DOMContentLoaded", function() {
         const btnTimer = document.getElementById('btn-timer');
-        let sec = 10;
+        let sec = 5;
         const t = setInterval(() => {
             sec--; btnTimer.innerText = sec > 0 ? `AGUARDE ${sec}s...` : 'BAIXAR';
             if(sec <= 0) { clearInterval(t); btnTimer.classList.remove('disabled'); }
