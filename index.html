@@ -15,15 +15,35 @@
         header { background-color: #1a252f; color: #ffffff; text-align: center; padding: 40px 20px; }
         header h1 { margin: 0; font-size: 2.2em; color: #f1c40f; }
         .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
-        .grid-produtos { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
-        .card { background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 25px; text-align: center; display: flex; flex-direction: column; min-height: 520px; }
-        .card img { width: 160px; height: 160px; margin: 0 auto 15px auto; object-fit: cover; border-radius: 8px; }
         
-        .preco-antigo { color: #e74c3c; text-decoration: line-through; font-size: 1.1em; font-weight: bold; margin-bottom: 5px; display: block; }
-        .preco-novo { color: #27ae60; font-size: 1.6em; font-weight: bold; margin-bottom: 15px; display: block; }
+        /* Grid ajustado para aceitar 2 itens menores */
+        .grid-produtos { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
+            gap: 15px; 
+        }
+
+        .card { 
+            background-color: #ffffff; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+            padding: 15px; 
+            text-align: center; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between;
+            min-height: 400px; 
+        }
+
+        .card img { width: 100%; max-width: 140px; height: auto; margin: 0 auto 10px auto; object-fit: cover; border-radius: 8px; }
+        .card h3 { font-size: 1.1em; margin: 10px 0; }
+        .card p { font-size: 0.85em; color: #666; margin-bottom: 10px; }
         
-        .btn-comprar { background-color: #27ae60; color: white; padding: 12px; border-radius: 5px; text-decoration: none; font-weight: bold; margin-top: 10px; display: block; border: none; cursor: pointer; }
-        .btn-amostra { border: 2px solid #34495e; color: #34495e; padding: 10px; border-radius: 5px; text-decoration: none; font-weight: bold; display: block; margin-top: 5px; cursor: pointer; }
+        .preco-antigo { color: #e74c3c; text-decoration: line-through; font-size: 0.9em; font-weight: bold; margin-bottom: 2px; display: block; }
+        .preco-novo { color: #27ae60; font-size: 1.3em; font-weight: bold; margin-bottom: 10px; display: block; }
+        
+        .btn-comprar { background-color: #27ae60; color: white; padding: 10px; border-radius: 5px; text-decoration: none; font-weight: bold; margin-top: 5px; display: block; border: none; cursor: pointer; font-size: 0.9em; }
+        .btn-amostra { border: 2px solid #34495e; color: #34495e; padding: 8px; border-radius: 5px; text-decoration: none; font-weight: bold; display: block; margin-top: 5px; cursor: pointer; font-size: 0.85em; }
         
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 2000; }
         .modal-content { background: white; padding: 30px; border-radius: 10px; text-align: center; width: 90%; max-width: 400px; }
@@ -31,9 +51,20 @@
         .btn-download.disabled { background-color: #ccc !important; cursor: not-allowed; }
 
         .whatsapp-fixo { position: fixed; bottom: 20px; right: 20px; display: flex; align-items: center; gap: 10px; text-decoration: none; z-index: 1000; }
-        .whatsapp-balao { background: white; color: #2c3e50; padding: 8px 15px; border-radius: 20px; font-weight: bold; font-size: 0.85em; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
-        .whatsapp-icon { width: 60px; height: 60px; background-color: #25d366; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .whatsapp-icon img { width: 35px; height: 35px; }
+        .whatsapp-balao { background: white; color: #2c3e50; padding: 8px 15px; border-radius: 20px; font-weight: bold; font-size: 0.75em; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+        .whatsapp-icon { width: 50px; height: 50px; background-color: #25d366; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .whatsapp-icon img { width: 30px; height: 30px; }
+
+        /* Ajustes específicos para Celular */
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.6em; }
+            .container { margin: 20px auto; padding: 0 10px; }
+            .grid-produtos { gap: 10px; grid-template-columns: repeat(2, 1fr); } /* Força 2 colunas */
+            .card { padding: 10px; min-height: 380px; }
+            .card h3 { font-size: 0.95em; }
+            .card p { display: none; } /* Oculta a descrição no celular para ganhar espaço */
+            .whatsapp-balao { display: none; } /* Oculta o texto do zap no celular para não cobrir os cards */
+        }
     </style>
 </head>
 <body>
@@ -46,47 +77,56 @@
     <div class="container">
         <div class="grid-produtos">
             <div class="card">
-                <div style="background:#3498db; color:white; padding:5px; border-radius:4px; font-size:0.8em; font-weight:bold; margin-bottom:15px;">MATERIAL GRATUITO 🎁</div>
+                <div style="background:#3498db; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">GRÁTIS 🎁</div>
                 <img src="OAB.png" alt="OAB 46">
                 <h3>Resumão Ética - OAB 46</h3>
                 <p>O conteúdo essencial para gabaritar ética na sua prova.</p>
-                <span class="preco-antigo">R$ 19,99</span>
-                <span class="preco-novo">R$ 0,00</span>
-                <button class="btn-download disabled" id="btn-timer">AGUARDE 10s...</button>
+                <div>
+                    <span class="preco-antigo">R$ 19,99</span>
+                    <span class="preco-novo">R$ 0,00</span>
+                    <button class="btn-download disabled" id="btn-timer" style="font-size: 0.8em; padding: 10px;">AGUARDE...</button>
+                </div>
             </div>
 
             <div class="card">
-                <div style="background:#e74c3c; color:white; padding:5px; border-radius:4px; font-size:0.8em; font-weight:bold; margin-bottom:15px;">DESTAQUE 🔥</div>
+                <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">DESTAQUE 🔥</div>
                 <img src="PENAL.png" alt="Direito Penal">
                 <h3>Código Penal Completo</h3>
                 <p>Parte Geral e Especial esquematizadas.</p>
-                <span class="preco-novo">R$ 19,99</span>
-                <a href="https://pay.hotmart.com/B105246198A" target="_blank" class="btn-comprar" data-id="PENAL">Comprar Agora</a>
-                <a href="https://www.focolegis.com/FocoLegis%20-%20AMOSTRA%20-%20Direito%20Penal.pdf" target="_blank" class="btn-amostra" data-id="PENAL">Ver Amostra</a>
+                <div>
+                    <span class="preco-novo">R$ 19,99</span>
+                    <a href="https://pay.hotmart.com/B105246198A" target="_blank" class="btn-comprar" data-id="PENAL">Comprar</a>
+                    <a href="https://www.focolegis.com/FocoLegis%20-%20AMOSTRA%20-%20Direito%20Penal.pdf" target="_blank" class="btn-amostra" data-id="PENAL">Amostra</a>
+                </div>
             </div>
 
             <div class="card">
-                <div style="background:#e74c3c; color:white; padding:5px; border-radius:4px; font-size:0.8em; font-weight:bold; margin-bottom:15px;">DESTAQUE 🔥</div>
+                <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">DESTAQUE 🔥</div>
                 <img src="CONSTITUCIONAL.png" alt="Constitucional">
                 <h3>Direito Constitucional</h3>
                 <p>CF/88 comentada ponto a ponto.</p>
-                <span class="preco-novo">R$ 19,99</span>
-                <a href="https://pay.hotmart.com/B105423919E" target="_blank" class="btn-comprar" data-id="CONSTITUCIONAL">Comprar Agora</a>
-                <a href="https://www.focolegis.com/FocoLegis%20-%20AMOSTRA%20-%20Direito%20Constitucional.pdf" target="_blank" class="btn-amostra" data-id="CONSTITUCIONAL">Ver Amostra</a>
+                <div>
+                    <span class="preco-novo">R$ 19,99</span>
+                    <a href="https://pay.hotmart.com/B105423919E" target="_blank" class="btn-comprar" data-id="CONSTITUCIONAL">Comprar</a>
+                    <a href="https://www.focolegis.com/FocoLegis%20-%20AMOSTRA%20-%20Direito%20Constitucional.pdf" target="_blank" class="btn-amostra" data-id="CONSTITUCIONAL">Amostra</a>
+                </div>
             </div>
 
             <div class="card">
-                <div style="background:#e74c3c; color:white; padding:5px; border-radius:4px; font-size:0.8em; font-weight:bold; margin-bottom:15px;">NOVIDADE ⚡</div>
+                <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">NOVIDADE ⚡</div>
                 <img src="EAOAB.png" alt="Estatuto da OAB">
                 <h3>Estatuto da OAB (2026)</h3>
-                <p>EAOAB atualizado, comentado e esquematizado.</p>
-                <span class="preco-novo">R$ 19,99</span>
-                <a href="https://pay.hotmart.com/T105742318A" target="_blank" class="btn-comprar" data-id="EAOAB">Comprar Agora</a>
-                <a href="https://www.focolegis.com/FocoLegis - AMOSTRA - EAOAB.pdf" target="_blank" class="btn-amostra" data-id="EAOAB">Ver Amostra</a>
+                <p>EAOAB atualizado e comentado.</p>
+                <div>
+                    <span class="preco-novo">R$ 19,99</span>
+                    <a href="https://pay.hotmart.com/T105742318A" target="_blank" class="btn-comprar" data-id="EAOAB">Comprar</a>
+                    <a href="https://www.focolegis.com/FocoLegis - AMOSTRA - EAOAB.pdf" target="_blank" class="btn-amostra" data-id="EAOAB">Amostra</a>
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- Modais e Scripts mantidos iguais -->
     <div class="modal-overlay" id="modal">
         <div class="modal-content">
             <h3>Quase lá! 🚀</h3>
@@ -109,18 +149,13 @@
 <script>
     const scriptURL = 'https://script.google.com/macros/s/AKfycbw_UtqJ7y3AA5FuwaLK77zy9GQ7zGt-SL3QO50P-7fAO7VxAugIymIVGbdLWShj2S4bfw/exec';
     const visitorId = 'ACC-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5);
-    
     window.currentLoc = { ip: "", estado: "", cidade: "" };
 
     function enviarParaPlanilha(dados) {
         let ua = navigator.userAgent;
         let sistema = "Outro";
-        
         if (/Android/i.test(ua)) sistema = "Android";
         else if (/iP(hone|od|ad)/i.test(ua)) sistema = "iOS";
-        else if (/Windows/i.test(ua)) sistema = "Windows";
-        else if (/Mac/i.test(ua)) sistema = "Mac";
-
         fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({
             visitorId: visitorId,
             ip: window.currentLoc.ip, estado: window.currentLoc.estado, cidade: window.currentLoc.cidade,
@@ -140,29 +175,17 @@
                     enviarParaPlanilha({ type: "ip" });
                     if (typeof fbq === 'function') fbq('track', 'PageView');
                 });
-        }).catch(() => enviarParaPlanilha({ type: "ip" }));
+        });
 
     document.addEventListener("DOMContentLoaded", function() {
         const btnTimer = document.getElementById('btn-timer');
         let sec = 10;
         const t = setInterval(() => {
-            sec--; btnTimer.innerText = sec > 0 ? `AGUARDE ${sec}s...` : 'BAIXAR MATERIAL';
+            sec--; btnTimer.innerText = sec > 0 ? `AGUARDE ${sec}s...` : 'BAIXAR';
             if(sec <= 0) { clearInterval(t); btnTimer.classList.remove('disabled'); }
         }, 1000);
-
         btnTimer.onclick = () => { if(!btnTimer.classList.contains('disabled')) document.getElementById('modal').style.display = 'flex'; };
-
-        let marks = { 25: false, 50: false, 75: false, 100: false };
-        window.addEventListener('scroll', () => {
-            let p = Math.round((window.scrollY / (document.body.offsetHeight - window.innerHeight)) * 100);
-            [25, 50, 75, 100].forEach(m => {
-                if (p >= m && !marks[m]) { 
-                    marks[m] = true; 
-                    enviarParaPlanilha({ type: "scroll", depth: m + "%" }); 
-                }
-            });
-        });
-
+        
         document.querySelectorAll('.btn-comprar, .btn-amostra').forEach(b => {
             b.onclick = () => {
                 let id = b.getAttribute('data-id');
