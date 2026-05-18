@@ -17,6 +17,7 @@
         header h1 { margin: 0; font-size: 2.2em; color: #f1c40f; }
         .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
         
+        /* Grid ajustado para aceitar 2 itens menores */
         .grid-produtos { 
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
@@ -55,18 +56,20 @@
         .whatsapp-icon { width: 50px; height: 50px; background-color: #25d366; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         .whatsapp-icon img { width: 30px; height: 30px; }
 
+        /* Ajustes específicos para Celular */
         @media (max-width: 600px) {
             header h1 { font-size: 1.6em; }
             .container { margin: 20px auto; padding: 0 10px; }
-            .grid-produtos { gap: 10px; grid-template-columns: repeat(2, 1fr); }
+            .grid-produtos { gap: 10px; grid-template-columns: repeat(2, 1fr); } /* Força 2 colunas */
             .card { padding: 10px; min-height: 380px; }
             .card h3 { font-size: 0.95em; }
-            .card p { display: none; }
+            .card p { display: none; } /* Oculta a descrição no celular para ganhar espaço */
             
+            /* Ajuste discreto para o balão no celular */
             .whatsapp-fixo { gap: 5px; bottom: 15px; right: 15px; }
             .whatsapp-balao { padding: 6px 10px; border-radius: 15px; font-size: 0.65em; }
-            .whatsapp-balao::before { content: "Dúvidas?"; }
-            .whatsapp-balao span { display: none; }
+            .whatsapp-balao::before { content: "Dúvidas?"; } /* Texto resumido e discreto */
+            .whatsapp-balao span { display: none; } /* Oculta o texto longo original */
         }
     </style>
 </head>
@@ -161,63 +164,71 @@
     </a>
 
 <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxJ-sSSgSOv-LmkGNlSw7cgsr_RVlb0JMgTCnaknjOa7QeIVqJ2f7qrchr_rE2-Assntw/exec';
+    // Configurações do seu Script
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzWnB18fjaIaVUAx_es_GfGLKhiGqFTX-XgyDizLPKL4681WhPTaoLz_jnXTHgfCcNh3w/exec';
     const visitorId = 'ACC-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5);
-    window.currentLoc = { ip: "-", estado: "-", cidade: "-" };
+    window.currentLoc = { ip: "", estado: "", cidade: "" };
 
+    // --- DETECTOR INTELIGENTE DE ORIGEM DO CLIQUE ---
     function detectarOrigemReal() {
         let ref = document.referrer ? document.referrer.toLowerCase() : "";
-        let urlParams = new URLSearchParams(window.location.search);
-        let r = urlParams.get('r');
+        let urlParams = window.location.search;
 
-        if (r) return "?r=" + r;
-        if (window.location.search.includes("utm_source=")) return window.location.search;
-        if (ref.includes("instagram.com") || ref.includes("android-app://com.instagram")) return "?utm_source=ig&utm_medium=social&utm_content=link_in_bio";
-        if (ref.includes("facebook.com") || ref.includes("fb")) return "?utm_source=fb&utm_medium=social";
-        if (ref.includes("wa.me") || ref.includes("whatsapp.com") || ref.includes("android-app://com.whatsapp")) return "?utm_source=whatsapp&utm_medium=social";
-        if (!ref || ref === "") return "Orgânico/Direto";
+        // Se contiver parâmetros explícitos de UTM no link, prioriza eles
+        if (urlParams.includes("utm_source=")) {
+            return urlParams;
+        }
+
+        // Se veio do Instagram (App ou Web) sem parâmetros na URL
+        if (ref.includes("instagram.com") || ref.includes("android-app://com.instagram")) {
+            return "?utm_source=ig&utm_medium=social&utm_content=link_in_bio";
+        }
+        // Se veio do Facebook
+        if (ref.includes("facebook.com") || ref.includes("fb")) {
+            return "?utm_source=fb&utm_medium=social";
+        }
+        // Se veio do WhatsApp
+        if (ref.includes("wa.me") || ref.includes("whatsapp.com")) {
+            return "?utm_source=whatsapp&utm_medium=social";
+        }
+        // Se não há histórico prévio no navegador (Digitou o link direto ou abriu de app fechado)
+        if (!ref || ref === "") {
+            return "Orgânico/Direto";
+        }
+
+        // Se veio de qualquer outro site externo
         return "?utm_source=" + encodeURIComponent(document.referrer.split('/')[2]) + "&utm_medium=referral";
     }
 
-    // CORREÇÃO CRÍTICA: Envia via texto plano para que o Apps Script processe sem disparar erros internos
     function enviarParaPlanilha(dados) {
         let ua = navigator.userAgent;
         let sistema = "Outro";
         if (/Android/i.test(ua)) sistema = "Android";
         else if (/iP(hone|od|ad)/i.test(ua)) sistema = "iOS";
-
-        let payload = {
+        
+        fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({
             visitorId: visitorId,
             ip: window.currentLoc.ip, 
             estado: window.currentLoc.estado, 
             cidade: window.currentLoc.cidade,
             device: /Mobile|Android|iP(hone|od|ad)/i.test(ua) ? "Celular" : "PC",
             os: sistema,
-            utm: detectarOrigemReal(),
+            utm: detectarOrigemReal(), // Envia a inteligência artificial de detecção de rastreio
             ...dados
-        };
-
-        fetch(scriptURL, { 
-            method: 'POST', 
-            mode: 'no-cors',
-            body: JSON.stringify(payload)
-        });
+        })});
     }
 
-    // Localização protegida (Garante gravação do PageView mesmo se o IP falhar)
+    // Localização (Sua API validada)
     fetch('https://api.ipify.org?format=json')
         .then(res => res.json())
         .then(ipData => {
-            return fetch('https://ipapi.co/' + ipData.ip + '/json/')
+            fetch('https://ipapi.co/' + ipData.ip + '/json/')
                 .then(res => res.json())
                 .then(geo => {
-                    window.currentLoc = { ip: ipData.ip, estado: geo.region || "-", cidade: geo.city || "-" };
+                    window.currentLoc = { ip: ipData.ip, estado: geo.region, cidade: geo.city };
+                    enviarParaPlanilha({ type: "ip" });
+                    if (typeof fbq === 'function') fbq('track', 'PageView');
                 });
-        })
-        .catch(() => console.log("Rastreamento geográfico indisponível."))
-        .finally(() => {
-            enviarParaPlanilha({ type: "ip" });
-            if (typeof fbq === 'function') fbq('track', 'PageView');
         });
 
     document.addEventListener("DOMContentLoaded", function() {
@@ -229,6 +240,7 @@
         }, 1000);
         btnTimer.onclick = () => { if(!btnTimer.classList.contains('disabled')) document.getElementById('modal').style.display = 'flex'; };
         
+        // Coordenador de Scroll
         let marks = { 25: false, 50: false, 75: false, 100: false };
         window.addEventListener('scroll', () => {
             let p = Math.round((window.scrollY / (document.body.offsetHeight - window.innerHeight)) * 100);
