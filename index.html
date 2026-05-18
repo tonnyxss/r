@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Foco Legis - Lei Seca Comentada e Esquematizada!</title>
-    <meta name="description" content="Lei Seca comentada e esquematizada para acelerar seus estudos em concursos públicos, OAB e faculdade de Direito.">
+    <meta name="description" content="Lei Seca comentada e esquematizada para acelerar seus estudos in concursos públicos, OAB e faculdade de Direito.">
     
     <script>
     !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
@@ -17,7 +17,6 @@
         header h1 { margin: 0; font-size: 2.2em; color: #f1c40f; }
         .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
         
-        /* Grid ajustado para aceitar 2 itens menores */
         .grid-produtos { 
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
@@ -56,20 +55,18 @@
         .whatsapp-icon { width: 50px; height: 50px; background-color: #25d366; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         .whatsapp-icon img { width: 30px; height: 30px; }
 
-        /* Ajustes específicos para Celular */
         @media (max-width: 600px) {
             header h1 { font-size: 1.6em; }
             .container { margin: 20px auto; padding: 0 10px; }
-            .grid-produtos { gap: 10px; grid-template-columns: repeat(2, 1fr); } /* Força 2 colunas */
+            .grid-produtos { gap: 10px; grid-template-columns: repeat(2, 1fr); }
             .card { padding: 10px; min-height: 380px; }
             .card h3 { font-size: 0.95em; }
-            .card p { display: none; } /* Oculta a descrição no celular para ganhar espaço */
+            .card p { display: none; }
             
-            /* Ajuste discreto para o balão no celular */
             .whatsapp-fixo { gap: 5px; bottom: 15px; right: 15px; }
             .whatsapp-balao { padding: 6px 10px; border-radius: 15px; font-size: 0.65em; }
-            .whatsapp-balao::before { content: "Dúvidas?"; } /* Texto resumido e discreto */
-            .whatsapp-balao span { display: none; } /* Oculta o texto longo original */
+            .whatsapp-balao::before { content: "Dúvidas?"; }
+            .whatsapp-balao span { display: none; }
         }
     </style>
 </head>
@@ -164,24 +161,57 @@
     </a>
 
 <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxpHDHZvOVpDIyMnVOT2w5_fAnx6IEZtg-pb80YnxFigRutfOiEy0r44x8oLlgRfPN_1w/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbynSv22nS097Y9TL_vIaQdcY3c_qNkucdF8ZthfbbgXGCejGySBkYLwGahKh7tL4hB2UQ/exec';
     const visitorId = 'ACC-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5);
     window.currentLoc = { ip: "", estado: "", cidade: "" };
+
+    // --- DETECTOR DE PARÂMETROS E REFERRER ---
+    function detectarOrigemReal() {
+        let ref = document.referrer ? document.referrer.toLowerCase() : "";
+        let urlParams = new URLSearchParams(window.location.search);
+        let r = urlParams.get('r');
+
+        // Se houver o atalho r= na URL, prioriza ele de forma limpa para o Apps Script
+        if (r) {
+            return "?r=" + r;
+        }
+        if (window.location.search.includes("utm_source=")) {
+            return window.location.search;
+        }
+        if (ref.includes("instagram.com") || ref.includes("android-app://com.instagram")) {
+            return "?utm_source=ig&utm_medium=social&utm_content=link_in_bio";
+        }
+        if (ref.includes("facebook.com") || ref.includes("fb")) {
+            return "?utm_source=fb&utm_medium=social";
+        }
+        if (ref.includes("wa.me") || ref.includes("whatsapp.com") || ref.includes("android-app://com.whatsapp")) {
+            return "?utm_source=whatsapp&utm_medium=social";
+        }
+        if (!ref || ref === "") {
+            return "Orgânico/Direto";
+        }
+        return "?utm_source=" + encodeURIComponent(document.referrer.split('/')[2]) + "&utm_medium=referral";
+    }
 
     function enviarParaPlanilha(dados) {
         let ua = navigator.userAgent;
         let sistema = "Outro";
         if (/Android/i.test(ua)) sistema = "Android";
         else if (/iP(hone|od|ad)/i.test(ua)) sistema = "iOS";
+        
         fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({
             visitorId: visitorId,
-            ip: window.currentLoc.ip, estado: window.currentLoc.estado, cidade: window.currentLoc.cidade,
+            ip: window.currentLoc.ip, 
+            estado: window.currentLoc.estado, 
+            cidade: window.currentLoc.cidade,
             device: /Mobile|Android|iP(hone|od|ad)/i.test(ua) ? "Celular" : "PC",
             os: sistema,
-            utm: window.location.search || "Orgânico/Direto", ...dados
+            utm: detectarOrigemReal(),
+            ...dados
         })});
     }
 
+    // Localização (Sua API validada)
     fetch('https://api.ipify.org?format=json')
         .then(res => res.json())
         .then(ipData => {
@@ -203,7 +233,7 @@
         }, 1000);
         btnTimer.onclick = () => { if(!btnTimer.classList.contains('disabled')) document.getElementById('modal').style.display = 'flex'; };
         
-        // --- RESTAURADO: COORDENADOR DE SCROLL ---
+        // Coordenador de Scroll
         let marks = { 25: false, 50: false, 75: false, 100: false };
         window.addEventListener('scroll', () => {
             let p = Math.round((window.scrollY / (document.body.offsetHeight - window.innerHeight)) * 100);
