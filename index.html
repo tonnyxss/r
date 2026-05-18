@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Foco Legis - Lei Seca Comentada e Esquematizada!</title>
-    <meta name="description" content="Lei Seca comentada e esquematizada para acelerar seus estudos in concursos públicos, OAB e faculdade de Direito.">
+    <meta name="description" content="Lei Seca comentada e esquematizada para acelerar seus estudos em concursos públicos, OAB e faculdade de Direito.">
     
     <script>
     !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
@@ -161,45 +161,32 @@
     </a>
 
 <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbwbii_q9sjuQauLjB9uWCEy6z9lDsV5ojViXX_8SmMnvZ-QYG9kU-2iawiVRyzgpFIlEw/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxJ-sSSgSOv-LmkGNlSw7cgsr_RVlb0JMgTCnaknjOa7QeIVqJ2f7qrchr_rE2-Assntw/exec';
     const visitorId = 'ACC-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5);
-    window.currentLoc = { ip: "", estado: "", cidade: "" };
+    window.currentLoc = { ip: "-", estado: "-", cidade: "-" };
 
-    // --- DETECTOR DE PARÂMETROS E REFERRER ---
     function detectarOrigemReal() {
         let ref = document.referrer ? document.referrer.toLowerCase() : "";
         let urlParams = new URLSearchParams(window.location.search);
         let r = urlParams.get('r');
 
-        // Se houver o atalho r= na URL, prioriza ele de forma limpa para o Apps Script
-        if (r) {
-            return "?r=" + r;
-        }
-        if (window.location.search.includes("utm_source=")) {
-            return window.location.search;
-        }
-        if (ref.includes("instagram.com") || ref.includes("android-app://com.instagram")) {
-            return "?utm_source=ig&utm_medium=social&utm_content=link_in_bio";
-        }
-        if (ref.includes("facebook.com") || ref.includes("fb")) {
-            return "?utm_source=fb&utm_medium=social";
-        }
-        if (ref.includes("wa.me") || ref.includes("whatsapp.com") || ref.includes("android-app://com.whatsapp")) {
-            return "?utm_source=whatsapp&utm_medium=social";
-        }
-        if (!ref || ref === "") {
-            return "Orgânico/Direto";
-        }
+        if (r) return "?r=" + r;
+        if (window.location.search.includes("utm_source=")) return window.location.search;
+        if (ref.includes("instagram.com") || ref.includes("android-app://com.instagram")) return "?utm_source=ig&utm_medium=social&utm_content=link_in_bio";
+        if (ref.includes("facebook.com") || ref.includes("fb")) return "?utm_source=fb&utm_medium=social";
+        if (ref.includes("wa.me") || ref.includes("whatsapp.com") || ref.includes("android-app://com.whatsapp")) return "?utm_source=whatsapp&utm_medium=social";
+        if (!ref || ref === "") return "Orgânico/Direto";
         return "?utm_source=" + encodeURIComponent(document.referrer.split('/')[2]) + "&utm_medium=referral";
     }
 
+    // CORREÇÃO CRÍTICA: Envia via texto plano para que o Apps Script processe sem disparar erros internos
     function enviarParaPlanilha(dados) {
         let ua = navigator.userAgent;
         let sistema = "Outro";
         if (/Android/i.test(ua)) sistema = "Android";
         else if (/iP(hone|od|ad)/i.test(ua)) sistema = "iOS";
-        
-        fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({
+
+        let payload = {
             visitorId: visitorId,
             ip: window.currentLoc.ip, 
             estado: window.currentLoc.estado, 
@@ -208,20 +195,29 @@
             os: sistema,
             utm: detectarOrigemReal(),
             ...dados
-        })});
+        };
+
+        fetch(scriptURL, { 
+            method: 'POST', 
+            mode: 'no-cors',
+            body: JSON.stringify(payload)
+        });
     }
 
-    // Localização (Sua API validada)
+    // Localização protegida (Garante gravação do PageView mesmo se o IP falhar)
     fetch('https://api.ipify.org?format=json')
         .then(res => res.json())
         .then(ipData => {
-            fetch('https://ipapi.co/' + ipData.ip + '/json/')
+            return fetch('https://ipapi.co/' + ipData.ip + '/json/')
                 .then(res => res.json())
                 .then(geo => {
-                    window.currentLoc = { ip: ipData.ip, estado: geo.region, cidade: geo.city };
-                    enviarParaPlanilha({ type: "ip" });
-                    if (typeof fbq === 'function') fbq('track', 'PageView');
+                    window.currentLoc = { ip: ipData.ip, estado: geo.region || "-", cidade: geo.city || "-" };
                 });
+        })
+        .catch(() => console.log("Rastreamento geográfico indisponível."))
+        .finally(() => {
+            enviarParaPlanilha({ type: "ip" });
+            if (typeof fbq === 'function') fbq('track', 'PageView');
         });
 
     document.addEventListener("DOMContentLoaded", function() {
@@ -233,7 +229,6 @@
         }, 1000);
         btnTimer.onclick = () => { if(!btnTimer.classList.contains('disabled')) document.getElementById('modal').style.display = 'flex'; };
         
-        // Coordenador de Scroll
         let marks = { 25: false, 50: false, 75: false, 100: false };
         window.addEventListener('scroll', () => {
             let p = Math.round((window.scrollY / (document.body.offsetHeight - window.innerHeight)) * 100);
