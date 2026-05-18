@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Foco Legis - Lei Seca Comentada e Esquematizada!</title>
     <meta name="description" content="Lei Seca comentada e esquematizada para acelerar seus estudos em concursos públicos, OAB e faculdade de Direito.">
-    <!-- Pixel da Meta -->
+    
     <script>
     !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
     fbq('init', '1974259026792087');
@@ -107,7 +107,7 @@
             </div>
 
             <div class="card">
-                <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">DESTAQUE 🔥</div>
+                <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:15px;">DESTAQUE 🔥</div>
                 <img src="CONSTITUCIONAL.png" alt="Constitucional">
                 <h3>Direito Constitucional</h3>
                 <p>CF/88 comentada ponto a ponto.</p>
@@ -130,7 +130,7 @@
                 </div>
             </div>
         
-		            <div class="card">
+            <div class="card">
                 <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">NOVIDADE ⚡</div>
                 <img src="TRIBUTÁRIO.png" alt="Código Tributário">
                 <h3>Direito Tributário - CTN (2026)</h3>
@@ -141,11 +141,9 @@
                     <a href="https://www.focolegis.com/FocoLegis - AMOSTRA - Direito Tributário.pdf" target="_blank" class="btn-amostra" data-id="CTN">Amostra</a>
                 </div>
             </div>
-		
-		</div>
+        </div>
     </div>
 
-    <!-- Modais e Scripts mantidos iguais -->
     <div class="modal-overlay" id="modal">
         <div class="modal-content">
             <h3>Quase lá! 🚀</h3>
@@ -159,7 +157,6 @@
     </div>
 
     <a href="https://wa.me/5522998223640?text=Olá, estou com uma dúvida sobre os materiais!" class="whatsapp-fixo" target="_blank">
-        <!-- Balão com span para controle discreto no celular -->
         <div class="whatsapp-balao"><span>DÚVIDAS? CHAME NO WHATSAPP!</span></div>
         <div class="whatsapp-icon">
             <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
@@ -206,6 +203,18 @@
         }, 1000);
         btnTimer.onclick = () => { if(!btnTimer.classList.contains('disabled')) document.getElementById('modal').style.display = 'flex'; };
         
+        // --- RESTAURADO: COORDENADOR DE SCROLL ---
+        let marks = { 25: false, 50: false, 75: false, 100: false };
+        window.addEventListener('scroll', () => {
+            let p = Math.round((window.scrollY / (document.body.offsetHeight - window.innerHeight)) * 100);
+            [25, 50, 75, 100].forEach(m => {
+                if (p >= m && !marks[m]) { 
+                    marks[m] = true; 
+                    enviarParaPlanilha({ type: "scroll", depth: m + "%" }); 
+                }
+            });
+        });
+
         document.querySelectorAll('.btn-comprar, .btn-amostra').forEach(b => {
             b.onclick = () => {
                 let id = b.getAttribute('data-id');
