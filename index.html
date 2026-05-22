@@ -86,9 +86,9 @@
             header h1 { font-size: 1.6em; }
             .container { margin: 20px auto; padding: 0 10px; }
             .grid-produtos { gap: 10px; grid-template-columns: repeat(2, 1fr); }
-            .card { padding: 10px; min-height: 420px; } /* Ajustado para acomodar descrição */
+            .card { padding: 10px; min-height: 420px; }
             .card h3 { font-size: 0.95em; margin: 6px 0; }
-            .card p { display: block; font-size: 0.75em; line-height: 1.2; margin-bottom: 8px; } /* Ativado descrição no mobile */
+            .card p { display: block; font-size: 0.75em; line-height: 1.2; margin-bottom: 8px; }
             
             .whatsapp-fixo { gap: 5px; bottom: 15px; right: 15px; }
             .whatsapp-balao { padding: 6px 10px; border-radius: 15px; font-size: 0.65em; }
@@ -122,7 +122,7 @@
                 <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">COMBO 🔥</div>
                 <img src="COMBOPENAL.png" alt="Combo CP e CPP">
                 <h3>Código Penal + Processo Penal</h3>
-                <p>Combo inclui: CP esquematizado + CPP esquematizado completo.</p>
+                <p>Combo includes: CP esquematizado + CPP esquematizado completo.</p>
                 <div>
                     <span class="preco-antigo">R$ 39,98</span>
                     <span class="preco-novo">R$ 29,99</span>
@@ -257,17 +257,17 @@
         });
 
     document.addEventListener("DOMContentLoaded", function() {
-        // Lógica do Menu Expansível + Rastreabilidade
+        // Lógica do Menu Expansível + Rastreabilidade corrigida para salvar na guia de Eventos/Pixels
         const btnExpandir = document.getElementById('btn-expandir');
         const cardsOcultos = document.querySelectorAll('.card.oculto');
 
         btnExpandir.onclick = () => {
             cardsOcultos.forEach(card => card.classList.remove('oculto'));
-            btnExpandir.style.display = 'none'; // Some após expandir
+            btnExpandir.style.display = 'none'; 
             
-            // Registra a ação na planilha e no pixel
-            enviarParaPlanilha({ type: "amostra", produto: "EXPANDIU_MENU_INDIVIDUAIS" });
-            if (typeof fbq === 'function') fbq('track', 'CustomEvent', { content_name: 'ExpandiuMateriasIndividuais' });
+            // ALTERAÇÃO CRÍTICA: Envia com tipo "amostra" para forçar o acúmulo na coluna M (Pixels) da planilha
+            enviarParaPlanilha({ type: "amostra", produto: "ExpandirMenu" });
+            if (typeof fbq === 'function') fbq('track', 'ViewContent', { content_name: 'ExpandirMenuMaterias' });
         };
 
         // Timer do download grátis
