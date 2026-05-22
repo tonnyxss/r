@@ -15,13 +15,13 @@
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
         header { background-color: #1a252f; color: #ffffff; text-align: center; padding: 40px 20px; }
         header h1 { margin: 0; font-size: 2.2em; color: #f1c40f; }
-        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; display: flex; flex-direction: column; align-items: center; }
         
-        /* Grid ajustado para aceitar 2 itens menores */
         .grid-produtos { 
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
             gap: 15px; 
+            width: 100%;
         }
 
         .card { 
@@ -34,6 +34,12 @@
             flex-direction: column; 
             justify-content: space-between;
             min-height: 400px; 
+            transition: all 0.3s ease;
+        }
+
+        /* Classe para ocultar os produtos individuais inicialmente */
+        .card.oculto {
+            display: none !important;
         }
 
         .card img { width: 100%; max-width: 140px; height: auto; margin: 0 auto 10px auto; object-fit: cover; border-radius: 8px; }
@@ -46,6 +52,25 @@
         .btn-comprar { background-color: #27ae60; color: white; padding: 10px; border-radius: 5px; text-decoration: none; font-weight: bold; margin-top: 5px; display: block; border: none; cursor: pointer; font-size: 0.9em; }
         .btn-amostra { border: 2px solid #34495e; color: #34495e; padding: 8px; border-radius: 5px; text-decoration: none; font-weight: bold; display: block; margin-top: 5px; cursor: pointer; font-size: 0.85em; }
         
+        /* Estilo do Botão do Menu de Expansão */
+        .btn-expandir-menu {
+            background-color: #34495e;
+            color: white;
+            padding: 14px 24px;
+            font-size: 1em;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background 0.2s ease;
+            width: 100%;
+            max-width: 320px;
+            text-align: center;
+        }
+        .btn-expandir-menu:hover { background-color: #2c3e50; }
+
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 2000; }
         .modal-content { background: white; padding: 30px; border-radius: 10px; text-align: center; width: 90%; max-width: 400px; }
         .btn-download { background-color: #27ae60; color: white; padding: 12px; border-radius: 5px; width: 100%; border: none; cursor: pointer; font-weight: bold; text-decoration: none; display: block; margin-top: 10px; }
@@ -60,16 +85,15 @@
         @media (max-width: 600px) {
             header h1 { font-size: 1.6em; }
             .container { margin: 20px auto; padding: 0 10px; }
-            .grid-produtos { gap: 10px; grid-template-columns: repeat(2, 1fr); } /* Força 2 colunas */
-            .card { padding: 10px; min-height: 380px; }
-            .card h3 { font-size: 0.95em; }
-            .card p { display: none; } /* Oculta a descrição no celular para ganhar espaço */
+            .grid-produtos { gap: 10px; grid-template-columns: repeat(2, 1fr); }
+            .card { padding: 10px; min-height: 420px; } /* Ajustado para acomodar descrição */
+            .card h3 { font-size: 0.95em; margin: 6px 0; }
+            .card p { display: block; font-size: 0.75em; line-height: 1.2; margin-bottom: 8px; } /* Ativado descrição no mobile */
             
-            /* Ajuste discreto para o balão no celular */
             .whatsapp-fixo { gap: 5px; bottom: 15px; right: 15px; }
             .whatsapp-balao { padding: 6px 10px; border-radius: 15px; font-size: 0.65em; }
-            .whatsapp-balao::before { content: "Dúvidas?"; } /* Texto resumido e discreto */
-            .whatsapp-balao span { display: none; } /* Oculta o texto longo original */
+            .whatsapp-balao::before { content: "Dúvidas?"; }
+            .whatsapp-balao span { display: none; }
         }
     </style>
 </head>
@@ -97,23 +121,21 @@
             <div class="card">
                 <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">COMBO 🔥</div>
                 <img src="COMBOPENAL.png" alt="Combo CP e CPP">
-                <h3>Código Penal + Código de Processo Penal</h3>
-                <p>Combo inclui:</p>
-				<p>• Código Penal: Parte Geral e Especial Comentado e Esquematizado.</p>
-				<p>• CPP Completo Comentado e Esquematizado.</p>
+                <h3>Código Penal + Processo Penal</h3>
+                <p>Combo inclui: CP esquematizado + CPP esquematizado completo.</p>
                 <div>
                     <span class="preco-antigo">R$ 39,98</span>
-					<span class="preco-novo">R$ 29,99</span>
+                    <span class="preco-novo">R$ 29,99</span>
                     <a href="https://pay.hotmart.com/F105957304E" target="_blank" class="btn-comprar" data-id="COMBOPENAL">Comprar</a>
                     <a href="https://www.focolegis.com/FocoLegis%20-%20AMOSTRA%20-%20Direito%20Penal.pdf" target="_blank" class="btn-amostra" data-id="COMBOPENAL">Amostra</a>
                 </div>
             </div>
 
-            <div class="card">
+            <div class="card oculto">
                 <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">DESTAQUE 🔥</div>
                 <img src="PENAL.png" alt="Direito Penal">
                 <h3>Código Penal Completo</h3>
-                <p>Parte Geral e Especial esquematizadas.</p>
+                <p>Parte Geral e Especial esquematizadas da Lei Seca.</p>
                 <div>
                     <span class="preco-novo">R$ 19,99</span>
                     <a href="https://pay.hotmart.com/B105246198A" target="_blank" class="btn-comprar" data-id="PENAL">Comprar</a>
@@ -121,11 +143,11 @@
                 </div>
             </div>
 
-            <div class="card">
+            <div class="card oculto">
                 <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:15px;">DESTAQUE 🔥</div>
                 <img src="CONSTITUCIONAL.png" alt="Constitucional">
                 <h3>Direito Constitucional</h3>
-                <p>CF/88 comentada ponto a ponto.</p>
+                <p>CF/88 comentada ponto a ponto de forma didática.</p>
                 <div>
                     <span class="preco-novo">R$ 19,99</span>
                     <a href="https://pay.hotmart.com/B105423919E" target="_blank" class="btn-comprar" data-id="CONSTITUCIONAL">Comprar</a>
@@ -133,11 +155,11 @@
                 </div>
             </div>
 
-            <div class="card">
+            <div class="card oculto">
                 <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">NOVIDADE ⚡</div>
                 <img src="EAOAB.png" alt="Estatuto da OAB">
                 <h3>Estatuto da OAB (2026)</h3>
-                <p>EAOAB atualizado e comentado.</p>
+                <p>EAOAB totalmente atualizado, comentado e esquematizado.</p>
                 <div>
                     <span class="preco-novo">R$ 19,99</span>
                     <a href="https://pay.hotmart.com/T105742318A" target="_blank" class="btn-comprar" data-id="EAOAB">Comprar</a>
@@ -145,22 +167,21 @@
                 </div>
             </div>
         
-            <div class="card">
+            <div class="card oculto">
                 <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">NOVIDADE ⚡</div>
                 <img src="TRIBUTÁRIO.png" alt="Código Tributário">
-                <h3>Direito Tributário - CTN (2026)</h3>
-                <p>Código Tributário Nacional Completo atualizado e comentado.</p>
+                <h3>Direito Tributário - CTN</h3>
+                <p>Código Tributário Nacional Completo esquematizado.</p>
                 <div>
                     <span class="preco-novo">R$ 19,99</span>
                     <a href="https://pay.hotmart.com/U105890488U" target="_blank" class="btn-comprar" data-id="CTN">Comprar</a>
                     <a href="https://www.focolegis.com/FocoLegis - AMOSTRA - Direito Tributário.pdf" target="_blank" class="btn-amostra" data-id="CTN">Amostra</a>
                 </div>
+            </div>
 
-        </div>
-		
-	            <div class="card">
+            <div class="card oculto">
                 <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">NOVIDADE ⚡</div>
-                <img src="PROCESSO PENAL.png" alt="Código Tributário">
+                <img src="PROCESSO PENAL.png" alt="Processo Penal">
                 <h3>Processo Penal (2026)</h3>
                 <p>Código de Processo Penal Completo atualizado e comentado.</p>
                 <div>
@@ -168,8 +189,10 @@
                     <a href="https://pay.hotmart.com/U105956744P" target="_blank" class="btn-comprar" data-id="CPP">Comprar</a>
                     <a href="https://www.focolegis.com/FocoLegis - AMOSTRA - Processo Penal.pdf" target="_blank" class="btn-amostra" data-id="CPP">Amostra</a>
                 </div>
+            </div>
         </div>
-		
+
+        <button id="btn-expandir" class="btn-expandir-menu">VER MATÉRIAS INDIVIDUAIS</button>
     </div>
 
     <div class="modal-overlay" id="modal">
@@ -192,39 +215,18 @@
     </a>
 
 <script>
-    // Configurações do seu Script
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyF4EOoEJS-L-1erK2z8Ci334adoi2Osrs8yZhcheBaKxfH0Obvyc1vxjUpC5QnbcfShg/exec';
     const visitorId = 'ACC-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5);
     window.currentLoc = { ip: "", estado: "", cidade: "" };
 
-    // --- DETECTOR INTELIGENTE DE ORIGEM DO CLIQUE ---
     function detectarOrigemReal() {
         let ref = document.referrer ? document.referrer.toLowerCase() : "";
         let urlParams = window.location.search;
-
-        // Se contiver parâmetros explícitos de UTM no link, prioriza eles
-        if (urlParams.includes("utm_source=")) {
-            return urlParams;
-        }
-
-        // Se veio do Instagram (App ou Web) sem parâmetros na URL
-        if (ref.includes("instagram.com") || ref.includes("android-app://com.instagram")) {
-            return "?utm_source=ig&utm_medium=social&utm_content=link_in_bio";
-        }
-        // Se veio do Facebook
-        if (ref.includes("facebook.com") || ref.includes("fb")) {
-            return "?utm_source=fb&utm_medium=social";
-        }
-        // Se veio do WhatsApp
-        if (ref.includes("wa.me") || ref.includes("whatsapp.com")) {
-            return "?utm_source=whatsapp&utm_medium=social";
-        }
-        // Se não há histórico prévio no navegador (Digitou o link direto ou abriu de app fechado)
-        if (!ref || ref === "") {
-            return "Orgânico/Direto";
-        }
-
-        // Se veio de qualquer outro site externo
+        if (urlParams.includes("utm_source=")) return urlParams;
+        if (ref.includes("instagram.com") || ref.includes("android-app://com.instagram")) return "?utm_source=ig&utm_medium=social&utm_content=link_in_bio";
+        if (ref.includes("facebook.com") || ref.includes("fb")) return "?utm_source=fb&utm_medium=social";
+        if (ref.includes("wa.me") || ref.includes("whatsapp.com") || ref.includes("android-app://com.whatsapp")) return "?utm_source=whatsapp&utm_medium=social";
+        if (!ref || ref === "") return "Orgânico/Direto";
         return "?utm_source=" + encodeURIComponent(document.referrer.split('/')[2]) + "&utm_medium=referral";
     }
 
@@ -236,17 +238,12 @@
         
         fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({
             visitorId: visitorId,
-            ip: window.currentLoc.ip, 
-            estado: window.currentLoc.estado, 
-            cidade: window.currentLoc.cidade,
-            device: /Mobile|Android|iP(hone|od|ad)/i.test(ua) ? "Celular" : "PC",
-            os: sistema,
-            utm: detectarOrigemReal(), // Envia a inteligência artificial de detecção de rastreio
-            ...dados
+            ip: window.currentLoc.ip, estado: window.currentLoc.estado, cidade: window.currentLoc.cidade,
+            device: /Mobile|Android|iP(hone|od|ad)/i.test(ua) ? "Celular" : "PC", os: sistema,
+            utm: detectarOrigemReal(), ...dados
         })});
     }
 
-    // Localização (Sua API validada)
     fetch('https://api.ipify.org?format=json')
         .then(res => res.json())
         .then(ipData => {
@@ -260,6 +257,20 @@
         });
 
     document.addEventListener("DOMContentLoaded", function() {
+        // Lógica do Menu Expansível + Rastreabilidade
+        const btnExpandir = document.getElementById('btn-expandir');
+        const cardsOcultos = document.querySelectorAll('.card.oculto');
+
+        btnExpandir.onclick = () => {
+            cardsOcultos.forEach(card => card.classList.remove('oculto'));
+            btnExpandir.style.display = 'none'; // Some após expandir
+            
+            // Registra a ação na planilha e no pixel
+            enviarParaPlanilha({ type: "amostra", produto: "EXPANDIU_MENU_INDIVIDUAIS" });
+            if (typeof fbq === 'function') fbq('track', 'CustomEvent', { content_name: 'ExpandiuMateriasIndividuais' });
+        };
+
+        // Timer do download grátis
         const btnTimer = document.getElementById('btn-timer');
         let sec = 5;
         const t = setInterval(() => {
@@ -268,7 +279,7 @@
         }, 1000);
         btnTimer.onclick = () => { if(!btnTimer.classList.contains('disabled')) document.getElementById('modal').style.display = 'flex'; };
         
-        // Coordenador de Scroll
+        // Monitoramento de Scroll
         let marks = { 25: false, 50: false, 75: false, 100: false };
         window.addEventListener('scroll', () => {
             let p = Math.round((window.scrollY / (document.body.offsetHeight - window.innerHeight)) * 100);
