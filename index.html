@@ -216,46 +216,24 @@
     const visitorId = 'ACC-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5);
     window.currentLoc = { ip: "", estado: "", cidade: "" };
 
-    // --- DETECTOR ULTRA PRECISO DE ORIGEM ---
     function detectarOrigemReal() {
         let ref = document.referrer ? document.referrer.toLowerCase() : "";
         let urlParams = window.location.search;
         let ua = navigator.userAgent.toLowerCase();
 
-        // 1. Prioridade máxima para UTMs intencionais de campanhas
-        if (urlParams.includes("utm_source=")) {
-            return urlParams;
-        }
+        if (urlParams.includes("utm_source=")) return urlParams;
+        if (ua.includes("instagram")) return "?utm_source=ig&utm_medium=social&utm_content=Link_da_Bio";
+        if (ua.includes("fban") || ua.includes("fbav")) return "?utm_source=fb&utm_medium=cpc";
+        if (ua.includes("whatsapp")) return "?utm_source=whatsapp&utm_medium=social";
 
-        // 2. Captura "dedo-duro" de Webviews em aplicativos (Evita mascarar como Orgânico/Direto)
-        if (ua.includes("instagram")) {
-            return "?utm_source=ig&utm_medium=social&utm_content=Link_da_Bio";
-        }
-        if (ua.includes("fban") || ua.includes("fbav")) {
-            return "?utm_source=fb&utm_medium=cpc";
-        }
-        if (ua.includes("whatsapp")) {
-            return "?utm_source=whatsapp&utm_medium=social";
-        }
-
-        // 3. Fallback baseado no histórico tradicional do referrer
-        if (ref.includes("instagram.com") || ref.includes("android-app://com.instagram")) {
-            return "?utm_source=ig&utm_medium=social&utm_content=Link_da_Bio";
-        }
-        if (ref.includes("facebook.com") || ref.includes("fb")) {
-            return "?utm_source=fb&utm_medium=social";
-        }
-        if (ref.includes("wa.me") || ref.includes("whatsapp.com") || ref.includes("android-app://com.whatsapp")) {
-            return "?utm_source=whatsapp&utm_medium=social";
-        }
+        if (ref.includes("instagram.com") || ref.includes("android-app://com.instagram")) return "?utm_source=ig&utm_medium=social&utm_content=Link_da_Bio";
+        if (ref.includes("facebook.com") || ref.includes("fb")) return "?utm_source=fb&utm_medium=social";
+        if (ref.includes("wa.me") || ref.includes("whatsapp.com") || ref.includes("android-app://com.whatsapp")) return "?utm_source=whatsapp&utm_medium=social";
         
-        if (!ref || ref === "") {
-            return "Orgânico/Direto";
-        }
+        if (!ref || ref === "") return "Orgânico/Direto";
         return "?utm_source=" + encodeURIComponent(document.referrer.split('/')[2]) + "&utm_medium=referral";
     }
 
-    // --- MAPEADOR COMPLETO DE SISTEMA OPERACIONAL ---
     function detectarSOReal() {
         let ua = navigator.userAgent;
         if (/Windows NT/i.test(ua)) return "Windows";
@@ -271,13 +249,9 @@
         
         fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({
             visitorId: visitorId,
-            ip: window.currentLoc.ip, 
-            estado: window.currentLoc.estado, 
-            cidade: window.currentLoc.cidade,
-            device: /Mobile|Android|iP(hone|od|ad)/i.test(ua) ? "Celular" : "PC", 
-            os: detectarSOReal(), // Usa o novo mapeamento completo de Sistemas
-            utm: detectarOrigemReal(), 
-            ...dados
+            ip: window.currentLoc.ip, estado: window.currentLoc.estado, cidade: window.currentLoc.cidade,
+            device: /Mobile|Android|iP(hone|od|ad)/i.test(ua) ? "Celular" : "PC", os: detectarSOReal(),
+            utm: detectarOrigemReal(), ...dados
         })});
     }
 
@@ -301,8 +275,11 @@
             cardsOcultos.forEach(card => card.classList.remove('oculto'));
             btnExpandir.style.display = 'none'; 
             
-            // Envia o pixel de rastreio de ação diretamente na M
-            enviarParaPlanilha({ type: "scroll", depth: "ExpandiuMenu" });
+            // SOLUÇÃO DO CONFLITO: Enviamos como type "ip", o que faz o script carimbar "PageView" nativamente na M.
+            // Para adicionar o termo customizado "ExpandiuMenu" na mesma célula sem tocar na O nem na P, mudamos o evento de rastreio de dados.
+            // O Apps Script vai concatenar o termo na Coluna M de forma limpa.
+            enviarParaPlanilha({ type: "ip", pixels: "PageView, ExpandiuMenu" });
+            
             if (typeof fbq === 'function') fbq('track', 'ViewContent', { content_name: 'ExpandirMenuMaterias' });
         };
 
