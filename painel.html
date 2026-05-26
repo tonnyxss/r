@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Painel WhatsApp</title>
+
+<style>
+
+:root{
+    --bg:#1e293b;
+    --panel:#334155;
+    --card:#475569;
+    --border:#64748b;
+    --accent:#22c55e;
+    --accent-hover:#16a34a;
+    --text:#f8fafc;
+    --muted:#cbd5e1;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Segoe UI',sans-serif;
+    background:linear-gradient(135deg,#1e293b,#334155);
+    color:var(--text);
+    height:100vh;
+    display:flex;
+    overflow:hidden;
+}
+
+/* Tela de Bloqueio por Senha */
+#lockscreen {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.login-box {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(16px);
+    padding: 40px;
+    border-radius: 24px;
+    width: 100%;
+    max-width: 380px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+.login-box h2 {
+    font-size: 22px;
+    margin-bottom: 8px;
+}
+
+.login-box p {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 24px;
+}
+
+.login-input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 14px;
+    outline: none;
+    text-align: center;
+    margin-bottom: 16px;
+    transition: 0.2s;
+}
+
+.login-input:focus {
+    border-color: var(--accent);
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.login-btn {
+    width: 100%;
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.login-btn:hover {
+    background: var(--accent-hover);
+}
+
+/* Conteúdo do Painel Oculto por Padrão */
+#panelContent {
+    display: none;
+    width: 100%;
+    height: 100%;
+}
+
+.main-panel{
+    flex:1;
+    padding:35px;
+    overflow-y:auto;
+}
+
+.preview-panel{
+    width:400px;
+    background:rgba(255,255,255,0.04);
+    backdrop-filter:blur(10px);
+    border-left:1px solid rgba(255,255,255,0.08);
+    padding:30px;
+    display:flex;
+    flex-direction:column;
+}
+
+h1{
+    font-size:24px;
+    margin-bottom:10px;
+}
+
+.sub{
+    color:var(--muted);
+    margin-bottom:25px;
+    font-size:14px;
+}
+
+.disparos-title{
+    font-size:13px;
+    color:#86efac;
+    margin-bottom:10px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    font-weight:bold;
+}
+
+.disparos{
+    display:flex;
+    gap:10px;
+    margin-bottom:15px;
+    flex-wrap:wrap;
+}
+
+.disparo-btn{
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.1);
+    color:white;
+    padding:12px 18px;
+    border-radius:12px;
+    cursor:pointer;
+    transition:.2s;
+    font-size:13px;
+    font-weight:600;
+}
+
+.disparo-btn:hover{
+    background:rgba(255,255,255,0.15);
+}
+
+.disparo-btn.active{
+    background:var(--accent);
+    border-color:var(--accent);
+}
+
+.links-box{
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:18px;
+    padding:20px;
+    margin-bottom:15px;
+}
+
+.links-title{
+    font-size:13px;
+    color:#86efac;
+    margin-bottom:12px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+}
+
+.links-grid{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.link-btn{
+    background:#2563eb;
+    color:white;
+    text-decoration:none;
+    padding:12px 16px;
+    border-radius:12px;
+    font-size:13px;
+    font-weight:600;
+    transition:.2s;
+}
+
+.link-btn:hover{
+    background:#1d4ed8;
+}
+
+.checkout-box{
+    margin-bottom:25px;
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:18px;
+    padding:15px 20px;
+}
+
+.checkout-row{
+    display:flex;
+    gap:10px;
+    align-items:center;
+}
+
+.checkout-url{
+    flex:1;
+    background:rgba(255,255,255,0.08);
+    border:none;
+    color:white;
+    padding:12px;
+    border-radius:12px;
+    font-size:13px;
+    outline:none;
+}
+
+.copy-btn{
+    background:var(--accent);
+    border:none;
+    color:white;
+    padding:12px 20px;
+    border-radius:12px;
+    cursor:pointer;
+    font-weight:bold;
+    font-size:13px;
+    transition:.2s;
+    white-space:nowrap;
+}
+
+.copy-btn:hover{
+    background:var(--accent-hover);
+}
+
+textarea{
+    width:100%;
+    height:140px;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:15px;
+    padding:18px;
+    color:white;
+    resize:none;
+    outline:none;
+    font-size:14px;
+    margin-bottom:25px;
+}
+
+textarea:focus{
+    border-color:var(--accent);
+}
+
+.card{
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.08);
+    padding:20px;
+    border-radius:18px;
+    margin-bottom:14px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    transition:.2s;
+}
+
+.card:hover{
+    transform:translateY(-2px);
+    background:rgba(255,255,255,0.07);
+}
+
+.nome{
+    font-size:16px;
+    margin-bottom:6px;
+    font-weight:600;
+}
+
+.fone{
+    font-size:13px;
+    color:var(--muted);
+}
+
+.btn{
+    background:var(--accent);
+    color:white;
+    text-decoration:none;
+    padding:12px 18px;
+    border-radius:12px;
+    font-size:13px;
+    font-weight:bold;
+    transition:.2s;
+}
+
+.btn:hover{
+    background:var(--accent-hover);
+}
+
+.preview-title{
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:2px;
+    color:#86efac;
+    margin-bottom:15px;
+}
+
+.preview{
+    flex:1;
+    background:rgba(255,255,255,0.04);
+    border-radius:18px;
+    padding:22px;
+    line-height:1.7;
+    white-space:pre-wrap;
+    overflow-y:auto;
+    border:1px solid rgba(255,255,255,0.08);
+    color:#f1f5f9;
+}
+
+.info{
+    margin-top:18px;
+    font-size:12px;
+    color:var(--muted);
+    line-height:1.6;
+}
+
+::-webkit-scrollbar{
+    width:6px;
+}
+
+::-webkit-scrollbar-thumb{
+    background:rgba(255,255,255,0.2);
+    border-radius:999px;
+}
+
+@media(max-width:900px){
+
+    body{
+        flex-direction:column;
+        height:auto;
+    }
+
+    .preview-panel{
+        width:100%;
+        border-left:none;
+        border-top:1px solid rgba(255,255,255,0.08);
+        min-height:300px;
+    }
+
+    .checkout-row{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="lockscreen">
+    <div class="login-box">
+        <h2>Acesso Restrito</h2>
+        <p>Insira a senha para liberar o painel de disparos</p>
+        <input 
+            type="password" 
+            id="passwordInput" 
+            class="login-input" 
+            placeholder="Digite a senha..."
+            onkeydown="if(event.key === 'Enter') verificarSenha()"
+        >
+        <button class="login-btn" onclick="verificarSenha()">Entrar no Painel</button>
+    </div>
+</div>
+
+<div id="panelContent">
+
+    <div class="main-panel">
+
+        <h1>Painel WhatsApp</h1>
+
+        <div class="sub">
+            Gerencie seus disparos de leads de forma simples.
+        </div>
+
+        <div class="links-box">
+
+            <div class="links-title">
+                Links Importantes
+            </div>
+
+            <div class="links-grid">
+
+                <a
+                    href="COLE_O_LINK_DO_VIDEO_AQUI"
+                    target="_blank"
+                    class="link-btn"
+                >
+                    📹 Baixar Vídeo
+                </a>
+
+                <a
+                    href="AMOSTRA - Manual da Internet segura para Idosos.pdf"
+                    target="_blank"
+                    class="link-btn"
+                >
+                    📘 Amostra Grátis
+                </a>
+
+                <a
+                    href="https://docs.google.com/spreadsheets/d/1TUxMLClO0cCVBgB6Cw0vitZ-gPHxecyKyg-yhxH0bmc/edit?gid=1756715331#gid=1756715331"
+                    target="_blank"
+                    class="link-btn"
+                >
+                    📊 Planilha Google Drive
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="checkout-box">
+
+            <div class="links-title">
+                Link de Checkout (Eduzz)
+            </div>
+
+            <div class="checkout-row">
+                <input
+                    type="text"
+                    id="checkoutLink"
+                    class="checkout-url"
+                    readonly
+                    value="https://chk.eduzz.com/KW8ZV51D01"
+                >
+
+                <button
+                    class="copy-btn"
+                    onclick="copiarCheckout()"
+                >
+                    Copiar Checkout
+                </button>
+            </div>
+
+        </div>
+
+        <div class="disparos-title">
+            Selecione o Modelo de Disparo:
+        </div>
+
+        <div class="disparos">
+
+            <button
+                class="disparo-btn active"
+                onclick="mudarDisparo(1,this)"
+            >
+                DISPARO 01
+            </button>
+
+            <button
+                class="disparo-btn"
+                onclick="mudarDisparo(2,this)"
+            >
+                DISPARO 02
+            </button>
+
+            <button
+                class="disparo-btn"
+                onclick="mudarDisparo(3,this)"
+            >
+                DISPARO 03
+            </button>
+
+        </div>
+
+        <textarea
+            id="inputDados"
+            placeholder="Cole aqui a linha da planilha (Ex: Mario José da Silva Ribeiro21 96499-4828)"
+            oninput="processarDados()"
+        ></textarea>
+
+        <div id="lista"></div>
+
+    </div>
+
+    <div class="preview-panel">
+
+        <div class="preview-title">
+            Preview da Mensagem
+        </div>
+
+        <div
+            id="preview"
+            class="preview"
+        >
+            Aguardando dados...
+        </div>
+
+        <div class="info">
+            ✔ Compatível com celular<br>
+            ✔ Compatível com computador<br>
+            ✔ Detecta WhatsApp automaticamente
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+// Código encriptado em Base64 equivalente à palavra "antonio"
+const CODIGO_PROTEGIDO = "YW50b25pbw==";
+
+// Verifica a senha digitada usando conversão simples (funciona offline e localmente)
+function verificarSenha() {
+    const senhaDigitada = document.getElementById('passwordInput').value;
+    
+    // Converte a senha digitada para Base64 e compara
+    if (btoa(senhaDigitada) === CODIGO_PROTEGIDO) {
+        // Guarda o acesso por 24 horas para não precisar redigitar toda hora no mesmo PC
+        localStorage.setItem('painel_autenticado', Date.now());
+        liberarPainel();
+    } else {
+        alert('Senha incorreta! Tente novamente.');
+        document.getElementById('passwordInput').value = '';
+    }
+}
+
+function liberarPainel() {
+    document.getElementById('lockscreen').style.display = 'none';
+    document.getElementById('panelContent').style.display = 'flex';
+}
+
+// Verifica se já estava logado nas últimas 24 horas ao abrir a página
+window.onload = function() {
+    const ultimoAcesso = localStorage.getItem('painel_autenticado');
+    if (ultimoAcesso && (Date.now() - ultimoAcesso < 24 * 60 * 60 * 1000)) {
+        liberarPainel();
+    }
+}
+
+let disparoAtual = 1;
+
+function mudarDisparo(numero,btn){
+
+    disparoAtual = numero;
+
+    document
+        .querySelectorAll('.disparo-btn')
+        .forEach(b=>b.classList.remove('active'));
+
+    btn.classList.add('active');
+
+    processarDados();
+
+}
+
+function copiarCheckout(){
+
+    const link = document.getElementById('checkoutLink');
+
+    link.select();
+    link.setSelectionRange(0,99999);
+
+    navigator.clipboard.writeText(link.value);
+
+    alert('Link de checkout copiado com sucesso!');
+
+}
+
+function gerarTexto(nome){
+
+    const primeiroNome =
+        nome.split(' ')[0];
+
+    // DISPARO 01
+    if(disparoAtual === 1){
+
+        return `Oii, ${primeiroNome}, tudo bem? Como você está? 😊
+
+Estou te enviando mensagem porque preparei um material bem simples e prático para ajudar idosos a aprenderem a usar redes sociais com mais segurança, evitar golpes online e entender melhor a internet no dia a dia.
+
+Como você é uma pessoa que usa bastante as redes sociais, achei que talvez pudesse te interessar 😊
+
+Quer que eu te mostre? Pode me responder?`;
+
+    }
+
+    // DISPARO 02
+    if(disparoAtual === 2){
+
+        return `Que bom que deseja ver o nosso material! 😊
+
+Olhe o vídeo explicando um pouco do conteúdo!
+
+Vou te enviar a nossa amostra grátis e você me diz se tem interesse em fazer a compra do livro completo, ok?`;
+
+    }
+
+    // DISPARO 03
+    if(disparoAtual === 3){
+
+        return `Olha os benefícios de comprar o nosso material 😊
+
+1️⃣ Aprender a identificar golpes online antes de cair em fraudes no WhatsApp, Facebook e redes sociais.
+
+2️⃣ Aprender a usar a internet com mais segurança e confiança no dia a dia.
+
+3️⃣ Proteger seus dados pessoais, senhas e informações importantes contra golpistas.
+
+O objetivo do nosso livro é deixar você muito mais protegida e segura na internet 💚`;
+
+    }
+
+}
+
+function detectarLinkWhatsApp(telefone,texto){
+
+    const mobile =
+        /Android|iPhone|iPad|iPod/i
+        .test(navigator.userAgent);
+
+    const msg =
+        encodeURIComponent(texto);
+
+    if(mobile){
+
+        return `https://wa.me/55${telefone}?text=${msg}`;
+
+    }else{
+
+        return `https://web.whatsapp.com/send?phone=55${telefone}&text=${msg}`;
+
+    }
+
+}
+
+function processarDados(){
+
+    const raw =
+        document
+        .getElementById('inputDados')
+        .value;
+
+    const linhas =
+        raw.split('\n');
+
+    const lista =
+        document.getElementById('lista');
+
+    const preview =
+        document.getElementById('preview');
+
+    lista.innerHTML = '';
+
+    if(raw.trim() === ''){
+
+        preview.innerText =
+            'Aguardando dados...';
+
+        return;
+
+    }
+
+    linhas.forEach((linha,index)=>{
+
+        linha = inline = linha.trim();
+
+        if(!linha) return;
+
+        // REGEX AJUSTADO: Captura os números finais mesmo sem espaço entre nome e telefone, e remove hífens/espaços extras.
+        const matchNumeros = inline.replace(/[-\s]/g, '').match(/\d{10,11}$/);
+
+        if(!matchNumeros) return;
+
+        const telefone = matchNumeros[0];
+        
+        // Remove do texto bruto apenas a parte numérica e caracteres de telefone para isolar o nome purificado
+        const foneOriginalNoTexto = inline.match(/[\d\s-]{10,15}$/);
+        const nome = foneOriginalNoTexto ? inline.replace(foneOriginalNoTexto[0], '').trim() : "Cliente";
+
+        const texto =
+            gerarTexto(nome);
+
+        const link =
+            detectarLinkWhatsApp(
+                telefone,
+                texto
+            );
+
+        if(index === 0){
+
+            preview.innerText =
+                texto;
+
+        }
+
+        const card =
+            document.createElement('div');
+
+        card.className = 'card';
+
+        card.innerHTML = `
+            <div>
+
+                <div class="nome">
+                    ${nome}
+                </div>
+
+                <div class="fone">
+                    ${telefone}
+                </div>
+
+            </div>
+
+            <a
+                class="btn"
+                href="${link}"
+                target="_blank"
+            >
+                Enviar
+            </a>
+        `;
+
+        lista.appendChild(card);
+
+    });
+
+}
+
+</script>
+
+</body>
+</html>
