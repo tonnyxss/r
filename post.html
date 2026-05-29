@@ -49,7 +49,7 @@
         
         #text-editor { width: 100%; flex-grow: 1; outline: none; font-size: 32px; color: #fff; z-index: 5; text-align: center; line-height: 1.3; word-wrap: break-word; }
 
-        .footer-area { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; margin-top: auto; padding-bottom: 15px; z-index: 10; }
+        .footer-area { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; margin-top: auto; padding-bottom: 15px; z-index: 8; }
         .social-icons { display: flex; gap: 8px; }
         .social-icons img { width: 25px; height: 25px; }
         .social-tag { font-weight: 800; font-size: 18px; color: white; }
@@ -58,7 +58,7 @@
         .mode-stories .footer-area { display: none; }
 
         /* =========================================================================
-           📍 CONTROLE DE POSIÇÃO DO BONEQUINHO
+           CONTROLE DE POSIÇÃO DO BONEQUINHO
            ========================================================================= */
         
         /* 1. Estrutura geral e tamanho do bonequinho */
@@ -68,15 +68,15 @@
             pointer-events: none; 
         }
         .sticker-area img {
-            width: 150px;        /* ◄ ALTERE AQUI O TAMANHO GERAL (LARGURA) DO BONEQUINHO */
+            width: 200px;        /* ◄ ALTERE AQUI O TAMANHO GERAL (LARGURA) DO BONEQUINHO */
             height: auto;
             object-fit: contain;
         }
 
         /* 2. Posição quando estiver no modo FEED (Quadrado) */
         .mode-feed .sticker-area {
-            bottom: 2px;       /* ◄ DISTÂNCIA DA BORDA DE BAIXO NO FEED */
-            right: 10px;        /* ◄ DISTÂNCIA DA BORDA DA DIREITA NO FEED */
+            bottom: -50px;       /* ◄ DISTÂNCIA DA BORDA DE BAIXO NO FEED */
+            right: -20px;        /* ◄ DISTÂNCIA DA BORDA DA DIREITA NO FEED */
         }
 
         /* 3. Posição quando estiver no modo STORIES (Vertical) */
