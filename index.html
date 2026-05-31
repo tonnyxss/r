@@ -433,15 +433,15 @@
     if (typeof fbq === 'function') fbq('track', 'PageView');
 
     // ─── GEO EM BACKGROUND ──────────────────────────────────────────────────
-    // Usa ip-api.com (gratuito, sem CORS, retorna city/regionName em campos confiáveis)
-    fetch('https://ip-api.com/json/?fields=status,query,regionName,city')
+    // ipwho.is: gratuito, CORS liberado, retorna ip/region/city sem chave de API
+    fetch('https://ipwho.is/')
         .then(function(r) { return r.json(); })
         .then(function(geo) {
-            if (geo.status === 'success') {
+            if (geo.success !== false) {
                 window.currentLoc = {
-                    ip:     geo.query      || '-',
-                    estado: geo.regionName || '-',
-                    cidade: geo.city       || '-'
+                    ip:     geo.ip     || '-',
+                    estado: geo.region || '-',
+                    cidade: geo.city   || '-'
                 };
                 enviarParaPlanilha({ type: 'update_geo' });
             }
