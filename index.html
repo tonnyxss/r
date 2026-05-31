@@ -4,9 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Foco Legis - Lei Seca Comentada e Esquematizada!</title>
-    <meta name="description" content="Lei Seca comentada e esquematizada para acelerar seus estudos em concursos públicos, OAB e faculdade de Direito.">
+
+<!-- Desc Principal -->
+<meta name="description" content="Gabarite a OAB 2026 e concursos de Tribunais, Polícia e Magistratura. Baixe PDF grátis de Lei Seca comentada, resumos e códigos esquematizados atualizados!">
+
+<!-- Tag Oculta Bônus 1 (Open Graph Description -->
+<meta property="og:description" content="Material de estudo focado na aprovação: simulado, cronograma de estudos, gabarito, caderno de questões comentadas, mapas mentais e resumos para Concurso TJ, TRF, MP, Delegado e Exame da OAB Segunda Fase. Download de jurisprudência atualizada STF e STJ, informativos resumidos e Vade Mecum in PDF grátis.">
+
+<!-- Tag Oculta Bônus 2 (Open Graph Title) -->
+<meta property="og:title" content="Lei Seca Comentada 2026 | Resumos, Mapas Mentais e Flashcards Direito">    
     
-    <script>
+	
+		
+	
+	<script>
     !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
     fbq('init', '1974259026792087');
     </script>
@@ -33,32 +44,47 @@
             display: flex; 
             flex-direction: column; 
             justify-content: space-between;
-            min-height: 400px; 
+            min-height: 380px; 
             transition: all 0.3s ease;
         }
 
         .card img { width: 100%; max-width: 140px; height: auto; margin: 0 auto 10px auto; object-fit: cover; border-radius: 8px; }
         .card h3 { font-size: 1.1em; margin: 10px 0; }
-        .card p { font-size: 0.85em; color: #666; margin-bottom: 10px; }
         
         .preco-antigo { color: #e74c3c; text-decoration: line-through; font-size: 0.9em; font-weight: bold; margin-bottom: 2px; display: block; }
         .preco-novo { color: #27ae60; font-size: 1.3em; font-weight: bold; margin-bottom: 10px; display: block; }
         
-        .btn-comprar { background-color: #27ae60; color: white; padding: 10px; border-radius: 5px; text-decoration: none; font-weight: bold; margin-top: 5px; display: block; border: none; cursor: pointer; font-size: 0.9em; }
-        .btn-amostra { border: 2px solid #34495e; color: #34495e; padding: 8px; border-radius: 5px; text-decoration: none; font-weight: bold; display: block; margin-top: 5px; cursor: pointer; font-size: 0.85em; }
+        .btn-comprar { background-color: #27ae60; color: white; padding: 10px; border-radius: 5px; text-decoration: none; font-weight: bold; margin-top: 5px; display: block; border: none; cursor: pointer; font-size: 0.9em; text-align: center; box-sizing: border-box; }
+        .btn-amostra { border: 2px solid #34495e; color: #34495e; padding: 8px; border-radius: 5px; text-decoration: none; font-weight: bold; display: block; margin-top: 5px; cursor: pointer; font-size: 0.85em; text-align: center; box-sizing: border-box; }
+        .btn-detalhes { background-color: #7f8c8d; color: white; padding: 10px; border-radius: 5px; text-decoration: none; font-weight: bold; display: block; margin-top: 5px; cursor: pointer; font-size: 0.9em; border: none; text-align: center; width: 100%; box-sizing: border-box; }
         
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 2000; }
-        .modal-content { background: white; padding: 30px; border-radius: 10px; text-align: center; width: 90%; max-width: 400px; }
-        .btn-download { background-color: #27ae60; color: white; padding: 12px; border-radius: 5px; width: 100%; border: none; cursor: pointer; font-weight: bold; text-decoration: none; display: block; margin-top: 10px; }
+        .modal-content { background: white; padding: 30px; border-radius: 10px; text-align: center; width: 90%; max-width: 400px; position: relative; box-sizing: border-box; }
+        .btn-download { background-color: #27ae60; color: white; padding: 12px; border-radius: 5px; width: 100%; border: none; cursor: pointer; font-weight: bold; text-decoration: none; display: block; margin-top: 10px; box-sizing: border-box; }
         .btn-download.disabled { background-color: #ccc !important; cursor: not-allowed; }
+        .btn-fechar-modal { background: #e74c3c; color: white; border: none; padding: 10px 25px; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 15px; font-size: 0.95em; width: 100%; display: block; box-sizing: border-box; }
+
+        /* Estilos do Bloco Interno de Detalhes de Forma Profissional */
+        .info-block { background: #f8f9fa; border-left: 3px solid #7f8c8d; padding: 10px 12px; margin-bottom: 10px; border-radius: 0 6px 6px 0; }
+        .info-block-title { font-weight: bold; color: #1a252f; font-size: 0.95em; margin-bottom: 3px; display: block; }
+        .info-block-text { color: #555; font-size: 0.9em; margin: 0; display: block; }
+        
+        /* Lista do Conteúdo Interno */
+        .content-list { margin: 5px 0 5px 15px; padding: 0; list-style-type: square; color: #555; font-size: 0.9em; }
+        .content-list li { margin-bottom: 3px; }
+
+        .faq-section { max-width: 900px; margin: 50px auto; padding: 0 20px; }
+        .faq-title { text-align: center; color: #1a252f; font-size: 1.8em; margin-bottom: 30px; }
+        .faq-item { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        .faq-item h3 { font-size: 1.1em; color: #2c3e50; margin-top: 0; margin-bottom: 10px; }
+        .faq-item p { font-size: 0.9em; color: #555; line-height: 1.6; margin: 0; }
 
         @media (max-width: 600px) {
             header h1 { font-size: 1.6em; }
             .container { margin: 20px auto; padding: 0 10px; }
             .grid-produtos { gap: 10px; grid-template-columns: repeat(2, 1fr); }
-            .card { padding: 10px; min-height: 420px; }
+            .card { padding: 10px; min-height: 390px; }
             .card h3 { font-size: 0.95em; margin: 6px 0; }
-            .card p { display: block; font-size: 0.75em; line-height: 1.2; margin-bottom: 8px; }
         }
     </style>
 </head>
@@ -75,11 +101,11 @@
                 <div style="background:#3498db; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">GRÁTIS 🎁</div>
                 <img src="OAB.png" alt="OAB 47">
                 <h3>Resumão Ética - OAB 47</h3>
-                <p>O conteúdo essencial para gabaritar ética na sua prova. Atualização: maio de 2026</p>
                 <div>
                     <span class="preco-antigo">R$ 19,99</span>
                     <span class="preco-novo">R$ 0,00</span>
-                    <button class="btn-download disabled" id="btn-timer" style="font-size: 0.8em; padding: 10px;">AGUARDE...</button>
+                    <button class="btn-detalhes" data-id="Etica">Detalhes</button>
+                    <button class="btn-download disabled" id="btn-timer" style="font-size: 0.8em; padding: 10px; width: 100%;">AGUARDE...</button>
                 </div>
             </div>
 
@@ -87,10 +113,10 @@
                 <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">COMBO 🔥</div>
                 <img src="COMBOPENAL.png" alt="Combo CP e CPP">
                 <h3>Código Penal + Processo Penal</h3>
-                <p>Combo inclui: CP esquematizado + CPP esquematizado completo.</p>
                 <div>
                     <span class="preco-antigo">R$ 39,98</span>
                     <span class="preco-novo">R$ 29,99</span>
+                    <button class="btn-detalhes" data-id="ComboPenal">Detalhes</button>
                     <a href="https://pay.hotmart.com/F105957304E" target="_blank" class="btn-comprar" data-id="COMBOPENAL">Comprar</a>
                     <a href="https://www.focolegis.com/FocoLegis%20-%20AMOSTRA%20-%20Direito%20Penal.pdf" target="_blank" class="btn-amostra" data-id="COMBOPENAL">Amostra</a>
                 </div>
@@ -100,9 +126,9 @@
                 <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">DESTAQUE 🔥</div>
                 <img src="PENAL.png" alt="Direito Penal">
                 <h3>Código Penal Completo</h3>
-                <p>Parte Geral e Especial esquematizadas da Lei Seca.</p>
                 <div>
                     <span class="preco-novo">R$ 19,99</span>
+                    <button class="btn-detalhes" data-id="Penal">Detalhes</button>
                     <a href="https://pay.hotmart.com/B105246198A" target="_blank" class="btn-comprar" data-id="PENAL">Comprar</a>
                     <a href="https://www.focolegis.com/FocoLegis%20-%20AMOSTRA%20-%20Direito%20Penal.pdf" target="_blank" class="btn-amostra" data-id="PENAL">Amostra</a>
                 </div>
@@ -112,9 +138,9 @@
                 <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:15px;">DESTAQUE 🔥</div>
                 <img src="CONSTITUCIONAL.png" alt="Constitucional">
                 <h3>Direito Constitucional</h3>
-                <p>CF/88 comentada ponto a ponto de forma didática.</p>
                 <div>
                     <span class="preco-novo">R$ 19,99</span>
+                    <button class="btn-detalhes" data-id="Constitucional">Detalhes</button>
                     <a href="https://pay.hotmart.com/B105423919E" target="_blank" class="btn-comprar" data-id="CONSTITUCIONAL">Comprar</a>
                     <a href="https://www.focolegis.com/FocoLegis%20-%20AMOSTRA%20-%20Direito%20Constitucional.pdf" target="_blank" class="btn-amostra" data-id="CONSTITUCIONAL">Amostra</a>
                 </div>
@@ -123,10 +149,10 @@
             <div class="card">
                 <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">NOVIDADE ⚡</div>
                 <img src="EAOAB.png" alt="Estatuto da OAB">
-                <h3>Estatuto da OAB (2026)</h3>
-                <p>EAOAB totalmente atualizado, comentado e esquematizado.</p>
+                <h3>Estatuto da OAB</h3>
                 <div>
                     <span class="preco-novo">R$ 19,99</span>
+                    <button class="btn-detalhes" data-id="EAOAB">Detalhes</button>
                     <a href="https://pay.hotmart.com/T105742318A" target="_blank" class="btn-comprar" data-id="EAOAB">Comprar</a>
                     <a href="https://www.focolegis.com/FocoLegis - AMOSTRA - EAOAB.pdf" target="_blank" class="btn-amostra" data-id="EAOAB">Amostra</a>
                 </div>
@@ -136,9 +162,9 @@
                 <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">NOVIDADE ⚡</div>
                 <img src="TRIBUTÁRIO.png" alt="Código Tributário">
                 <h3>Direito Tributário - CTN</h3>
-                <p>Código Tributário Nacional Completo esquematizado.</p>
                 <div>
                     <span class="preco-novo">R$ 19,99</span>
+                    <button class="btn-detalhes" data-id="Tributario">Detalhes</button>
                     <a href="https://pay.hotmart.com/U105890488U" target="_blank" class="btn-comprar" data-id="CTN">Comprar</a>
                     <a href="https://www.focolegis.com/FocoLegis - AMOSTRA - Direito Tributário.pdf" target="_blank" class="btn-amostra" data-id="CTN">Amostra</a>
                 </div>
@@ -147,10 +173,10 @@
             <div class="card">
                 <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">NOVIDADE ⚡</div>
                 <img src="PROCESSO PENAL.png" alt="Processo Penal">
-                <h3>Processo Penal (2026)</h3>
-                <p>Código de Processo Penal Completo atualizado e comentado.</p>
+                <h3>Processo Penal</h3>
                 <div>
                     <span class="preco-novo">R$ 19,99</span>
+                    <button class="btn-detalhes" data-id="ProcessoPenal">Detalhes</button>
                     <a href="https://pay.hotmart.com/U105956744P" target="_blank" class="btn-comprar" data-id="CPP">Comprar</a>
                     <a href="https://www.focolegis.com/FocoLegis - AMOSTRA - Processo Penal.pdf" target="_blank" class="btn-amostra" data-id="CPP">Amostra</a>
                 </div>
@@ -158,6 +184,73 @@
         </div>
     </div>
 
+    <!-- SEÇÃO DE FAQ E PALAVRAS-CHAVE PARA O GOOGLE -->
+    <div class="faq-section">
+        <h2 class="faq-title" style="color: #1a252f; font-weight: bold;">Perguntas Frequentes & Planejamento de Estudos</h2>
+        
+        <div class="faq-item" style="border-left: 4px solid #1a252f;">
+            <h3 style="color: #1a252f;">Como atingir a aprovação no Exame da Ordem dos Advogados do Brasil (OAB) e Concursos Públicos?</h3>
+            <p>
+                Mais de <strong>70% das questões</strong> da prova da OAB e de concursos cobram a pura literalidade dos artigos.
+                <br><br>
+                O caminho mais rápido para a aprovação é dominar a legislação sem aquele processo cansativo e difícil de reter o conhecimento da leitura bruta.
+                <br><br>
+                Entregamos uma metodologia com cada artigo comentado e esquematizado de forma didática em e-books de <strong>50 a 200 páginas</strong>, indo direto ao ponto e sem enrolação.
+                <br><br>
+                Garante a memorização necessária para gabaritar a primeira fase e a segunda fase OAB, além de acelerar seu estudo intensivo para edital magistratura, Ministério Público (MP), defensoria, concurso delegado e concurso tribunal.
+            </p>
+        </div>
+
+        <div class="faq-item" style="border-left: 4px solid #27ae60;">
+            <h3 style="color: #1a252f;">Como recebo o material e em quais dispositivos posso estudar?</h3>
+            <p>
+                A entrega dos materiais em PDF é feita de forma <strong>100% automática e imediata</strong> após a confirmação do pagamento diretamente no seu <strong>e-mail</strong>.
+                <br><br>
+                O acesso é liberado na hora para pagamentos via <strong>Pix</strong> ou cartão de crédito (parcelado ou à vista), e boleto após a compensação.
+                <br><br>
+                Você pode baixar quantas vezes quiser, fazer o download em vários locais e imprimir para acompanhar suas aulas.
+                <br><br>
+                Use perfeitamente na tela do seu celular, computador e tablet onde e quando preferir.
+            </p>
+        </div>
+
+        <div class="faq-item" style="border-left: 4px solid #f1c40f;">
+            <h3 style="color: #1a252f;">O acesso é vitalício e o conteúdo recebe atualizações?</h3>
+            <p>
+                Sim! O seu prazo de acesso aos materiais é <strong>vitalício</strong>, ou seja, eles são seus para sempre.
+                <br><br>
+                Os seus PDFs nunca ficam desatualizados após a compra.
+                <br><br>
+                A nossa equipe sempre irá atualizar os materiais gratuitamente durante todo o ano de 2026 conforme vão saindo as novidades legislativas, reformas e alterações importantes.
+                <br><br>
+                Diversos conteúdos adicionais e materiais extras serão incluídos nas matérias tradicionais ao longo do tempo (como simulados, mapas mentais e cadernos de questões comentadas PDF de direito constitucional, direito penal, processo penal e direito tributário).
+            </p>
+        </div>
+
+        <div class="faq-item" style="border-left: 4px solid #3498db;">
+            <h3 style="color: #1a252f;">O Foco Legis oferece garantia de reembolso e suporte a dúvidas?</h3>
+            <p>
+                Oferecemos uma <strong>garantia de 7 dias</strong> com reembolso total caso você avalie que o formato de legislação comentada não serve para você.
+                <br><br>
+                Comprando qualquer um dos nossos códigos esquematizados, você terá acesso exclusivo e <strong>24h ao WhatsApp de dúvidas</strong> da Foco Legis.
+                <br><br>
+                É o canal perfeito para enviar perguntas sobre súmulas STF, súmulas STJ, informativos resumidos, lei maria da penha, lei de improbidade administrativa ou qualquer ponto da lei seca.
+            </p>
+        </div>
+
+        <div class="faq-item" style="border-left: 4px solid #9b59b6;">
+            <h3 style="color: #1a252f;">Não achou a lei ou disciplina que queria?</h3>
+            <p>
+                Você pode <strong>sugerir uma lei ou disciplina</strong> jurídica diretamente para a nossa equipe.
+                <br><br>
+                Estamos constantemente expandindo nosso catálogo de códigos esquematizados e apostilas em PDF para atender novos editais.
+                <br><br>
+                Entre em contato conosco pelo <strong>WhatsApp de atendimento</strong> e envie a sua sugestão de conteúdo para a Ordem dos Advogados do Brasil (OAB) ou concursos públicos jurídicos.
+            </p>
+        </div>
+    </div>
+
+    <!-- MODAL DE WHATSAPP (LEAD GRÁTIS) -->
     <div class="modal-overlay" id="modal">
         <div class="modal-content">
             <h3>Quase lá! 🚀</h3>
@@ -170,10 +263,118 @@
         </div>
     </div>
 
+    <!-- MODAL DINÂMICO DE DETALHES -->
+    <div class="modal-overlay" id="modal-detalhes">
+        <div class="modal-content" style="max-width: 460px; text-align: left; padding: 25px;">
+            <h3 id="detalhes-titulo" style="text-align: center; margin-top: 0; color: #1a252f; font-size: 1.3em; font-weight: bold; border-bottom: 2px solid #f4f7f6; padding-bottom: 10px;">Detalhes do Produto</h3>
+            
+            <div id="detalhes-corpo" style="margin: 20px 0;">
+                <!-- Blocos estruturados dinamicamente entram aqui -->
+            </div>
+
+            <button class="btn-fechar-modal" onclick="document.getElementById('modal-detalhes').style.display='none';">Fechar Detalhes</button>
+        </div>
+    </div>
+
 <script>
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyF4EOoEJS-L-1erK2z8Ci334adoi2Osrs8yZhcheBaKxfH0Obvyc1vxjUpC5QnbcfShg/exec';
     const visitorId = 'ACC-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5);
     window.currentLoc = { ip: "", estado: "", cidade: "" };
+
+    // Banco de informações técnico e robusto focado em OAB e Concursos
+    const infoProdutos = {
+        "Etica": {
+            titulo: "Estatuto da Advocacia e da OAB",
+            lei: "Lei nº 8.906/1994, Regulamento Geral e Código de Ética da OAB",
+            foco: "Focado em OAB e Concursos. Aborda prerrogativas profissionais, infrações disciplinares e estrutura da Ordem.",
+            metodo: "Mais de 70% das questões exigem o domínio da literalidade. Nosso material elimina o processo cansativo da leitura bruta.",
+            conteudo: [
+                "Estatuto da OAB (Lei nº 8.906/1994) Esquematizado",
+                "Código de Ética e Disciplina da OAB Comentado",
+                "Regulamento Geral da OAB Mapeado",
+                "Direitos e Prerrogativas do Advogado Ponto a Ponto",
+                "Processo Disciplinar e Sanções FGV"
+            ]
+        },
+        "ComboPenal": {
+            titulo: "Combo Criminal Estratégico (CP + CPP)",
+            lei: "Decreto-Lei nº 2.848/1940 (CP) e Decreto-Lei nº 3.689/1941 (CPP)",
+            foco: "Focado em OAB e Concursos. Consolida a Parte Geral/Especial do CP e procedimentos, provas e recursos do CPP.",
+            metodo: "Mais de 70% das questões cobram o texto legal literal. Estruturamos os artigos comentados com esquemas para acelerar sua memorização.",
+            conteudo: [
+                "Código Penal Completo (Parte Geral e Especial)",
+                "Código de Processo Penal Completo",
+                "Tabelas de Penas, Regimes e Prisões Cautelares",
+                "Fluxogramas de Recursos Criminais e Ações Impugnativas",
+                "Súmulas Criminais Vinculantes do STF e Enunciados do STJ"
+            ]
+        },
+        "Penal": {
+            titulo: "Código Penal Esquematizado",
+            lei: "Decreto-Lei nº 2.848/1940 (Código Penal Completo)",
+            foco: "Focado em OAB e Concursos. Teoria do crime, dosimetria da pena e crimes da Parte Especial detalhados.",
+            metodo: "Sabendo que mais de 70% da prova é lei seca pura, transformamos a leitura exaustiva em blocos lógicos estruturados.",
+            conteudo: [
+                "Parte Geral (Aplicação da Lei, Crime, Penas e Extinção de Punibilidade)",
+                "Parte Especial (Crimes contra a Pessoa e Patrimônio)",
+                "Parte Especial (Crimes contra a Dignidade Sexual e Incolumidade)",
+                "Parte Especial (Crimes contra a Fé Pública e Administração Pública)",
+                "Esquemas de Dosimetria e Aplicação da Pena"
+            ]
+        },
+        "Constitucional": {
+            titulo: "Constituição Federal Comentada",
+            lei: "Constituição da República Federativa do Brasil (CF/1988)",
+            foco: "Focado em OAB e Concursos. Direitos Fundamentais, Organização do Estado, Poderes e Controle de Constitucionalidade.",
+            metodo: "Evite o desgaste da leitura crua. Vinculação direta dos artigos com súmulas e entendimentos pacificados dos Tribunais Superiores.",
+            conteudo: [
+                "Direitos e Garantias Fundamentais (Art. 5º ao 17)",
+                "Organização do Estado e dos Poderes (Art. 18 ao 91)",
+                "Poder Judiciário e Funções Essenciais à Justiça (Art. 92 ao 135)",
+                "Controle de Constitucionalidade Descomplicado",
+                "Ordem Econômica, Financeira e Social Mapeada"
+            ]
+        },
+        "EAOAB": {
+            titulo: "Estatuto da OAB Comentado",
+            lei: "Lei nº 8.906/1994 (Estatuto da Ordem dos Advogados do Brasil)",
+            foco: "Focado em OAB e Concursos. Direitos do Advogado, impedimentos e incompatibilidades profissionais.",
+            metodo: "Conteúdo técnico de 50 a 200 páginas focado na retenção imediata das pegadinhas tradicionais das bancas.",
+            conteudo: [
+                "Incompatibilidades e Impedimentos para o Exercício",
+                "Direitos, Prerrogativas e Honorários Advocatícios",
+                "Sociedade de Advogados e Inscrição na Ordem",
+                "Órgãos da OAB (Conselho Federal, Seccionais e Subseções)",
+                "Regime Disciplinar e Infrações Comentadas"
+            ]
+        },
+        "Tributario": {
+            titulo: "Código Tributário Nacional Esquematizado",
+            lei: "Lei nº 5.172/1966 (Código Tributário Nacional - CTN)",
+            foco: "Focado em OAB e Concursos. Sistema Tributário Nacional, impostos, competência, crédito e exclusão tributária.",
+            metodo: "Transforma os conceitos densos da matéria tributária em tabelas práticas de fácil memorização.",
+            conteudo: [
+                "Sistema Tributário Nacional na CF/88 (Limitações e Princípios)",
+                "Competência Tributária e Repartição das Receitas",
+                "Impostos em Espécie (Federais, Estaduais e Municipais)",
+                "Obrigação, Responsabilidade e Crédito Tributário",
+                "Causas de Suspensão, Extinção e Exclusão do Crédito"
+            ]
+        },
+        "ProcessoPenal": {
+            titulo: "Código de Processo Penal Comentado",
+            lei: "Decreto-Lei nº 3.689/1941 (Código de Processo Penal Completo)",
+            foco: "Focado em OAB e Concursos. Inquérito policial, ação penal, provas, prisões e procedimentos recursais.",
+            metodo: "Mais de 70% dos certames exigem a lei seca pura; nosso material quebra a complexidade do texto legal bruto.",
+            conteudo: [
+                "Inquérito Policial e Ação Penal na Prática",
+                "Competência Processual e Juiz das Garantias",
+                "Teoria Geral das Provas e Meios de Obtenção",
+                "Prisões em Espécie, Medidas Cautelares e Liberdade Provisória",
+                "Processos em Espécie, Nulidades e Recursos Criminais"
+            ]
+        }
+    };
 
     function detectarOrigemReal() {
         let ref = document.referrer ? document.referrer.toLowerCase() : "";
@@ -189,8 +390,10 @@
         if (ref.includes("facebook.com") || ref.includes("fb")) return "?utm_source=fb&utm_medium=social";
         if (ref.includes("wa.me") || ref.includes("whatsapp.com") || ref.includes("android-app://com.whatsapp")) return "?utm_source=whatsapp&utm_medium=social";
         
-        if (!ref || ref === "") return "Orgânico/Direto";
-        return "?utm_source=" + encodeURIComponent(document.referrer.split('/')[2]) + "&utm_medium=referral";
+        if (!ref || ref === "" || !ref.includes("/")) return "Orgânico/Direto";
+        
+        let partes = ref.split('/');
+        return partes.length > 2 ? "?utm_source=" + encodeURIComponent(partes[2]) + "&utm_medium=referral" : "Orgânico/Direto";
     }
 
     function detectarSOReal() {
@@ -208,12 +411,17 @@
         
         fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({
             visitorId: visitorId,
-            ip: window.currentLoc.ip, estado: window.currentLoc.estado, cidade: window.currentLoc.cidade,
+            ip: window.currentLoc.ip, estado: window.currentLoc.estado, city: window.currentLoc.cidade,
             device: /Mobile|Android|iP(hone|od|ad)/i.test(ua) ? "Celular" : "PC", os: detectarSOReal(),
             utm: detectarOrigemReal(), ...dados
         })});
     }
 
+    // DISPARO IMEDIATO DO PAGEVIEW (Sincroniza com a planilha na hora)
+    enviarParaPlanilha({ type: "ip" });
+    if (typeof fbq === 'function') fbq('track', 'PageView');
+
+    // Captura os dados detalhados em segundo plano sem travar as ações de clique
     fetch('https://api.ipify.org?format=json')
         .then(res => res.json())
         .then(ipData => {
@@ -221,10 +429,9 @@
                 .then(res => res.json())
                 .then(geo => {
                     window.currentLoc = { ip: ipData.ip, estado: geo.region, cidade: geo.city };
-                    enviarParaPlanilha({ type: "ip" });
-                    if (typeof fbq === 'function') fbq('track', 'PageView');
+                    enviarParaPlanilha({ type: "update_geo" });
                 });
-        });
+        }).catch(err => console.log("Erro localidade ignorado."));
 
     document.addEventListener("DOMContentLoaded", function() {
         const btnTimer = document.getElementById('btn-timer');
@@ -244,6 +451,59 @@
                     enviarParaPlanilha({ type: "scroll", depth: m + "%" }); 
                 }
             });
+        });
+
+        // Configuração e Interceptação dos cliques do Botão Detalhes
+        document.querySelectorAll('.btn-detalhes').forEach(b => {
+            b.onclick = () => {
+                let id = b.getAttribute('data-id');
+                let eventoPlanilha = "Detalhes" + id;
+                
+                // 1. Envia para a planilha imediatamente
+                enviarParaPlanilha({ type: "detalhes", produto: eventoPlanilha });
+                
+                // 2. Dispara evento para o Pixel do Facebook
+                if (typeof fbq === 'function') fbq('track', 'ViewContent', { content_name: eventoPlanilha });
+                
+                // 3. Monta a interface estruturada em blocos internos dentro do modal
+                if(infoProdutos[id]) {
+                    document.getElementById('detalhes-titulo').innerHTML = infoProdutos[id].titulo;
+                    
+                    // Converte o array de strings em tópicos <li> do HTML
+                    let itensLista = "";
+                    infoProdutos[id].conteudo.forEach(item => {
+                        itensLista += `<li>${item}</li>`;
+                    });
+
+                    let htmlEstruturado = `
+                        <div class="info-block" style="border-left-color: #3498db; background: #fdfefe;">
+                            <span class="info-block-title" style="color: #2980b9;">📚 Conteúdo do Material:</span>
+                            <ul class="content-list">
+                                ${itensLista}
+                            </ul>
+                        </div>
+                        <div class="info-block" style="border-left-color: #1a252f;">
+                            <span class="info-block-title">📋 Base Normativa Oficial</span>
+                            <span class="info-block-text">${infoProdutos[id].lei}</span>
+                        </div>
+                        <div class="info-block" style="border-left-color: #27ae60;">
+                            <span class="info-block-title">🎯 Foco de Atuação</span>
+                            <span class="info-block-text">${infoProdutos[id].foco}</span>
+                        </div>
+                        <div class="info-block" style="border-left-color: #e74c3c;">
+                            <span class="info-block-title">📊 Metodologia de Engenharia Reversa</span>
+                            <span class="info-block-text">${infoProdutos[id].metodo}</span>
+                        </div>
+                        <div class="info-block" style="border-left-color: #9b59b6;">
+                            <span class="info-block-title">⚡ Entrega e Acesso</span>
+                            <span class="info-block-text">Envio digital 100% automático e imediato via e-mail com acesso vitalício e atualizações durante o ano.</span>
+                        </div>
+                    `;
+                    
+                    document.getElementById('detalhes-corpo').innerHTML = htmlEstruturado;
+                    document.getElementById('modal-detalhes').style.display = 'flex';
+                }
+            };
         });
 
         document.querySelectorAll('.btn-comprar, .btn-amostra').forEach(b => {
