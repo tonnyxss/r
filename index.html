@@ -433,21 +433,18 @@
     if (typeof fbq === 'function') fbq('track', 'PageView');
 
     // ─── GEO EM BACKGROUND ──────────────────────────────────────────────────
-    // FIX: após obter geo, dispara update_geo com os campos corretos (cidade, não city)
-    fetch('https://api.ipify.org?format=json')
+    // Usa ip-api.com (gratuito, sem CORS, retorna city/regionName em campos confiáveis)
+    fetch('https://ip-api.com/json/?fields=status,query,regionName,city')
         .then(function(r) { return r.json(); })
-        .then(function(ipData) {
-            return fetch('https://ipapi.co/' + ipData.ip + '/json/')
-                .then(function(r) { return r.json(); })
-                .then(function(geo) {
-                    window.currentLoc = {
-                        ip:     ipData.ip,
-                        estado: geo.region || '-',
-                        cidade: geo.city   || '-'
-                    };
-                    // FIX: envia update_geo com os dados de localização preenchidos
-                    enviarParaPlanilha({ type: 'update_geo' });
-                });
+        .then(function(geo) {
+            if (geo.status === 'success') {
+                window.currentLoc = {
+                    ip:     geo.query      || '-',
+                    estado: geo.regionName || '-',
+                    cidade: geo.city       || '-'
+                };
+                enviarParaPlanilha({ type: 'update_geo' });
+            }
         })
         .catch(function(err) { console.warn('[FocoLegis] Geo ignorado:', err); });
 
@@ -486,7 +483,8 @@
         document.querySelectorAll('.btn-detalhes').forEach(function(b) {
             b.addEventListener('click', function() {
                 var id = b.getAttribute('data-id');
-                enviarParaPlanilha({ type: 'detalhes', produto: 'Detalhes' + id });
+                // Envia type 'detalhes' com o id limpo — o Apps Script monta "Detalhes+id" na coluna certa
+                enviarParaPlanilha({ type: 'detalhes', produto: id });
                 if (typeof fbq === 'function') fbq('track', 'ViewContent', { content_name: 'Detalhes' + id });
 
                 if (infoProdutos[id]) {
