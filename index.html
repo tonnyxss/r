@@ -16,6 +16,8 @@
 
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+        /* Trava scroll do fundo quando qualquer modal está aberto */
+        body.modal-aberto { overflow: hidden; touch-action: none; }
         header { background-color: #1a252f; color: #ffffff; text-align: center; padding: 40px 20px; }
         header h1 { margin: 0; font-size: 2.2em; color: #f1c40f; }
         .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; display: flex; flex-direction: column; align-items: center; }
@@ -51,7 +53,7 @@
         .btn-detalhes { background-color: #7f8c8d; color: white; padding: 10px; border-radius: 5px; text-decoration: none; font-weight: bold; display: block; margin-top: 5px; cursor: pointer; font-size: 0.9em; border: none; text-align: center; width: 100%; box-sizing: border-box; }
         
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 2000; }
-        .modal-content { background: white; padding: 30px; border-radius: 10px; text-align: center; width: 90%; max-width: 400px; position: relative; box-sizing: border-box; }
+        .modal-content { background: white; padding: 30px; border-radius: 10px; text-align: center; width: 90%; max-width: 400px; position: relative; box-sizing: border-box; max-height: 90vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
         .btn-download { background-color: #27ae60; color: white; padding: 12px; border-radius: 5px; width: 100%; border: none; cursor: pointer; font-weight: bold; text-decoration: none; display: block; margin-top: 10px; box-sizing: border-box; }
         .btn-download.disabled { background-color: #ccc !important; cursor: not-allowed; }
         .btn-fechar-modal { background: #e74c3c; color: white; border: none; padding: 10px 25px; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 15px; font-size: 0.95em; width: 100%; display: block; box-sizing: border-box; }
@@ -248,7 +250,7 @@
                 <input type="tel" id="whatsapp-input" placeholder="(00) 90000-0000" style="width: 100%; padding: 12px; margin: 15px 0; border: 1px solid #ccc; border-radius: 5px;" required>
                 <button type="submit" class="btn-download">LIBERAR ACESSO</button>
             </form>
-            <a href="OAB47.pdf" target="_blank" id="link-real" class="btn-download" style="display:none;" onclick="document.getElementById('modal').style.display='none';">BAIXAR PDF AGORA</a>
+            <a href="OAB47.pdf" target="_blank" id="link-real" class="btn-download" style="display:none;" onclick="fecharModal('modal')">BAIXAR PDF AGORA</a>
         </div>
     </div>
 
@@ -257,7 +259,7 @@
         <div class="modal-content" style="max-width: 460px; text-align: left; padding: 25px;">
             <h3 id="detalhes-titulo" style="text-align: center; margin-top: 0; color: #1a252f; font-size: 1.3em; font-weight: bold; border-bottom: 2px solid #f4f7f6; padding-bottom: 10px;">Detalhes do Produto</h3>
             <div id="detalhes-corpo" style="margin: 20px 0;"></div>
-            <button class="btn-fechar-modal" onclick="document.getElementById('modal-detalhes').style.display='none';">Fechar Detalhes</button>
+            <button class="btn-fechar-modal" onclick="fecharModal('modal-detalhes')">Fechar Detalhes</button>
         </div>
     </div>
 
@@ -421,6 +423,18 @@
         return 'Outro';
     }
 
+    // ─── CONTROLE DE MODAIS ──────────────────────────────────────────────────
+    function abrirModal(id) {
+        document.getElementById(id).style.display = 'flex';
+        document.body.classList.add('modal-aberto');
+    }
+    function fecharModal(id) {
+        document.getElementById(id).style.display = 'none';
+        // Só remove a trava se não houver outro modal aberto
+        var abertos = document.querySelectorAll('.modal-overlay[style*="flex"]');
+        if (abertos.length === 0) document.body.classList.remove('modal-aberto');
+    }
+
     // ─── FUNÇÃO CENTRAL DE ENVIO ─────────────────────────────────────────────
     // FIX PRINCIPAL: removido mode:'no-cors' e adicionado Content-Type correto.
     // O Apps Script expõe CORS via doGet/doPost com ContentService,
@@ -528,6 +542,13 @@
     // ─── LÓGICA DA PÁGINA ────────────────────────────────────────────────────
     document.addEventListener('DOMContentLoaded', function() {
 
+        // Fechar modais clicando no fundo escuro (overlay)
+        document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === overlay) fecharModal(overlay.id);
+            });
+        });
+
         // Timer do botão grátis
         var btnTimer = document.getElementById('btn-timer');
         var sec = 5;
@@ -538,7 +559,7 @@
         }, 1000);
         btnTimer.addEventListener('click', function() {
             if (!btnTimer.classList.contains('disabled')) {
-                document.getElementById('modal').style.display = 'flex';
+                abrirModal('modal');
             }
         });
 
@@ -593,7 +614,7 @@
                             <span class="info-block-text">Envio digital 100% automático e imediato via e-mail com acesso vitalício e atualizações durante o ano.</span>\
                         </div>';
 
-                    document.getElementById('modal-detalhes').style.display = 'flex';
+                    abrirModal('modal-detalhes');
                 }
             });
         });
