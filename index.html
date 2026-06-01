@@ -447,89 +447,83 @@
         });
     }
 
-    // ─── PAGEVIEW IMEDIATO ───────────────────────────────────────────────────
-    enviarParaPlanilha({ type: 'ip' });
+    // ─── PAGEVIEW UNIFICADO COM GEO ─────────────────────────────────────────
+    // Uma unica gravacao na planilha — espera o geo (max 1500ms) antes de enviar.
+    // Elimina linha duplicada causada por evento 'ip' + 'update_geo' separados.
     if (typeof fbq === 'function') fbq('track', 'PageView');
 
-    // ─── GEO EM BACKGROUND ──────────────────────────────────────────────────
-    // Tenta 3 APIs em cascata — se uma falhar, passa para a próxima
-    (function buscarGeo() {
+    (function iniciarComGeo() {
+        var TIMEOUT_GEO = 1500; // ms — fallback se geo demorar demais
+        var enviado = false;
+
+        function enviarPageView() {
+            if (enviado) return;
+            enviado = true;
+            enviarParaPlanilha({ type: 'ip' });
+        }
+
+        var fallbackTimer = setTimeout(enviarPageView, TIMEOUT_GEO);
+
         var apis = [
+            { url: 'https://ipv4.icanhazip.com', raw: true },
             {
-                // Força IPv4 via subdomínio ipv4 dedicado
-                url: 'https://ipv4.icanhazip.com',
-                parse: function(d) { return { ip: d._raw.trim(), estado: '-', cidade: '-' }; },
-                ok: function(d) { return d && d._raw && d._raw.trim().match(/^\d+\.\d+\.\d+\.\d+$/); },
-                raw: true
-            },
-            {
-                // api64=false força retorno de IPv4 quando disponível
                 url: 'https://ipapi.co/json/?api64=false',
                 parse: function(d) { return { ip: d.ip, estado: d.region, cidade: d.city }; },
-                ok: function(d) { return d && d.ip && !d.error && d.ip.indexOf(':') === -1; }
+                ok:    function(d) { return d && d.ip && !d.error && d.ip.indexOf(':') === -1; }
             },
             {
-                // Endpoint /ipv4/ força IPv4 explicitamente
                 url: 'https://freeipapi.com/api/json?ipv=4',
                 parse: function(d) { return { ip: d.ipAddress, estado: d.regionName, cidade: d.cityName }; },
-                ok: function(d) { return d && d.ipAddress && d.ipAddress.indexOf(':') === -1; }
+                ok:    function(d) { return d && d.ipAddress && d.ipAddress.indexOf(':') === -1; }
             }
         ];
         var idx = 0;
-        function tentar() {
-            if (idx >= apis.length) { console.warn('[FocoLegis] Todas as APIs de geo falharam.'); return; }
+
+        function tentarGeo() {
+            if (enviado) return;
+            if (idx >= apis.length) { enviarPageView(); return; }
             var api = apis[idx++];
 
-            // icanhazip retorna texto puro — trata diferente das APIs JSON
             if (api.raw) {
                 fetch(api.url)
                     .then(function(r) { return r.text(); })
                     .then(function(txt) {
+                        if (enviado) return;
                         var ipv4 = txt.trim();
-                        if (/^\d+\.\d+\.\d+\.\d+$/.test(ipv4)) {
-                            // Tem o IPv4 — agora busca estado/cidade com ipapi.co
-                            fetch('https://ipapi.co/' + ipv4 + '/json/')
-                                .then(function(r) { return r.json(); })
-                                .then(function(d) {
-                                    window.currentLoc = {
-                                        ip:     ipv4,
-                                        estado: d.region || '-',
-                                        cidade: d.city   || '-'
-                                    };
-                                    enviarParaPlanilha({ type: 'update_geo' });
-                                })
-                                .catch(function() {
-                                    // Se falhar a geo, salva ao menos o IPv4
-                                    window.currentLoc = { ip: ipv4, estado: '-', cidade: '-' };
-                                    enviarParaPlanilha({ type: 'update_geo' });
-                                });
-                        } else {
-                            tentar();
-                        }
+                        if (!/^\d+\.\d+\.\d+\.\d+$/.test(ipv4)) { tentarGeo(); return; }
+                        fetch('https://ipapi.co/' + ipv4 + '/json/')
+                            .then(function(r) { return r.json(); })
+                            .then(function(d) {
+                                window.currentLoc = { ip: ipv4, estado: d.region || '-', cidade: d.city || '-' };
+                            })
+                            .catch(function() {
+                                window.currentLoc = { ip: ipv4, estado: '-', cidade: '-' };
+                            })
+                            .finally(function() { clearTimeout(fallbackTimer); enviarPageView(); });
                     })
-                    .catch(function() { tentar(); });
+                    .catch(function() { tentarGeo(); });
                 return;
             }
 
             fetch(api.url)
                 .then(function(r) { return r.json(); })
                 .then(function(d) {
+                    if (enviado) return;
                     if (api.ok(d)) {
                         var loc = api.parse(d);
-                        window.currentLoc = {
-                            ip:     loc.ip     || '-',
-                            estado: loc.estado || '-',
-                            cidade: loc.cidade || '-'
-                        };
-                        enviarParaPlanilha({ type: 'update_geo' });
+                        window.currentLoc = { ip: loc.ip || '-', estado: loc.estado || '-', cidade: loc.cidade || '-' };
+                        clearTimeout(fallbackTimer);
+                        enviarPageView();
                     } else {
-                        tentar();
+                        tentarGeo();
                     }
                 })
-                .catch(function() { tentar(); });
+                .catch(function() { tentarGeo(); });
         }
-        tentar();
+
+        tentarGeo();
     })();
+
 
     // ─── LÓGICA DA PÁGINA ────────────────────────────────────────────────────
     document.addEventListener('DOMContentLoaded', function() {
