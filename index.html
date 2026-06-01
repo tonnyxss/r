@@ -433,20 +433,48 @@
     if (typeof fbq === 'function') fbq('track', 'PageView');
 
     // ─── GEO EM BACKGROUND ──────────────────────────────────────────────────
-    // ipwho.is: gratuito, CORS liberado, retorna ip/region/city sem chave de API
-    fetch('https://ipwho.is/')
-        .then(function(r) { return r.json(); })
-        .then(function(geo) {
-            if (geo.success !== false) {
-                window.currentLoc = {
-                    ip:     geo.ip     || '-',
-                    estado: geo.region || '-',
-                    cidade: geo.city   || '-'
-                };
-                enviarParaPlanilha({ type: 'update_geo' });
+    // Tenta 3 APIs em cascata — se uma falhar, passa para a próxima
+    (function buscarGeo() {
+        var apis = [
+            {
+                url: 'https://ipapi.co/json/',
+                parse: function(d) { return { ip: d.ip, estado: d.region, cidade: d.city }; },
+                ok: function(d) { return d && d.ip && !d.error; }
+            },
+            {
+                url: 'https://ipwho.is/',
+                parse: function(d) { return { ip: d.ip, estado: d.region, cidade: d.city }; },
+                ok: function(d) { return d && d.ip && d.success !== false; }
+            },
+            {
+                url: 'https://freeipapi.com/api/json',
+                parse: function(d) { return { ip: d.ipAddress, estado: d.regionName, cidade: d.cityName }; },
+                ok: function(d) { return d && d.ipAddress; }
             }
-        })
-        .catch(function(err) { console.warn('[FocoLegis] Geo ignorado:', err); });
+        ];
+        var idx = 0;
+        function tentar() {
+            if (idx >= apis.length) { console.warn('[FocoLegis] Todas as APIs de geo falharam.'); return; }
+            var api = apis[idx++];
+            fetch(api.url)
+                .then(function(r) { return r.json(); })
+                .then(function(d) {
+                    if (api.ok(d)) {
+                        var loc = api.parse(d);
+                        window.currentLoc = {
+                            ip:     loc.ip     || '-',
+                            estado: loc.estado || '-',
+                            cidade: loc.cidade || '-'
+                        };
+                        enviarParaPlanilha({ type: 'update_geo' });
+                    } else {
+                        tentar(); // tenta próxima
+                    }
+                })
+                .catch(function() { tentar(); }); // tenta próxima se der erro de rede
+        }
+        tentar();
+    })();
 
     // ─── LÓGICA DA PÁGINA ────────────────────────────────────────────────────
     document.addEventListener('DOMContentLoaded', function() {
