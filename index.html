@@ -369,27 +369,46 @@
     // ─── HELPERS ─────────────────────────────────────────────────────────────
 
     function detectarOrigem() {
-        var ref = document.referrer ? document.referrer.toLowerCase() : '';
-        var urlParams = window.location.search;
-        var ua = navigator.userAgent.toLowerCase();
+        var ref    = document.referrer ? document.referrer.toLowerCase() : '';
+        var search = window.location.search;
+        var ua     = navigator.userAgent.toLowerCase();
 
-        if (urlParams.includes('utm_source=')) return urlParams;
-        if (ua.includes('instagram'))           return '?utm_source=ig&utm_medium=social&utm_content=Link_da_Bio';
-        if (ua.includes('fban') || ua.includes('fbav')) return '?utm_source=fb&utm_medium=cpc';
-        if (ua.includes('whatsapp'))            return '?utm_source=whatsapp&utm_medium=social';
+        // 1. UTM explícito na URL — maior prioridade
+        if (search.includes('utm_source=')) return search;
 
-        if (ref.includes('instagram.com') || ref.includes('android-app://com.instagram'))
+        // 2. Instagram — WebView injeta strings no UA ou adiciona igsh/igshid na URL
+        //    No iOS o UA nao traz "instagram", mas a URL sempre vem com ?igsh= ou ?igshid=
+        var igParams = search.includes('igsh=') || search.includes('igshid=');
+        var igUA     = ua.includes('instagram') || ua.includes('fb_iab') || ua.includes('fb4a');
+        var igRef    = ref.includes('instagram.com') || ref.includes('android-app://com.instagram');
+        if (igParams || igUA || igRef)
             return '?utm_source=ig&utm_medium=social&utm_content=Link_da_Bio';
-        if (ref.includes('facebook.com') || ref.includes('fb'))
+
+        // 3. Facebook
+        if (ua.includes('fban') || ua.includes('fbav') || ref.includes('facebook.com') || ref.includes('fb.com'))
             return '?utm_source=fb&utm_medium=social';
-        if (ref.includes('wa.me') || ref.includes('whatsapp.com') || ref.includes('android-app://com.whatsapp'))
+
+        // 4. WhatsApp
+        if (ua.includes('whatsapp') || ref.includes('wa.me') || ref.includes('whatsapp.com') || ref.includes('android-app://com.whatsapp'))
             return '?utm_source=whatsapp&utm_medium=social';
 
-        if (!ref || !ref.includes('/')) return 'Orgânico/Direto';
-        var partes = ref.split('/');
-        return partes.length > 2
-            ? '?utm_source=' + encodeURIComponent(partes[2]) + '&utm_medium=referral'
-            : 'Orgânico/Direto';
+        // 5. TikTok
+        if (ua.includes('tiktok') || ua.includes('musical_ly') || ref.includes('tiktok.com'))
+            return '?utm_source=tiktok&utm_medium=social';
+
+        // 6. Google
+        if (ref.includes('google.com'))
+            return '?utm_source=google&utm_medium=organic';
+
+        // 7. Outro referrer conhecido
+        if (ref && ref.includes('/')) {
+            var partes = ref.split('/');
+            return partes.length > 2
+                ? '?utm_source=' + encodeURIComponent(partes[2]) + '&utm_medium=referral'
+                : 'Orgânico/Direto';
+        }
+
+        return 'Orgânico/Direto';
     }
 
     function detectarSO() {
