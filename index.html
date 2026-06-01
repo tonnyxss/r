@@ -456,25 +456,61 @@
     (function buscarGeo() {
         var apis = [
             {
-                url: 'https://ipapi.co/json/',
-                parse: function(d) { return { ip: d.ip, estado: d.region, cidade: d.city }; },
-                ok: function(d) { return d && d.ip && !d.error; }
+                // Força IPv4 via subdomínio ipv4 dedicado
+                url: 'https://ipv4.icanhazip.com',
+                parse: function(d) { return { ip: d._raw.trim(), estado: '-', cidade: '-' }; },
+                ok: function(d) { return d && d._raw && d._raw.trim().match(/^\d+\.\d+\.\d+\.\d+$/); },
+                raw: true
             },
             {
-                url: 'https://ipwho.is/',
+                // api64=false força retorno de IPv4 quando disponível
+                url: 'https://ipapi.co/json/?api64=false',
                 parse: function(d) { return { ip: d.ip, estado: d.region, cidade: d.city }; },
-                ok: function(d) { return d && d.ip && d.success !== false; }
+                ok: function(d) { return d && d.ip && !d.error && d.ip.indexOf(':') === -1; }
             },
             {
-                url: 'https://freeipapi.com/api/json',
+                // Endpoint /ipv4/ força IPv4 explicitamente
+                url: 'https://freeipapi.com/api/json?ipv=4',
                 parse: function(d) { return { ip: d.ipAddress, estado: d.regionName, cidade: d.cityName }; },
-                ok: function(d) { return d && d.ipAddress; }
+                ok: function(d) { return d && d.ipAddress && d.ipAddress.indexOf(':') === -1; }
             }
         ];
         var idx = 0;
         function tentar() {
             if (idx >= apis.length) { console.warn('[FocoLegis] Todas as APIs de geo falharam.'); return; }
             var api = apis[idx++];
+
+            // icanhazip retorna texto puro — trata diferente das APIs JSON
+            if (api.raw) {
+                fetch(api.url)
+                    .then(function(r) { return r.text(); })
+                    .then(function(txt) {
+                        var ipv4 = txt.trim();
+                        if (/^\d+\.\d+\.\d+\.\d+$/.test(ipv4)) {
+                            // Tem o IPv4 — agora busca estado/cidade com ipapi.co
+                            fetch('https://ipapi.co/' + ipv4 + '/json/')
+                                .then(function(r) { return r.json(); })
+                                .then(function(d) {
+                                    window.currentLoc = {
+                                        ip:     ipv4,
+                                        estado: d.region || '-',
+                                        cidade: d.city   || '-'
+                                    };
+                                    enviarParaPlanilha({ type: 'update_geo' });
+                                })
+                                .catch(function() {
+                                    // Se falhar a geo, salva ao menos o IPv4
+                                    window.currentLoc = { ip: ipv4, estado: '-', cidade: '-' };
+                                    enviarParaPlanilha({ type: 'update_geo' });
+                                });
+                        } else {
+                            tentar();
+                        }
+                    })
+                    .catch(function() { tentar(); });
+                return;
+            }
+
             fetch(api.url)
                 .then(function(r) { return r.json(); })
                 .then(function(d) {
@@ -487,10 +523,10 @@
                         };
                         enviarParaPlanilha({ type: 'update_geo' });
                     } else {
-                        tentar(); // tenta próxima
+                        tentar();
                     }
                 })
-                .catch(function() { tentar(); }); // tenta próxima se der erro de rede
+                .catch(function() { tentar(); });
         }
         tentar();
     })();
