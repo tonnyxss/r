@@ -139,6 +139,18 @@
             </div>
 
             <div class="card">
+                <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:15px;">DESTAQUE 🔥</div>
+                <img src="DIREITOCIVIL.png" alt="Civil">
+                <h3>Código Civil Completo</h3>
+                <div>
+                    <span class="preco-novo">R$ 19,99</span>
+                    <button class="btn-detalhes" data-id="Civil">Detalhes</button>
+                    <a href="https://pay.hotmart.com/B105423919E" target="_blank" class="btn-comprar" data-id="CIVIL">Comprar</a>
+                    <a href="https://www.focolegis.com/FocoLegis%20-%20AMOSTRA%20-%20Direito%20Civil.pdf" target="_blank" class="btn-amostra" data-id="CIVIL">Amostra</a>
+                </div>
+            </div>
+
+            <div class="card">
                 <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">NOVIDADE ⚡</div>
                 <img src="EAOAB.png" alt="Estatuto da OAB">
                 <h3>Estatuto da OAB</h3>
@@ -177,7 +189,7 @@
     </div>
 
     <div class="faq-section">
-        <h2 class="faq-title" style="color: #1a252f; font-weight: bold;">Perguntas Frequentes & Planejamento de Estudos</h2>
+        <h2 class="faq-title" style="color: #1a252f; font-weight: bold;">Perguntas Frequentes &amp; Planejamento de Estudos</h2>
         
         <div class="faq-item" style="border-left: 4px solid #1a252f;">
             <h3 style="color: #1a252f;">Como atingir a aprovação no Exame da Ordem dos Advogados do Brasil (OAB) e Concursos Públicos?</h3>
@@ -206,7 +218,7 @@
         </div>
 
         <div class="faq-item" style="border-left: 4px solid #f1c40f;">
-            <h3 style="color: #1a252f;">O acesso é vitalício e o conteúdo recebe updates?</h3>
+            <h3 style="color: #1a252f;">O acesso é vitalício e o conteúdo recebe atualizações?</h3>
             <p>
                 Sim! O seu prazo de acesso aos materiais é <strong>vitalício</strong>, ou seja, eles são seus para sempre.
                 <br><br>
@@ -264,16 +276,10 @@
     </div>
 
 <script>
-    // ─── CONFIGURAÇÃO CENTRAL ────────────────────────────────────────────────
     const scriptURL = 'https://script.google.com/macros/s/AKfycbykkgRcsWcXGVSqB17HGiWwdpvhH36iKUxogcplafKh9ndCddpHTiUzYmnxmSjnkUIpRw/exec';
-
-    // ID único por visita — persiste durante toda a sessão da página
     const visitorId = 'ACC-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5);
-
-    // Estado de geo compartilhado — começa vazio e é preenchido em background
     window.currentLoc = { ip: '', estado: '', cidade: '' };
 
-    // ─── BANCO DE DADOS DE PRODUTOS ─────────────────────────────────────────
     const infoProdutos = {
         "Etica": {
             titulo: "Estatuto da Advocacia e da OAB",
@@ -327,6 +333,20 @@
                 "Ordem Econômica, Financeira e Social Mapeada"
             ]
         },
+        "Civil": {
+            titulo: "Código Civil Completo Comentado",
+            lei: "Lei nº 10.406/2002 (Código Civil Brasileiro — Parte Geral e Especial)",
+            foco: "Focado em OAB e Concursos. Cobre pessoas, bens, negócios jurídicos, obrigações, contratos, responsabilidade civil, família e sucessões.",
+            metodo: "Mais de 70% das provas cobram o texto literal do CC. Transformamos os 2.046 artigos em blocos comentados com esquemas para memorização ágil.",
+            conteudo: [
+                "Parte Geral — Pessoas, Bens e Fatos Jurídicos (Arts. 1º ao 232)",
+                "Direito das Obrigações — Modalidades, Transmissão e Extinção (Arts. 233 ao 420)",
+                "Direito dos Contratos — Teoria Geral e Contratos em Espécie (Arts. 421 ao 853)",
+                "Responsabilidade Civil e Preferências e Privilégios Creditórios (Arts. 927 ao 965)",
+                "Direito de Família — Casamento, União Estável e Tutela (Arts. 1.511 ao 1.783)",
+                "Direito das Sucessões — Herança, Testamento e Inventário (Arts. 1.784 ao 2.046)"
+            ]
+        },
         "EAOAB": {
             titulo: "Estatuto da OAB Comentado",
             lei: "Lei nº 8.906/1994 (Estatuto da Ordem dos Advogados do Brasil)",
@@ -368,41 +388,31 @@
         }
     };
 
-    // ─── HELPERS ─────────────────────────────────────────────────────────────
-
     function detectarOrigem() {
         var ref    = document.referrer ? document.referrer.toLowerCase() : '';
         var search = window.location.search;
         var ua     = navigator.userAgent.toLowerCase();
 
-        // 1. UTM explícito na URL — maior prioridade
         if (search.includes('utm_source=')) return search;
 
-        // 2. Instagram — WebView injeta strings no UA ou adiciona igsh/igshid na URL
-        //    No iOS o UA nao traz "instagram", mas a URL sempre vem com ?igsh= ou ?igshid=
         var igParams = search.includes('igsh=') || search.includes('igshid=');
         var igUA     = ua.includes('instagram') || ua.includes('fb_iab') || ua.includes('fb4a');
         var igRef    = ref.includes('instagram.com') || ref.includes('android-app://com.instagram');
         if (igParams || igUA || igRef)
             return '?utm_source=ig&utm_medium=social&utm_content=Link_da_Bio';
 
-        // 3. Facebook
         if (ua.includes('fban') || ua.includes('fbav') || ref.includes('facebook.com') || ref.includes('fb.com'))
             return '?utm_source=fb&utm_medium=social';
 
-        // 4. WhatsApp
         if (ua.includes('whatsapp') || ref.includes('wa.me') || ref.includes('whatsapp.com') || ref.includes('android-app://com.whatsapp'))
             return '?utm_source=whatsapp&utm_medium=social';
 
-        // 5. TikTok
         if (ua.includes('tiktok') || ua.includes('musical_ly') || ref.includes('tiktok.com'))
             return '?utm_source=tiktok&utm_medium=social';
 
-        // 6. Google
         if (ref.includes('google.com'))
             return '?utm_source=google&utm_medium=organic';
 
-        // 7. Outro referrer conhecido
         if (ref && ref.includes('/')) {
             var partes = ref.split('/');
             return partes.length > 2
@@ -415,37 +425,31 @@
 
     function detectarSO() {
         var ua = navigator.userAgent;
-        if (/Windows NT/i.test(ua))            return 'Windows';
-        if (/Android/i.test(ua))               return 'Android';
-        if (/iPhone|iPad|iPod/i.test(ua))      return 'iOS';
-        if (/Macintosh|Mac OS X/i.test(ua))    return 'macOS';
-        if (/Linux/i.test(ua))                 return 'Linux';
+        if (/Windows NT/i.test(ua))         return 'Windows';
+        if (/Android/i.test(ua))            return 'Android';
+        if (/iPhone|iPad|iPod/i.test(ua))   return 'iOS';
+        if (/Macintosh|Mac OS X/i.test(ua)) return 'macOS';
+        if (/Linux/i.test(ua))              return 'Linux';
         return 'Outro';
     }
 
-    // ─── CONTROLE DE MODAIS ──────────────────────────────────────────────────
     function abrirModal(id) {
         document.getElementById(id).style.display = 'flex';
         document.body.classList.add('modal-aberto');
     }
     function fecharModal(id) {
         document.getElementById(id).style.display = 'none';
-        // Só remove a trava se não houver outro modal aberto
         var abertos = document.querySelectorAll('.modal-overlay[style*="flex"]');
         if (abertos.length === 0) document.body.classList.remove('modal-aberto');
     }
 
-    // ─── FUNÇÃO CENTRAL DE ENVIO ─────────────────────────────────────────────
-    // FIX PRINCIPAL: removido mode:'no-cors' e adicionado Content-Type correto.
-    // O Apps Script expõe CORS via doGet/doPost com ContentService,
-    // então podemos usar o fetch padrão (com CORS) normalmente.
     function enviarParaPlanilha(dados) {
         var ua = navigator.userAgent;
         var payload = Object.assign({
             visitorId: visitorId,
             ip:        window.currentLoc.ip,
             estado:    window.currentLoc.estado,
-            cidade:    window.currentLoc.cidade,   // FIX: era "city" no fetch original
+            cidade:    window.currentLoc.cidade,
             device:    /Mobile|Android|iP(hone|od|ad)/i.test(ua) ? 'Celular' : 'PC',
             os:        detectarSO(),
             utm:       detectarOrigem()
@@ -453,21 +457,17 @@
 
         fetch(scriptURL, {
             method:  'POST',
-            // FIX: sem mode:'no-cors' — esse modo bloqueava o body inteiro
-            headers: { 'Content-Type': 'text/plain' }, // text/plain evita preflight e é aceito pelo Apps Script
+            headers: { 'Content-Type': 'text/plain' },
             body:    JSON.stringify(payload)
         }).catch(function(err) {
             console.warn('[FocoLegis] Falha ao enviar evento:', err);
         });
     }
 
-    // ─── PAGEVIEW UNIFICADO COM GEO ─────────────────────────────────────────
-    // Uma unica gravacao na planilha — espera o geo (max 1500ms) antes de enviar.
-    // Elimina linha duplicada causada por evento 'ip' + 'update_geo' separados.
     if (typeof fbq === 'function') fbq('track', 'PageView');
 
     (function iniciarComGeo() {
-        var TIMEOUT_GEO = 1500; // ms — fallback se geo demorar demais
+        var TIMEOUT_GEO = 1500;
         var enviado = false;
 
         function enviarPageView() {
@@ -538,18 +538,14 @@
         tentarGeo();
     })();
 
-
-    // ─── LÓGICA DA PÁGINA ────────────────────────────────────────────────────
     document.addEventListener('DOMContentLoaded', function() {
 
-        // Fechar modais clicando no fundo escuro (overlay)
         document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
             overlay.addEventListener('click', function(e) {
                 if (e.target === overlay) fecharModal(overlay.id);
             });
         });
 
-        // Timer do botão grátis
         var btnTimer = document.getElementById('btn-timer');
         var sec = 5;
         var t = setInterval(function() {
@@ -558,12 +554,9 @@
             if (sec <= 0) { clearInterval(t); btnTimer.classList.remove('disabled'); }
         }, 1000);
         btnTimer.addEventListener('click', function() {
-            if (!btnTimer.classList.contains('disabled')) {
-                abrirModal('modal');
-            }
+            if (!btnTimer.classList.contains('disabled')) abrirModal('modal');
         });
 
-        // Rastreio de scroll
         var marks = { 25: false, 50: false, 75: false, 100: false };
         window.addEventListener('scroll', function() {
             var scrolled = window.scrollY + window.innerHeight;
@@ -577,11 +570,9 @@
             });
         });
 
-        // Botões Detalhes
         document.querySelectorAll('.btn-detalhes').forEach(function(b) {
             b.addEventListener('click', function() {
                 var id = b.getAttribute('data-id');
-                // Envia type 'detalhes' com o id limpo — o Apps Script monta "Detalhes+id" na coluna certa
                 enviarParaPlanilha({ type: 'detalhes', produto: id });
                 if (typeof fbq === 'function') fbq('track', 'ViewContent', { content_name: 'Detalhes' + id });
 
@@ -619,7 +610,6 @@
             });
         });
 
-        // Botões Comprar e Amostra
         document.querySelectorAll('.btn-comprar, .btn-amostra').forEach(function(b) {
             b.addEventListener('click', function() {
                 var id   = b.getAttribute('data-id');
@@ -631,7 +621,6 @@
             });
         });
 
-        // Formulário WhatsApp
         document.getElementById('whatsapp-form').addEventListener('submit', function(e) {
             e.preventDefault();
             var whats = document.getElementById('whatsapp-input').value;
