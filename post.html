@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>FocoLegis Studio - v37</title>
+    <title>FocoLegis Studio - v38 (Carrossel PRO)</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         /* Base e Layout */
@@ -26,6 +26,8 @@
         input[type="range"] { width: 130px; cursor: pointer; }
         .btn-tool { padding: 5px 10px; cursor: pointer; background: #eee; border: 1px solid #ccc; border-radius: 4px; font-weight: bold; }
         .btn-mode { background: #3498db !important; color: white !important; border: none; }
+        .btn-slide { background: #e67e22 !important; color: white !important; border: none; }
+        .btn-slide.active { background: #d35400 !important; font-weight: 900; box-shadow: inset 0 2px 4px rgba(0,0,0,0.4); }
 
         /* AREA DO POST (Com imagem padrão bgpost.png definida no CSS) */
         #post-area { 
@@ -44,10 +46,17 @@
         .mode-feed { width: 800px; height: 800px; padding: 20px 40px; }
         .mode-stories { width: 450px; height: 800px; padding: 60px 30px; }
 
-        .logo-area { width: 100%; display: flex; justify-content: center; margin-bottom: 10px; z-index: 10; }
-        .logo-area img { max-width: 170px; height: auto; }
+        .logo-area { width: 100%; display: flex; justify-content: center; margin-bottom: 10px; z-index: 10; transition: all 0.2s ease; }
+        .logo-area img { max-width: 170px; height: auto; transition: all 0.2s ease; }
         
+        /* Modificador para o Slide 2 (Logo Ampliada) */
+        #post-area.slide2-active .logo-area { margin-top: auto; margin-bottom: 20px; }
+        #post-area.slide2-active .logo-area img { max-width: 320px; } /* Logo expandida no final */
+
         #text-editor { width: 100%; flex-grow: 1; outline: none; font-size: 32px; color: #fff; z-index: 5; text-align: center; line-height: 1.3; word-wrap: break-word; }
+        
+        /* Modificador do editor no Slide 2 */
+        #post-area.slide2-active #text-editor { flex-grow: 0; margin-bottom: auto; font-size: 28px; font-weight: 600; }
 
         .footer-area { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; margin-top: auto; padding-bottom: 15px; z-index: 8; }
         .social-icons { display: flex; gap: 8px; }
@@ -60,30 +69,26 @@
         /* =========================================================================
            CONTROLE DE POSIÇÃO DO BONEQUINHO
            ========================================================================= */
-        
-        /* 1. Estrutura geral e tamanho do bonequinho */
         .sticker-area {
             position: absolute;
             z-index: 8;   
             pointer-events: none; 
+            transition: all 0.2s ease;
         }
         .sticker-area img {
-            width: 200px;        /* ◄ ALTERE AQUI O TAMANHO GERAL (LARGURA) DO BONEQUINHO */
+            width: 200px;        
             height: auto;
             object-fit: contain;
         }
 
-        /* 2. Posição quando estiver no modo FEED (Quadrado) */
-        .mode-feed .sticker-area {
-            bottom: -50px;       /* ◄ DISTÂNCIA DA BORDA DE BAIXO NO FEED */
-            right: -20px;        /* ◄ DISTÂNCIA DA BORDA DA DIREITA NO FEED */
-        }
+        /* Posições no modo FEED */
+        .mode-feed .sticker-area { bottom: -50px; right: -20px; }
+        /* Reposicionamento adaptado para o Slide Final do Carrossel */
+        .mode-feed.slide2-active .sticker-area { bottom: 20px; right: 20px; }
 
-        /* 3. Posição quando estiver no modo STORIES (Vertical) */
-        .mode-stories .sticker-area {
-            bottom: 2px;       /* ◄ DISTÂNCIA DA BORDA DE BAIXO NOS STORIES */
-            right: 30px;        /* ◄ DISTÂNCIA DA BORDA DA DIREITA NOS STORIES */
-        }
+        /* Posições no modo STORIES */
+        .mode-stories .sticker-area { bottom: 2px; right: 30px; }
+        .mode-stories.slide2-active .sticker-area { bottom: 40px; right: 20px; }
         /* ========================================================================= */
 
         .btn-save { background: #27ae60 !important; color: white !important; cursor: pointer; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; }
@@ -97,6 +102,14 @@
         <div class="control-group">
             Formato
             <button class="btn-tool btn-mode" id="toggleMode" onclick="toggleFormat()">FEED</button>
+        </div>
+
+        <div class="control-group">
+            Estrutura Carrossel
+            <div style="display:flex; gap:4px;">
+                <button class="btn-tool btn-slide active" id="btnSlide1" onclick="changeSlide(1)">SLIDE 1</button>
+                <button class="btn-tool btn-slide" id="btnSlide2" onclick="changeSlide(2)">SLIDE 2 (CTA)</button>
+            </div>
         </div>
 
         <div class="control-group">
@@ -175,8 +188,40 @@
 
     <script>
         let currentMode = 'feed';
+        let currentSlide = 1;
         const logoFeed = "NOVALOGO.png";
         const logoStories = "NOVALOGO.png";
+
+        // Memória temporária para guardar os textos de cada slide
+        let slideContents = {
+            1: "Selecione o texto e clique em uma cor!",
+            2: "💡 GOSTOU DO CONTEÚDO?<br><br>👉 Siga o perfil para não perder nenhum resumo.<br>📌 Salve este post para consultar depois!"
+        };
+
+        function changeSlide(slideNum) {
+            const area = document.getElementById('post-area');
+            const editor = document.getElementById('text-editor');
+            
+            // Salva o conteúdo do slide atual antes de mudar
+            slideContents[currentSlide] = editor.innerHTML;
+            
+            // Remove classes ativas antigas
+            document.getElementById('btnSlide1').classList.remove('active');
+            document.getElementById('btnSlide2').classList.remove('active');
+            
+            currentSlide = slideNum;
+            
+            if (slideNum === 1) {
+                document.getElementById('btnSlide1').classList.add('active');
+                area.classList.remove('slide2-active');
+            } else {
+                document.getElementById('btnSlide2').classList.add('active');
+                area.classList.add('slide2-active');
+            }
+            
+            // Injeta o conteúdo salvo do novo slide
+            editor.innerHTML = slideContents[slideNum];
+        }
 
         function changeFontSize(val) {
             document.getElementById('lblSize').innerText = `Tamanho: ${val}px`;
@@ -219,17 +264,11 @@
             }
         }
 
-        const textColors = [
-            '#000000', '#2d3748', '#4a5568', '#718096', 
-            '#e53e3e', '#dd6b20', '#3182ce', '#2b6cb0', 
-            '#38a169', '#2f855a', '#d69e2e', '#b7791f', 
-            '#4c51bf', '#6b46c1', '#b83280', '#ffffff'  
-        ];
+        const textColors = ['#000000', '#2d3748', '#4a5568', '#718096', '#e53e3e', '#dd6b20', '#3182ce', '#2b6cb0', '#38a169', '#2f855a', '#d69e2e', '#b7791f', '#4c51bf', '#6b46c1', '#b83280', '#ffffff'];
         const fontGrid = document.getElementById('fontColorGrid');
         textColors.forEach(c => {
             const btn = document.createElement('button');
-            btn.className = 'btn-color';
-            btn.style.backgroundColor = c;
+            btn.className = 'btn-color'; btn.style.backgroundColor = c;
             btn.title = `Cor: ${c}`;
             btn.onmousedown = (e) => { e.preventDefault(); applyColor(c); };
             fontGrid.appendChild(btn);
@@ -269,6 +308,9 @@
         }
 
         async function handleSave() {
+            // Salva o estado atual do texto antes do print
+            slideContents[currentSlide] = document.getElementById('text-editor').innerHTML;
+            
             const post = document.getElementById('post-area');
             const btn = document.querySelector('.btn-save');
             btn.innerText = "PROCES...";
@@ -276,7 +318,7 @@
             await new Promise(r => setTimeout(r, 400));
             html2canvas(post, { useCORS: true, scale: scale, backgroundColor: "#ffffff" }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = `focolegis-${currentMode}-${Date.now()}.png`;
+                link.download = `focolegis-${currentMode}-slide${currentSlide}-${Date.now()}.png`;
                 link.href = canvas.toDataURL("image/png");
                 link.click();
                 btn.innerText = "SALVAR POST";
