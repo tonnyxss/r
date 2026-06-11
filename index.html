@@ -145,7 +145,7 @@
                 <div>
                     <span class="preco-novo">R$ 19,99</span>
                     <button class="btn-detalhes" data-id="Civil">Detalhes</button>
-                    <a href="https://pay.hotmart.com/M106167121V" target="_blank" class="btn-comprar" data-id="CIVIL">Comprar</a>
+                    <a href="https://pay.hotmart.com/B105423919E" target="_blank" class="btn-comprar" data-id="CIVIL">Comprar</a>
                     <a href="https://www.focolegis.com/FocoLegis%20-%20AMOSTRA%20-%20Direito%20Civil.pdf" target="_blank" class="btn-amostra" data-id="CIVIL">Amostra</a>
                 </div>
             </div>
@@ -467,7 +467,7 @@
     if (typeof fbq === 'function') fbq('track', 'PageView');
 
     (function iniciarComGeo() {
-        var TIMEOUT_GEO = 1500;
+        var TIMEOUT_GEO = 2500; // um pouco mais de margem para o Apps Script responder
         var enviado = false;
 
         function enviarPageView() {
@@ -476,66 +476,48 @@
             enviarParaPlanilha({ type: 'ip' });
         }
 
+        // Fallback: se tudo falhar, envia sem geo
         var fallbackTimer = setTimeout(enviarPageView, TIMEOUT_GEO);
 
-        var apis = [
-            { url: 'https://ipv4.icanhazip.com', raw: true },
-            {
-                url: 'https://ipapi.co/json/?api64=false',
-                parse: function(d) { return { ip: d.ip, estado: d.region, cidade: d.city }; },
-                ok:    function(d) { return d && d.ip && !d.error && d.ip.indexOf(':') === -1; }
-            },
-            {
-                url: 'https://freeipapi.com/api/json?ipv=4',
-                parse: function(d) { return { ip: d.ipAddress, estado: d.regionName, cidade: d.cityName }; },
-                ok:    function(d) { return d && d.ipAddress && d.ipAddress.indexOf(':') === -1; }
-            }
-        ];
-        var idx = 0;
+        // Estratégia: o Apps Script já recebe o IP do servidor do Google
+        // via doGet?action=geo — sem rate limit, sem CORS, sem IPv6
+        fetch(scriptURL + '?action=geo')
+            .then(function(r) { return r.json(); })
+            .then(function(d) {
+                if (enviado) return;
+                if (d && d.ip && d.ip.indexOf(':') === -1) {
+                    window.currentLoc = {
+                        ip:     d.ip     || '-',
+                        estado: d.estado || '-',
+                        cidade: d.cidade || '-'
+                    };
+                    clearTimeout(fallbackTimer);
+                    enviarPageView();
+                } else {
+                    // Apps Script retornou IPv6 ou falhou — tenta ipinfo.io como backup
+                    tentarIpinfo();
+                }
+            })
+            .catch(function() { tentarIpinfo(); });
 
-        function tentarGeo() {
+        function tentarIpinfo() {
             if (enviado) return;
-            if (idx >= apis.length) { enviarPageView(); return; }
-            var api = apis[idx++];
-
-            if (api.raw) {
-                fetch(api.url)
-                    .then(function(r) { return r.text(); })
-                    .then(function(txt) {
-                        if (enviado) return;
-                        var ipv4 = txt.trim();
-                        if (!/^\d+\.\d+\.\d+\.\d+$/.test(ipv4)) { tentarGeo(); return; }
-                        fetch('https://ipapi.co/' + ipv4 + '/json/')
-                            .then(function(r) { return r.json(); })
-                            .then(function(d) {
-                                window.currentLoc = { ip: ipv4, estado: d.region || '-', cidade: d.city || '-' };
-                            })
-                            .catch(function() {
-                                window.currentLoc = { ip: ipv4, estado: '-', cidade: '-' };
-                            })
-                            .finally(function() { clearTimeout(fallbackTimer); enviarPageView(); });
-                    })
-                    .catch(function() { tentarGeo(); });
-                return;
-            }
-
-            fetch(api.url)
+            fetch('https://ipinfo.io/json?token=')
                 .then(function(r) { return r.json(); })
                 .then(function(d) {
                     if (enviado) return;
-                    if (api.ok(d)) {
-                        var loc = api.parse(d);
-                        window.currentLoc = { ip: loc.ip || '-', estado: loc.estado || '-', cidade: loc.cidade || '-' };
-                        clearTimeout(fallbackTimer);
-                        enviarPageView();
-                    } else {
-                        tentarGeo();
+                    if (d && d.ip && d.ip.indexOf(':') === -1) {
+                        window.currentLoc = {
+                            ip:     d.ip      || '-',
+                            estado: d.region  || '-',
+                            cidade: d.city    || '-'
+                        };
                     }
+                    clearTimeout(fallbackTimer);
+                    enviarPageView();
                 })
-                .catch(function() { tentarGeo(); });
+                .catch(function() { enviarPageView(); });
         }
-
-        tentarGeo();
     })();
 
     document.addEventListener('DOMContentLoaded', function() {
