@@ -71,6 +71,65 @@
         .faq-item h3 { font-size: 1.1em; color: #2c3e50; margin-top: 0; margin-bottom: 10px; }
         .faq-item p { font-size: 0.9em; color: #555; line-height: 1.6; margin: 0; }
 
+        /* ── Botão WhatsApp Flutuante ── */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .whatsapp-float .wpp-balao {
+            background: #fff;
+            color: #1a252f;
+            font-size: 0.75em;
+            font-weight: 600;
+            padding: 6px 10px;
+            border-radius: 12px 12px 0 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+            white-space: nowrap;
+            opacity: 0;
+            transform: translateX(8px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            pointer-events: none;
+        }
+        .whatsapp-float:hover .wpp-balao,
+        .whatsapp-float.mostrar-balao .wpp-balao {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .whatsapp-float .wpp-icone {
+            width: 48px;
+            height: 48px;
+            background: #25d366;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 10px rgba(37,211,102,0.45);
+            flex-shrink: 0;
+            transition: transform 0.2s ease;
+        }
+        .whatsapp-float:hover .wpp-icone {
+            transform: scale(1.08);
+        }
+        .whatsapp-float .wpp-icone svg {
+            width: 26px;
+            height: 26px;
+            fill: #fff;
+        }
+
+        @media (max-width: 600px) {
+            .whatsapp-float { bottom: 14px; right: 14px; }
+            .whatsapp-float .wpp-icone { width: 44px; height: 44px; }
+            .whatsapp-float .wpp-icone svg { width: 23px; height: 23px; }
+            .whatsapp-float .wpp-balao { font-size: 0.7em; padding: 5px 8px; }
+        }
+
         @media (max-width: 600px) {
             header h1 { font-size: 1.6em; }
             .container { margin: 20px auto; padding: 0 10px; }
@@ -393,6 +452,10 @@
         var search = window.location.search;
         var ua     = navigator.userAgent.toLowerCase();
 
+        // 0. ?ref= — parâmetro manual, maior prioridade
+        var refParam = new URLSearchParams(search).get('ref');
+        if (refParam) return '?utm_source=' + encodeURIComponent(refParam) + '&utm_medium=ref';
+
         if (search.includes('utm_source=')) return search;
 
         var igParams = search.includes('igsh=') || search.includes('igshid=');
@@ -548,6 +611,15 @@
     })();
 
     document.addEventListener('DOMContentLoaded', function() {
+        // Mostra o balão "Dúvidas? Me chame!" automaticamente após 3s
+        var wppBtn = document.getElementById('wpp-float-btn');
+        if (wppBtn) {
+            setTimeout(function() {
+                wppBtn.classList.add('mostrar-balao');
+                setTimeout(function() { wppBtn.classList.remove('mostrar-balao'); }, 4000);
+            }, 3000);
+        }
+
 
         document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
             overlay.addEventListener('click', function(e) {
@@ -641,5 +713,21 @@
         });
     });
 </script>
+    <!-- BOTÃO WHATSAPP FLUTUANTE -->
+    <a class="whatsapp-float"
+       href="https://wa.me/5522988267366?text=Ol%C3%A1%2C%20tenho%20uma%20d%C3%BAvida!"
+       target="_blank"
+       rel="noopener noreferrer"
+       aria-label="Falar no WhatsApp"
+       id="wpp-float-btn">
+        <span class="wpp-balao">Dúvidas? Me chame!</span>
+        <span class="wpp-icone">
+            <!-- Ícone WhatsApp -->
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.978-1.306A9.953 9.953 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18a7.946 7.946 0 0 1-4.073-1.117l-.292-.174-3.037.794.817-2.96-.19-.304A7.946 7.946 0 0 1 4 12c0-4.411 3.589-8 8-8s8 3.589 8 8-3.589 8-8 8zm4.406-5.884c-.241-.12-1.427-.703-1.648-.784-.221-.08-.382-.12-.543.12-.16.241-.622.784-.762.945-.14.16-.281.18-.522.06-.241-.12-1.018-.375-1.939-1.196-.717-.639-1.2-1.428-1.341-1.669-.14-.241-.015-.371.105-.491.108-.108.241-.281.361-.421.12-.14.16-.241.241-.401.08-.16.04-.301-.02-.421-.06-.12-.543-1.308-.744-1.791-.196-.47-.395-.406-.543-.413l-.462-.008c-.16 0-.421.06-.642.301-.22.241-.842.823-.842 2.007s.862 2.328.982 2.489c.12.16 1.696 2.591 4.11 3.632.575.248 1.023.396 1.372.507.577.183 1.101.157 1.516.095.462-.069 1.427-.583 1.628-1.146.2-.562.2-1.044.14-1.146-.06-.1-.22-.16-.461-.28z"/>
+            </svg>
+        </span>
+    </a>
+
 </body>
 </html>
