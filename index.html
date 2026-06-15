@@ -77,6 +77,33 @@
             position: relative;
         }
 
+        /* Badge "MAIS VENDIDO" pulsante — só aparece no mobile */
+        .badge-mais-vendido {
+            display: none;
+        }
+        @media (max-width: 600px) {
+            .badge-mais-vendido {
+                display: block;
+                background: #e74c3c;
+                color: white;
+                font-size: 0.6em;
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                padding: 2px 7px;
+                border-radius: 20px;
+                margin-bottom: 4px;
+                animation: pulsar 1.8s ease-in-out infinite;
+                width: fit-content;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            @keyframes pulsar {
+                0%, 100% { transform: scale(1); opacity: 1; }
+                50%       { transform: scale(1.07); opacity: 0.85; }
+            }
+        }
+
         /* ── Contador de Urgência (topo integrado ao card-destaque) ── */
         .urgencia-box {
             background: linear-gradient(135deg, #1a252f 0%, #2c3e50 100%);
@@ -176,6 +203,38 @@
             .grid-produtos { gap: 10px; grid-template-columns: repeat(2, 1fr); }
             .card { padding: 10px; min-height: 390px; }
             .card h3 { font-size: 0.95em; margin: 6px 0; }
+
+            /* ── Destaque mobile: 2 primeiros cards lado a lado, Combo OAB em evidência ── */
+
+            /* Card 1 (Grátis) — leve elevação para destacar do restante */
+            .grid-produtos .card:nth-child(1) {
+                border: 2px solid #3498db;
+                box-shadow: 0 6px 16px rgba(52,152,219,0.25);
+            }
+
+            /* Card 2 (Combo OAB) — destaque principal sem feio */
+            .grid-produtos .card:nth-child(2) {
+                box-shadow: 0 8px 24px rgba(241,196,15,0.35);
+                transform: translateY(-2px); /* leve elevação */
+            }
+
+            /* Imagem maior no Combo OAB para dar mais presença */
+            .grid-produtos .card:nth-child(2) img {
+                max-width: 100%;
+            }
+
+            /* Título em destaque no Combo OAB */
+            .grid-produtos .card:nth-child(2) h3 {
+                font-size: 1em;
+                font-weight: 800;
+                color: #1a252f;
+            }
+
+            /* Preço maior no Combo OAB */
+            .grid-produtos .card:nth-child(2) .preco-novo {
+                font-size: 1.4em;
+                color: #e74c3c;
+            }
         }
     </style>
 </head>
@@ -205,14 +264,15 @@
                     <span class="urgencia-label">⚡ Oferta expira em</span>
                     <div class="urgencia-timer" id="timer-combo-oab">--:--:--</div>
                 </div>
-                <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:8px;">COMBO 🔥</div>
+                <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:4px;">COMBO 🔥</div>
+                <span class="badge-mais-vendido">⭐ Mais Vendido</span>
                 <img src="COMBOOAB.png" alt="Combo OAB">
                 <h3>Combo Completo OAB 47</h3>
                 <div>
                     <span class="preco-antigo">R$ 159,92</span>
                     <span class="preco-novo">R$ 59,99</span>
                     <button class="btn-detalhes" data-id="ComboOAB">Detalhes</button>
-                    <a href="https://pay.hotmart.com/F106332914S" target="_blank" class="btn-comprar" data-id="COMBOOAB">Comprar</a>
+                    <a href="LINK AQUI DEPOIS" target="_blank" class="btn-comprar" data-id="COMBOOAB">Comprar</a>
                     <a href="https://www.focolegis.com/FocoLegis%20-%20AMOSTRA%20-%20Direito%20Penal.pdf" target="_blank" class="btn-amostra" data-id="COMBOOAB">Amostra</a>
                 </div>
             </div>
@@ -309,7 +369,7 @@
                 <div>
                     <span class="preco-novo">R$ 19,99</span>
                     <button class="btn-detalhes" data-id="CLT">Detalhes</button>
-                    <a href="" target="_blank" class="btn-comprar" data-id="CLT">Comprar</a>
+                    <a href="LINK VOU ADICIONAR DEPOIS" target="_blank" class="btn-comprar" data-id="CLT">Comprar</a>
                     <a href="https://www.focolegis.com/FocoLegis - AMOSTRA - CLT.pdf" target="_blank" class="btn-amostra" data-id="CLT">Amostra</a>
                 </div>
             </div>
