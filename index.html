@@ -71,6 +71,46 @@
         .faq-item h3 { font-size: 1.1em; color: #2c3e50; margin-top: 0; margin-bottom: 10px; }
         .faq-item p { font-size: 0.9em; color: #555; line-height: 1.6; margin: 0; }
 
+        /* ── Card especial Combo OAB ── */
+        .card-destaque {
+            border: 2px solid #f1c40f;
+            position: relative;
+        }
+
+        /* ── Contador de Urgência (topo integrado ao card-destaque) ── */
+        .urgencia-box {
+            background: linear-gradient(135deg, #1a252f 0%, #2c3e50 100%);
+            border-radius: 4px 4px 0 0;
+            padding: 8px 10px 7px;
+            margin: -17px -17px 10px -17px; /* -15px padding + -2px borda card-destaque */
+            text-align: center;
+        }
+        .urgencia-label {
+            color: #f1c40f;
+            font-size: 0.62em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            display: block;
+            margin-bottom: 3px;
+        }
+        .urgencia-timer {
+            color: #ffffff;
+            font-size: 1.2em;
+            font-weight: 800;
+            letter-spacing: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        .urgencia-timer span {
+            background: rgba(241,196,15,0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        @media (max-width: 600px) {
+            .urgencia-box { margin: -12px -12px 8px -12px; border-radius: 4px 4px 0 0; } /* -10px padding + -2px borda */
+            .urgencia-timer { font-size: 1.05em; letter-spacing: 2px; }
+        }
+
         /* ── Botão WhatsApp Flutuante ── */
         .whatsapp-float {
             position: fixed;
@@ -160,6 +200,23 @@
                 </div>
             </div>
 
+            <div class="card card-destaque">
+                <div class="urgencia-box">
+                    <span class="urgencia-label">⚡ Oferta expira em</span>
+                    <div class="urgencia-timer" id="timer-combo-oab">--:--:--</div>
+                </div>
+                <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:8px;">COMBO 🔥</div>
+                <img src="COMBOOAB.png" alt="Combo OAB">
+                <h3>Combo Completo OAB 47</h3>
+                <div>
+                    <span class="preco-antigo">R$ 159,92</span>
+                    <span class="preco-novo">R$ 59,99</span>
+                    <button class="btn-detalhes" data-id="ComboOAB">Detalhes</button>
+                    <a href="https://pay.hotmart.com/F106332914S" target="_blank" class="btn-comprar" data-id="COMBOOAB">Comprar</a>
+                    <a href="https://www.focolegis.com/FocoLegis%20-%20AMOSTRA%20-%20Direito%20Penal.pdf" target="_blank" class="btn-amostra" data-id="COMBOOAB">Amostra</a>
+                </div>
+            </div>
+
             <div class="card">
                 <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">COMBO 🔥</div>
                 <img src="COMBOPENAL.png" alt="Combo CP e CPP">
@@ -242,6 +299,18 @@
                     <button class="btn-detalhes" data-id="Tributario">Detalhes</button>
                     <a href="https://pay.hotmart.com/U105890488U" target="_blank" class="btn-comprar" data-id="CTN">Comprar</a>
                     <a href="https://www.focolegis.com/FocoLegis - AMOSTRA - Direito Tributário.pdf" target="_blank" class="btn-amostra" data-id="CTN">Amostra</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">NOVIDADE ⚡</div>
+                <img src="CLT.png" alt="Direito do Trabalho">
+                <h3>Direito e Processo do Trabalho</h3>
+                <div>
+                    <span class="preco-novo">R$ 19,99</span>
+                    <button class="btn-detalhes" data-id="CLT">Detalhes</button>
+                    <a href="" target="_blank" class="btn-comprar" data-id="CLT">Comprar</a>
+                    <a href="https://www.focolegis.com/FocoLegis - AMOSTRA - CLT.pdf" target="_blank" class="btn-amostra" data-id="CLT">Amostra</a>
                 </div>
             </div>
 
@@ -365,6 +434,23 @@
                 "Processo Disciplinar e Sanções FGV"
             ]
         },
+        "ComboOAB": {
+            titulo: "Combo Completo OAB — 9 Matérias",
+            lei: "CP, CPP, CF/1988, CC/2002, CPC/2015, CTN, CLT, Lei nº 8.906/1994 e Código de Ética OAB",
+            foco: "Pacote completo para a 1ª Fase OAB. Cobre todas as matérias cobradas pela FGV em um único combo com desconto.",
+            metodo: "Tudo que cai na prova em um único pacote: cada código comentado e esquematizado para você dominar a lei seca sem enrolação.",
+            conteudo: [
+                "Código Penal Completo (Parte Geral e Especial)",
+                "Código de Processo Penal Comentado",
+                "Constituição Federal Esquematizada",
+                "Código Civil Completo (Parte Geral e Especial)",
+                "Código de Processo Civil Comentado (CPC/2015)",
+                "Código Tributário Nacional (CTN) Esquematizado",
+                "CLT + Processo do Trabalho Comentados",
+                "Estatuto da OAB + Código de Ética Comentados",
+                "Acesso vitalício com atualizações durante o ano"
+            ]
+        },
         "ComboPenal": {
             titulo: "Combo Criminal Estratégico (CP + CPP)",
             lei: "Decreto-Lei nº 2.848/1940 (CP) e Decreto-Lei nº 3.689/1941 (CPP)",
@@ -430,6 +516,20 @@
                 "Provas em Espécie — Documental, Testemunhal, Pericial e Inspeção (Arts. 369 ao 484)",
                 "Cumprimento de Sentença e Processo de Execução (Arts. 513 ao 903)",
                 "Recursos — Apelação, Agravo, Embargos e Recursos Especial e Extraordinário (Arts. 994 ao 1.044)"
+            ]
+        },
+        "CLT": {
+            titulo: "Direito e Processo do Trabalho Comentado",
+            lei: "Decreto-Lei nº 5.452/1943 (CLT) e legislação trabalhista processual complementar",
+            foco: "Focado em OAB e Concursos. Cobre contrato de trabalho, jornada, remuneração, rescisão e processo do trabalho na Justiça do Trabalho.",
+            metodo: "Matéria densa que cai bastante na OAB e em concursos de Tribunais. Esquematizamos os pontos mais cobrados em blocos visuais de fácil fixação.",
+            conteudo: [
+                "Contrato Individual de Trabalho — Formação, Suspensão e Término (Arts. 1º ao 12)",
+                "Jornada de Trabalho, Intervalos e Descansos (Arts. 57 ao 76)",
+                "Remuneração, Salário Mínimo e Equiparação Salarial (Arts. 76 ao 143)",
+                "Rescisão Contratual — FGTS, Aviso Prévio e Verbas Rescisórias",
+                "Processo do Trabalho — Reclamação, Audiência e Recursos (Arts. 763 ao 910)",
+                "Reforma Trabalhista (Lei nº 13.467/2017) — Pontos de Prova Comentados"
             ]
         },
         "EAOAB": {
@@ -646,6 +746,42 @@
             }, 3000);
         }
 
+
+        // ── Contador de urgência do Combo OAB ──
+        (function() {
+            var el = document.getElementById('timer-combo-oab');
+            if (!el) return;
+
+            var STORAGE_KEY = 'focolegis_timer_v2';
+            // Tempo inicial: 4h 42min 17s em milissegundos
+            var INICIO_MS = (4 * 3600 + 42 * 60 + 17) * 1000;
+
+            var expiry = localStorage.getItem(STORAGE_KEY);
+            if (!expiry || Date.now() > parseInt(expiry, 10)) {
+                // Primeira visita ou expirou: começa do tempo inicial
+                expiry = Date.now() + INICIO_MS;
+                localStorage.setItem(STORAGE_KEY, expiry);
+            }
+            expiry = parseInt(expiry, 10);
+
+            function atualizar() {
+                var diff = expiry - Date.now();
+                if (diff <= 0) {
+                    // Quando zera, reinicia do tempo inicial para manter urgência
+                    expiry = Date.now() + INICIO_MS;
+                    localStorage.setItem(STORAGE_KEY, expiry);
+                    diff = INICIO_MS;
+                }
+                var h = Math.floor(diff / 3600000);
+                var m = Math.floor((diff % 3600000) / 60000);
+                var s = Math.floor((diff % 60000) / 1000);
+                var pad = function(n) { return n < 10 ? '0' + n : '' + n; };
+                el.innerHTML = '<span>' + pad(h) + '</span>:<span>' + pad(m) + '</span>:<span>' + pad(s) + '</span>';
+            }
+
+            atualizar();
+            setInterval(atualizar, 1000);
+        })();
 
         document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
             overlay.addEventListener('click', function(e) {
