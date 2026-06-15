@@ -104,10 +104,25 @@
         .faq-item h3 { font-size: 1.1em; color: #2c3e50; margin-top: 0; margin-bottom: 10px; }
         .faq-item p { font-size: 0.9em; color: #555; line-height: 1.6; margin: 0; }
 
-        /* ── Card especial Combo OAB ── */
+        /* ── Card especial Combo OAB — neon vermelho pulsante ── */
+        @keyframes neon-respirar {
+            0%, 100% {
+                box-shadow:
+                    0 0 6px 1px rgba(231,76,60,0.6),
+                    0 0 14px 3px rgba(231,76,60,0.35),
+                    0 0 28px 6px rgba(231,76,60,0.15);
+            }
+            50% {
+                box-shadow:
+                    0 0 10px 3px rgba(231,76,60,0.95),
+                    0 0 24px 7px rgba(231,76,60,0.6),
+                    0 0 48px 12px rgba(231,76,60,0.3);
+            }
+        }
         .card-destaque {
-            border: 2px solid #f1c40f;
+            border: 2px solid #e74c3c;
             position: relative;
+            animation: neon-respirar 2.2s ease-in-out infinite;
         }
 
         /* Badge "MAIS VENDIDO" pulsante — só aparece no mobile */
@@ -281,7 +296,7 @@
                     <span class="urgencia-label">⚡ Oferta expira em</span>
                     <div class="urgencia-timer" id="timer-combo-oab">--:--:--</div>
                 </div>
-                <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:4px;">SUPER COMBO 🔥</div>
+                <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:4px;">SUPER COMBO 🔥🔥</div>
                 <span class="badge-mais-vendido">⭐ Mais Vendido</span>
                 <img src="COMBOOAB.png" alt="Combo OAB">
                 <h3>Combo Completo OAB 47</h3>
@@ -872,7 +887,7 @@
         });
 
         var btnTimer = document.getElementById('btn-timer');
-        var sec = 7;
+        var sec = 5;
         var t = setInterval(function() {
             sec--;
             btnTimer.innerText = sec > 0 ? ('AGUARDE ' + sec + 's...') : 'BAIXAR';
