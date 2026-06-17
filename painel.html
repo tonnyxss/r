@@ -347,7 +347,6 @@
 </div>
 
 <script>
-// Armazena qual das 10 variações está selecionada no momento (0 a 9)
 let variacaoSelecionada = 0;
 
 function copiarCheckout() {
@@ -360,49 +359,45 @@ function copiarCheckout() {
 
 function mudarVariacao(numeroIndex, btn) {
     variacaoSelecionada = numeroIndex;
-    
-    // Altera a classe ativa visualmente nos botões
     document.querySelectorAll('.disparo-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    
-    // Reprocessa os dados instantaneamente aplicando a nova variação escolhida
     processarDados();
 }
 
 function obterTextoPorVariacao(nome, indexVariacao) {
     const primeiroNome = nome.split(' ')[0];
     
-    // Lista contendo as 10 mensagens bastante diversificadas
+    // Lista contendo as mensagens com espaçamento duplo (\n\n) entre parágrafos
     const mensagens = [
         // VARIAÇÃO 1
-        `Oii, ${primeiroNome}, tudo bem? Como você está? 😊\nEstou te enviando mensagem porque preparei um material bem simples e prático para ajudar idosos a aprenderem a usar redes sociais com mais segurança, evitar golpes online e entender melhor a internet no dia a dia.\nComo você é uma pessoa que usa bastante as redes sociais, achei que talvez pudesse te interessar 😊\nQuer que eu te mostre? Pode me responder?`,
+        `Oii, ${primeiroNome}, tudo bem? Como você está? 😊\n\nEstou te enviando mensagem porque preparei um material bem simples e prático para ajudar idosos a aprenderem a usar redes sociais com mais segurança, evitar golpes online e entender melhor a internet no dia a dia.\n\nComo você é uma pessoa que usa bastante as redes sociais, achei que talvez pudesse te interessar 😊\n\nQuer que eu te mostre? Pode me responder?`,
         
         // VARIAÇÃO 2
-        `Olá, ${primeiroNome}! Tudo ótimo por aí? ✨\nMontei um guia super prático feito sob medida para quem quer usar a internet e as redes sociais sem medo, longe de fraudes e golpes virtuais.\nComo notei que você acompanha esse mundo digital, achei bacana compartilhar.\nPosso te enviar para dar uma olhadinha?`,
+        `Olá, ${primeiroNome}! Tudo ótimo por aí? ✨\n\nMontei um guia super prático feito sob medida para quem quer usar a internet e as redes sociais sem medo, longe de fraudes e golpes virtuais.\n\nComo notei que você acompanha esse mundo digital, achei bacana compartilhar.\n\nPosso te enviar para dar uma olhadinha?`,
         
         // VARIAÇÃO 3
-        `Oi, ${primeiroNome}, como vai? Esperando que esteja bem! 👍\nAcabei de finalizar um material bem didático focado na segurança digital na melhor idade, ensinando a proteger senhas, WhatsApp e fugir de pegadinhas na internet.\nSei que você usa bastante a tecnologia, quer conhecer o projeto? Me avisa aqui!`,
+        `Oi, ${primeiroNome}, como vai? Esperando que esteja bem! 👍\n\nAcabei de finalizar um material bem didático focado na segurança digital na melhor idade, ensinando a proteger senhas, WhatsApp e fugir de pegadinhas na internet.\n\nSei que você usa bastante a tecnologia, quer conhecer o projeto? Me avisa aqui!`,
         
         // VARIAÇÃO 4
-        `Tudo bem, ${primeiroNome}? Passando rápido para te fazer uma pergunta...\nDesenvolvi um manual bem direto e descomplicado para ajudar idosos a usarem o celular e o Facebook com segurança total e sem cair em golpes.\nTopa dar uma olhada sem compromisso? Se sim, me dá um oi! 😉`,
+        `Tudo bem, ${primeiroNome}? Passando rápido para te fazer uma pergunta...\n\nDesenvolvi um manual bem direto e descomplicado para ajudar idosos a usarem o celular e o Facebook com segurança total e sem cair em golpes.\n\nTopa dar uma olhada sem compromisso? Se sim, me dá um oi! 😉`,
         
         // VARIAÇÃO 5
-        `Oi, ${primeiroNome}! Tudo bem? 🌟\nSabia que o número de golpes virtuais cresceu muito? Por isso, criei um roteiro explicativo bem simples para proteger nossa segurança na internet e redes sociais no dia a dia.\nLembrei de você e achei que seria útil. Quer receber o material?`,
+        `Oi, ${primeiroNome}! Tudo bem? 🌟\n\nSabia que o número de golpes virtuais cresceu muito? Por isso, criei um roteiro explicativo bem simples para proteger nossa segurança na internet e redes sociais no dia a dia.\n\nLembrei de você e achei que seria útil. Quer receber o material?`,
         
         // VARIAÇÃO 6
-        `Olá, ${primeiroNome}! Como estão as coisas? 😊\nEstou divulgando um livreto digital muito prático para ensinar idosos a navegarem na internet com autonomia e livres de farsas online.\nComo você está sempre ativo nas redes, gostaria de ver como ficou? Responde aqui!`,
+        `Olá, ${primeiroNome}! Como estão as coisas? 😊\n\nEstou divulgando um livreto digital muito prático para ensinar idosos a navegarem na internet com autonomia e livres de farsas online.\n\nComo você está sempre ativo nas redes, gostaria de ver como ficou? Responde aqui!`,
         
         // VARIAÇÃO 7
-        `Oi, ${primeiroNome}, tudo certinho? 👀\nCriei um passo a passo excelente para quem quer aprender a navegar na internet, usar redes sociais e fugir de golpes de forma super descomplicada e direta.\nSe tiver interesse em ver como funciona, posso te mandar agora?`,
+        `Oi, ${primeiroNome}, tudo certinho? 👀\n\nCriei um passo a passo excelente para quem quer aprender a navegar na internet, usar redes sociais e fugir de golpes de forma super descomplicada e direta.\n\nSe tiver interesse em ver como funciona, posso te mandar agora?`,
         
         // VARIAÇÃO 8
-        `Oi, ${primeiroNome}! Espero que esteja tendo um ótimo dia. ✨\nFiz um compilado com dicas simples de segurança digital voltadas para a melhor idade. O foco principal é não cair em golpes no WhatsApp.\nAcho que tem tudo a ver com você! Posso te apresentar o material?`,
+        `Oi, ${primeiroNome}! Espero que esteja tendo um ótimo dia. ✨\n\nFiz um compilado com dicas simples de segurança digital voltadas para a melhor idade. O foco principal é não cair em golpes no WhatsApp.\n\nAcho que tem tudo a ver com você! Posso te apresentar o material?`,
         
         // VARIAÇÃO 9
-        `Como vai, ${primeiroNome}? Tudo bem? 😄\nMontei um material exclusivo ensinando a proteger dados e usar redes sociais com zero preocupações no cotidiano.\nPensei em te mostrar para saber sua opinião. Posso enviar no chat?`,
+        `Como vai, ${primeiroNome}? Tudo bem? 😄\n\nMontei um material exclusivo ensinando a proteger dados e usar redes sociais com zero preocupações no cotidiano.\n\nPensei em te mostrar para saber sua opinião. Posso enviar no chat?`,
         
         // VARIAÇÃO 10
-        `Olá, ${primeiroNome}! Passando para deixar uma sugestão útil... 📘\nProduzi um guia contra fraudes na internet bem fácil de ler, perfeito para idosos dominarem as redes sociais com total proteção.\nQuer dar uma olhada e ver se faz sentido para você? Fico no aguardo!`
+        `Olá, ${primeiroNome}! Passando para deixar uma sugestão útil... 📘\n\nProduzi um guia contra fraudes na internet bem fácil de ler, perfeito para idosos dominarem as redes sociais com total proteção.\n\nQuer dar uma olhada e ver se faz sentido para você? Fico no aguardo!`
     ];
     
     return mensagens[indexVariacao];
@@ -410,12 +405,14 @@ function obterTextoPorVariacao(nome, indexVariacao) {
 
 function detectarLinkWhatsApp(telefone, texto) {
     const mobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    const msg = encodeURIComponent(texto);
+    
+    const textoFormatado = texto.replace(/\r/g, "");
+    const msg = encodeURIComponent(textoFormatado);
     
     if (mobile) {
-        return `https://wa.me/55${telefone}?text=${msg}`;
+        return `https://api.whatsapp.com/send?phone=55${telefone}&text=${msg}`;
     } else {
-        return `https://web.whatsapp.com/send?phone=55${telefone}?text=${msg}`;
+        return `https://web.whatsapp.com/send?phone=55${telefone}&text=${msg}`;
     }
 }
 
@@ -438,24 +435,20 @@ function processarDados() {
         linha = linha.trim();
         if (!linha) return;
         
-        // Captura os números finais eliminando espaços/hífens
-        const matchNumeros = linha.replace(/[-\s]/g, '').match(/\d{10,11}$/);
+        const matchNumeros = inline = linha.replace(/[-\s]/g, '').match(/\d{10,11}$/);
         if (!matchNumeros) return;
         
         const telefone = matchNumeros[0];
         const foneOriginalNoTexto = linha.match(/[\d\s-]{10,15}$/);
         const nome = foneOriginalNoTexto ? linha.replace(foneOriginalNoTexto[0], '').trim() : "Cliente";
         
-        // Puxa o texto fixo da variação selecionada no botão ativo superior
         const texto = obterTextoPorVariacao(nome, variacaoSelecionada);
         const link = detectarLinkWhatsApp(telefone, texto);
         
-        // Atualiza a pré-visualização com base no primeiro lead processado
         if (itemValidoIndex === 0) {
             preview.innerText = texto;
         }
         
-        // Cria a linha de ação do lead
         const card = document.createElement('div');
         card.className = 'card';
         card.innerHTML = `
