@@ -1,158 +1,475 @@
-<!DOCTYPE html><html lang="pt-br"><head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Painel WhatsApp</title>
-<style>
-:root{    --bg:#1e293b;    --panel:#334155;    --card:#475569;    --border:#64748b;    --accent:#22c55e;    --accent-hover:#16a34a;    --text:#f8fafc;    --muted:#cbd5e1;}
-*{    margin:0;    padding:0;    box-sizing:border-box;}
-body{    font-family:'Segoe UI',sans-serif;    background:linear-gradient(135deg,#1e293b,#334155);    color:var(--text);    height:100vh;    display:flex;    overflow:hidden;}
-.main-panel{    flex:1;    padding:35px;    overflow-y:auto;}
-.preview-panel{    width:400px;    background:rgba(255,255,255,0.04);    backdrop-filter:blur(10px);    border-left:1px solid rgba(255,255,255,0.08);    padding:30px;    display:flex;    flex-direction:column;}
-h1{    font-size:24px;    margin-bottom:10px;}
-.sub{    color:var(--muted);    margin-bottom:25px;    font-size:14px;}
-.disparos-title{    font-size:13px;    color:#86efac;    margin-bottom:10px;    letter-spacing:1px;    text-transform:uppercase;    font-weight:bold;}
-.disparos{    display:flex;    gap:10px;    margin-bottom:15px;    flex-wrap:wrap;}
-.disparo-btn{    background:rgba(255,255,255,0.08);    border:1px solid rgba(255,255,255,0.1);    color:white;    padding:12px 18px;    border-radius:12px;    cursor:pointer;    transition:.2s;    font-size:13px;    font-weight:600;}
-.disparo-btn:hover{    background:rgba(255,255,255,0.15);}
-.disparo-btn.active{    background:var(--accent);    border-color:var(--accent);}
-.links-box{    background:rgba(255,255,255,0.05);    border:1px solid rgba(255,255,255,0.08);    border-radius:18px;    padding:20px;    margin-bottom:15px;}
-.links-title{    font-size:13px;    color:#86efac;    margin-bottom:12px;    letter-spacing:1px;    text-transform:uppercase;}
-.links-grid{    display:flex;    gap:10px;    flex-wrap:wrap;}
-.link-btn{    background:#2563eb;    color:white;    text-decoration:none;    padding:12px 16px;    border-radius:12px;    font-size:13px;    font-weight:600;    transition:.2s;}
-.link-btn:hover{    background:#1d4ed8;}
-.checkout-box{    margin-bottom:25px;    background:rgba(255,255,255,0.05);    border:1px solid rgba(255,255,255,0.08);    border-radius:18px;    padding:15px 20px;}
-.checkout-row{    display:flex;    gap:10px;    align-items:center;}
-.checkout-url{    flex:1;    background:rgba(255,255,255,0.08);    border:none;    color:white;    padding:12px;    border-radius:12px;    font-size:13px;    outline:none;}
-.copy-btn{    background:var(--accent);    border:none;    color:white;    padding:12px 20px;    border-radius:12px;    cursor:pointer;    font-weight:bold;    font-size:13px;    transition:.2s;    white-space:nowrap;}
-.copy-btn:hover{    background:var(--accent-hover);}
-textarea{    width:100%;    height:140px;    background:rgba(255,255,255,0.06);    border:1px solid rgba(255,255,255,0.08);    border-radius:15px;    padding:18px;    color:white;    resize:none;    outline:none;    font-size:14px;    margin-bottom:25px;}
-textarea:focus{    border-color:var(--accent);}
-.card{    background:rgba(255,255,255,0.05);    border:1px solid rgba(255,255,255,0.08);    padding:20px;    border-radius:18px;    margin-bottom:14px;
-    display:flex;    justify-content:space-between;    align-items:center;
-    transition:.2s;}
-.card:hover{    transform:translateY(-2px);    background:rgba(255,255,255,0.07);}
-.nome{    font-size:16px;    margin-bottom:6px;    font-weight:600;}
-.fone{    font-size:13px;    color:var(--muted);}
-.btn{    background:var(--accent);    color:white;    text-decoration:none;    padding:12px 18px;    border-radius:12px;    font-size:13px;    font-weight:bold;    transition:.2s;}
-.btn:hover{    background:var(--accent-hover);}
-.preview-title{    font-size:13px;    text-transform:uppercase;    letter-spacing:2px;    color:#86efac;    margin-bottom:15px;}
-.preview{    flex:1;    background:rgba(255,255,255,0.04);    border-radius:18px;    padding:22px;    line-height:1.7;    white-space:pre-wrap;    overflow-y:auto;    border:1px solid rgba(255,255,255,0.08);    color:#f1f5f9;}
-.info{    margin-top:18px;    font-size:12px;    color:var(--muted);    line-height:1.6;}
-::-webkit-scrollbar{    width:6px;}
-::-webkit-scrollbar-thumb{    background:rgba(255,255,255,0.2);    border-radius:999px;}
-@media(max-width:900px){
-    body{        flex-direction:column;        height:auto;    }
-    .preview-panel{        width:100%;        border-left:none;        border-top:1px solid rgba(255,255,255,0.08);        min-height:300px;    }
-    .checkout-row{        flex-direction:column;        align-items:stretch;    }
-}
-</style></head>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel WhatsApp</title>
+    <style>
+        :root {
+            --bg: #1e293b;
+            --panel: #334155;
+            --card: #475569;
+            --border: #64748b;
+            --accent: #22c55e;
+            --accent-hover: #16a34a;
+            --text: #f8fafc;
+            --muted: #cbd5e1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #1e293b, #334155);
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .main-panel {
+            flex: 1;
+            padding: 35px;
+            overflow-y: auto;
+        }
+
+        .preview-panel {
+            width: 400px;
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(10px);
+            border-left: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .sub {
+            color: var(--muted);
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .disparos-title {
+            font-size: 13px;
+            color: #86efac;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .disparos {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .disparo-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 12px 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: .2s;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .disparo-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .disparo-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .links-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .links-title {
+            font-size: 13px;
+            color: #86efac;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .links-grid {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .link-btn {
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: .2s;
+        }
+
+        .link-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .checkout-box {
+            margin-bottom: 25px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
+            padding: 15px 20px;
+        }
+
+        .checkout-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .checkout-url {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.08);
+            border: none;
+            color: white;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .copy-btn {
+            background: var(--accent);
+            border: none;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+            transition: .2s;
+            white-space: nowrap;
+        }
+
+        .copy-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        textarea {
+            width: 100%;
+            height: 140px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 18px;
+            color: white;
+            resize: none;
+            outline: none;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        textarea:focus {
+            border-color: var(--accent);
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 20px;
+            border-radius: 18px;
+            margin-bottom: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: .2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        .nome {
+            font-size: 16px;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .fone {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .btn {
+            background: var(--accent);
+            color: white;
+            text-decoration: none;
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: bold;
+            transition: .2s;
+        }
+
+        .btn:hover {
+            background: var(--accent-hover);
+        }
+
+        .preview-title {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #86efac;
+            margin-bottom: 15px;
+        }
+
+        .preview {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 18px;
+            padding: 22px;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #f1f5f9;
+        }
+
+        .info {
+            margin-top: 18px;
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 999px;
+        }
+
+        @media(max-width: 900px) {
+            body {
+                flex-direction: column;
+                height: auto;
+            }
+            .preview-panel {
+                width: 100%;
+                border-left: none;
+                border-top: 1px solid rgba(255, 255, 255, 0.08);
+                min-height: 300px;
+            }
+            .checkout-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
 <body>
+
 <div class="main-panel">
     <h1>Painel WhatsApp</h1>
-    <div class="sub">        Gerencie seus disparos de leads de forma simples.    </div>
+    <div class="sub">Gerencie seus disparos de leads de forma simples.</div>
+
+    <!-- Links Importantes -->
     <div class="links-box">
-        <div class="links-title">            Links Importantes        </div>
+        <div class="links-title">Links Importantes</div>
         <div class="links-grid">
-            <a                href="AMOSTRA - Manual da Internet segura para Idosos.pdf"                target="_blank"                class="link-btn"            >                📘 Amostra Grátis            </a>
-            <a                href="https://docs.google.com/spreadsheets/d/1TUxMLClO0cCVBgB6Cw0vitZ-gPHxecyKyg-yhxH0bmc/edit?gid=1756715331#gid=1756715331"                target="_blank"                class="link-btn"            >                📊 Planilha Google Drive            </a>
+            <a href="AMOSTRA - Manual da Internet segura para Idosos.pdf" target="_blank" class="link-btn">📘 Amostra Grátis</a>
+            <a href="https://docs.google.com/spreadsheets/d/1TUxMLClO0cCVBgB6Cw0vitZ-gPHxecyKyg-yhxH0bmc/edit?gid=1756715331#gid=1756715331" target="_blank" class="link-btn">📊 Planilha Google Drive</a>
         </div>
     </div>
+
+    <!-- Checkout Box -->
     <div class="checkout-box">
-        <div class="links-title">            Link de Checkout (Eduzz)        </div>
-        <div class="checkout-row">            <input                type="text"                id="checkoutLink"                class="checkout-url"                readonly                value="https://chk.eduzz.com/KW8ZV51D01"            >
-            <button                class="copy-btn"                onclick="copiarCheckout()"            >                Copiar Checkout            </button>        </div>
+        <div class="links-title">Link de Checkout (Eduzz)</div>
+        <div class="checkout-row">
+            <input type="text" id="checkoutLink" class="checkout-url" readonly value="https://chk.eduzz.com/KW8ZV51D01">
+            <button class="copy-btn" onclick="copiarCheckout()">Copiar Checkout</button>
+        </div>
     </div>
-    <div class="disparos-title">        Modelo de Disparo Ativo:    </div>
+
+    <!-- Seletor de Variações (10 Botões Antispam) -->
+    <div class="disparos-title">Selecione a Variação da Mensagem:</div>
     <div class="disparos">
-        <button            class="disparo-btn active"        >            DISPARO 01 (Rotativo - 10 Variações antispam)        </button>
+        <button class="disparo-btn active" onclick="mudarVariacao(0, this)">VARIAÇÃO 01</button>
+        <button class="disparo-btn" onclick="mudarVariacao(1, this)">VARIAÇÃO 02</button>
+        <button class="disparo-btn" onclick="mudarVariacao(2, this)">VARIAÇÃO 03</button>
+        <button class="disparo-btn" onclick="mudarVariacao(3, this)">VARIAÇÃO 04</button>
+        <button class="disparo-btn" onclick="mudarVariacao(4, this)">VARIAÇÃO 05</button>
+        <button class="disparo-btn" onclick="mudarVariacao(5, this)">VARIAÇÃO 06</button>
+        <button class="disparo-btn" onclick="mudarVariacao(6, this)">VARIAÇÃO 07</button>
+        <button class="disparo-btn" onclick="mudarVariacao(7, this)">VARIAÇÃO 08</button>
+        <button class="disparo-btn" onclick="mudarVariacao(8, this)">VARIAÇÃO 09</button>
+        <button class="disparo-btn" onclick="mudarVariacao(9, this)">VARIAÇÃO 10</button>
     </div>
-    <textarea        id="inputDados"        placeholder="Cole aqui a linha da planilha (Ex: Mario José da Silva Ribeiro21 96499-4828)"        oninput="processarDados()"    ></textarea>
+
+    <!-- Campo de Entrada -->
+    <textarea id="inputDados" placeholder="Cole aqui a linha da planilha (Ex: Mario José da Silva Ribeiro21 96499-4828)" oninput="processarDados()"></textarea>
+    
+    <!-- Lista de Leads Gerada -->
     <div id="lista"></div>
 </div>
+
+<!-- Painel Lateral de Preview -->
 <div class="preview-panel">
-    <div class="preview-title">        Preview da Mensagem (Lead 1)    </div>
-    <div        id="preview"        class="preview"    >        Aguardando dados...    </div>
-    <div class="info">        ✔ Compatível com celular<br>        ✔ Compatível com computador<br>        ✔ Detecta WhatsApp automaticamente    </div>
+    <div class="preview-title">Preview da Mensagem</div>
+    <div id="preview" class="preview">Aguardando dados...</div>
+    <div class="info">
+        ✔ Compatível com celular<br>
+        ✔ Compatível com computador<br>
+        ✔ Detecta WhatsApp automaticamente
+    </div>
 </div>
+
 <script>
-function copiarCheckout(){
+// Armazena qual das 10 variações está selecionada no momento (0 a 9)
+let variacaoSelecionada = 0;
+
+function copiarCheckout() {
     const link = document.getElementById('checkoutLink');
-    link.select();    link.setSelectionRange(0,99999);
+    link.select();
+    link.setSelectionRange(0, 99999);
     navigator.clipboard.writeText(link.value);
     alert('Link de checkout copiado com sucesso!');
 }
-function gerarTextoVariavel(nome, index){
+
+function mudarVariacao(numeroIndex, btn) {
+    variacaoSelecionada = numeroIndex;
+    
+    // Altera a classe ativa visualmente nos botões
+    document.querySelectorAll('.disparo-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    // Reprocessa os dados instantaneamente aplicando a nova variação escolhida
+    processarDados();
+}
+
+function obterTextoPorVariacao(nome, indexVariacao) {
     const primeiroNome = nome.split(' ')[0];
     
-    // Lista com 10 variações textuais bem distintas e naturais
-    const variacoes = [
+    // Lista contendo as 10 mensagens bastante diversificadas
+    const mensagens = [
+        // VARIAÇÃO 1
         `Oii, ${primeiroNome}, tudo bem? Como você está? 😊\nEstou te enviando mensagem porque preparei um material bem simples e prático para ajudar idosos a aprenderem a usar redes sociais com mais segurança, evitar golpes online e entender melhor a internet no dia a dia.\nComo você é uma pessoa que usa bastante as redes sociais, achei que talvez pudesse te interessar 😊\nQuer que eu te mostre? Pode me responder?`,
         
+        // VARIAÇÃO 2
         `Olá, ${primeiroNome}! Tudo ótimo por aí? ✨\nMontei um guia super prático feito sob medida para quem quer usar a internet e as redes sociais sem medo, longe de fraudes e golpes virtuais.\nComo notei que você acompanha esse mundo digital, achei bacana compartilhar.\nPosso te enviar para dar uma olhadinha?`,
         
+        // VARIAÇÃO 3
         `Oi, ${primeiroNome}, como vai? Esperando que esteja bem! 👍\nAcabei de finalizar um material bem didático focado na segurança digital na melhor idade, ensinando a proteger senhas, WhatsApp e fugir de pegadinhas na internet.\nSei que você usa bastante a tecnologia, quer conhecer o projeto? Me avisa aqui!`,
         
+        // VARIAÇÃO 4
         `Tudo bem, ${primeiroNome}? Passando rápido para te fazer uma pergunta...\nDesenvolvi um manual bem direto e descomplicado para ajudar idosos a usarem o celular e o Facebook com segurança total e sem cair em golpes.\nTopa dar uma olhada sem compromisso? Se sim, me dá um oi! 😉`,
         
+        // VARIAÇÃO 5
         `Oi, ${primeiroNome}! Tudo bem? 🌟\nSabia que o número de golpes virtuais cresceu muito? Por isso, criei um roteiro explicativo bem simples para proteger nossa segurança na internet e redes sociais no dia a dia.\nLembrei de você e achei que seria útil. Quer receber o material?`,
         
+        // VARIAÇÃO 6
         `Olá, ${primeiroNome}! Como estão as coisas? 😊\nEstou divulgando um livreto digital muito prático para ensinar idosos a navegarem na internet com autonomia e livres de farsas online.\nComo você está sempre ativo nas redes, gostaria de ver como ficou? Responde aqui!`,
         
+        // VARIAÇÃO 7
         `Oi, ${primeiroNome}, tudo certinho? 👀\nCriei um passo a passo excelente para quem quer aprender a navegar na internet, usar redes sociais e fugir de golpes de forma super descomplicada e direta.\nSe tiver interesse em ver como funciona, posso te mandar agora?`,
         
+        // VARIAÇÃO 8
         `Oi, ${primeiroNome}! Espero que esteja tendo um ótimo dia. ✨\nFiz um compilado com dicas simples de segurança digital voltadas para a melhor idade. O foco principal é não cair em golpes no WhatsApp.\nAcho que tem tudo a ver com você! Posso te apresentar o material?`,
         
+        // VARIAÇÃO 9
         `Como vai, ${primeiroNome}? Tudo bem? 😄\nMontei um material exclusivo ensinando a proteger dados e usar redes sociais com zero preocupações no cotidiano.\nPensei em te mostrar para saber sua opinião. Posso enviar no chat?`,
         
+        // VARIAÇÃO 10
         `Olá, ${primeiroNome}! Passando para deixar uma sugestão útil... 📘\nProduzi um guia contra fraudes na internet bem fácil de ler, perfeito para idosos dominarem as redes sociais com total proteção.\nQuer dar uma olhada e ver se faz sentido para você? Fico no aguardo!`
     ];
     
-    // Distribui as 10 mensagens de forma cíclica conforme a posição da linha
-    return variacoes[index % 10];
+    return mensagens[indexVariacao];
 }
-function detectarLinkWhatsApp(telefone,texto){
-    const mobile =        /Android|iPhone|iPad|iPod/i        .test(navigator.userAgent);
-    const msg =        encodeURIComponent(texto);
-    if(mobile){
+
+function detectarLinkWhatsApp(telefone, texto) {
+    const mobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const msg = encodeURIComponent(texto);
+    
+    if (mobile) {
         return `https://wa.me/55${telefone}?text=${msg}`;
-    }else{
-        return `https://web.whatsapp.com/send?phone=55${telefone}&text=${msg}`;
+    } else {
+        return `https://web.whatsapp.com/send?phone=55${telefone}?text=${msg}`;
     }
 }
-function processarDados(){
-    const raw =        document        .getElementById('inputDados')        .value;
-    const linhas =        raw.split('\n');
-    const lista =        document.getElementById('lista');
-    const preview =        document.getElementById('preview');
+
+function processarDados() {
+    const raw = document.getElementById('inputDados').value;
+    const linhas = raw.split('\n');
+    const lista = document.getElementById('lista');
+    const preview = document.getElementById('preview');
+    
     lista.innerHTML = '';
-    if(raw.trim() === ''){
-        preview.innerText =            'Aguardando dados...';
+    
+    if (raw.trim() === '') {
+        preview.innerText = 'Aguardando dados...';
         return;
     }
+    
     let itemValidoIndex = 0;
-    linhas.forEach((linha)=>{
-        linha = inline = linha.trim();
-        if(!linha) return;
-        const matchNumeros = inline.replace(/[-\s]/g, '').match(/\d{10,11}$/);
-        if(!matchNumeros) return;
-        const telefone = matchNumeros[0];
-        const foneOriginalNoTexto = inline.match(/[\d\s-]{10,15}$/);        const nome = foneOriginalNoTexto ? inline.replace(foneOriginalNoTexto[0], '').trim() : "Cliente";
+    
+    linhas.forEach((linha) => {
+        linha = linha.trim();
+        if (!linha) return;
         
-        // Passa o índice atual para rotacionar as mensagens
-        const texto =            gerarTextoVariavel(nome, itemValidoIndex);
-        const link =            detectarLinkWhatsApp(                telefone,                texto            );
-        if(itemValidoIndex === 0){
-            preview.innerText =                texto;
+        // Captura os números finais eliminando espaços/hífens
+        const matchNumeros = linha.replace(/[-\s]/g, '').match(/\d{10,11}$/);
+        if (!matchNumeros) return;
+        
+        const telefone = matchNumeros[0];
+        const foneOriginalNoTexto = linha.match(/[\d\s-]{10,15}$/);
+        const nome = foneOriginalNoTexto ? linha.replace(foneOriginalNoTexto[0], '').trim() : "Cliente";
+        
+        // Puxa o texto fixo da variação selecionada no botão ativo superior
+        const texto = obterTextoPorVariacao(nome, variacaoSelecionada);
+        const link = detectarLinkWhatsApp(telefone, texto);
+        
+        // Atualiza a pré-visualização com base no primeiro lead processado
+        if (itemValidoIndex === 0) {
+            preview.innerText = texto;
         }
-        const card =            document.createElement('div');
+        
+        // Cria a linha de ação do lead
+        const card = document.createElement('div');
         card.className = 'card';
-        card.innerHTML = `            <div>
-                <div class="nome">                    ${nome} <span style="font-size:11px; color:#86efac; font-weight:normal;">(Var. ${parseInt((itemValidoIndex % 10) + 1)})</span>                </div>
-                <div class="fone">                    ${telefone}                </div>
+        card.innerHTML = `
+            <div>
+                <div class="nome">${nome}</div>
+                <div class="fone">${telefone}</div>
             </div>
-            <a                class="btn"                href="${link}"                target="_blank"            >                Enviar            </a>        `;
+            <a class="btn" href="${link}" target="_blank">Enviar</a>
+        `;
         lista.appendChild(card);
         itemValidoIndex++;
     });
 }
 </script>
-</body></html>
+
+</body>
+</html>
