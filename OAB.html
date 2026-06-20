@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Combo OAB Completo 2026 - Foco Legis</title>
     
-    <meta name="description" content="Gabarite a 1ª Fase da OAB 2026 com a estratégia definitiva de Lei Seca Comentada e Esquematizada. Acesso vitalício e atualizações inclusas!">
+    <meta name="description" content="Gabarite a 1ª Fase da OAB 2026 com a estratégia definitiva de Lei Seca Comentada e Esquematizada. Acesso vitalício and atualizações inclusas!">
     
     <script>
     !function (w, d, t) {
@@ -67,10 +67,12 @@
             animation: pulse 2s infinite;
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+        @media (max-width: 600px) {
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.05); }
+                100% { transform: scale(1); }
+            }
         }
 
         .main-container {
@@ -225,10 +227,11 @@
         }
 
         .price-tag small {
-            font-size: 0.95em;
-            color: #7f8c8d;
+            font-size: 1.05em;
+            color: var(--danger-color);
             text-decoration: line-through;
             display: block;
+            font-weight: bold;
         }
 
         .price-tag .value-promo {
@@ -246,7 +249,6 @@
             display: block;
         }
 
-        /* Ajustado de 3 para 2 colunas devido à remoção da garantia */
         .trust-container {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -321,7 +323,6 @@
             color: white;
         }
 
-        /* Estilo do Botão Voltar para Individuais */
         .btn-individuais {
             background-color: #7f8c8d;
             color: white;
@@ -462,8 +463,14 @@
                 
                 <div class="method-box">
                     <h3>🎯 O Método Mais Eficiente do Mercado</h3>
-                    <p>Estatísticas comprovam: mais de <strong>70% a 80% das questões da 1ª Fase da OAB</strong> cobram exclusivamente a <strong>literalidade da Lei Seca</strong>. Focar em livros densos e doutrinas de 1.000 páginas é o erro que mais reprova alunos.</p>
-                    <p style="margin-bottom: 0;">Nossa metodologia baseia-se em <strong>Engenharia Reversa</strong>: transformamos o texto seco bruto em blocos lógicos, artigos comentados e resumos esquematizados focados unicamente nas pegadinhas recorrentes da FGV. Você retéo o conteúdo sem decorebas cansativas.</p>
+                    <p>Estatísticas reais comprovam: mais de <strong>70% a 80% das questões da 1ª Fase da OAB</strong> exigem única e exclusivamente o conhecimento da <strong>literalidade da Lei Seca</strong>. Tentar se preparar lendo PDFs de cursinhos tradicionais com mais de 1.500 páginas ou livros doutrinários densos é o erro número um que mais gera reprovações desnecessárias.</p>
+                    <p>Nossa metodologia exclusiva funciona por <strong>Engenharia Reversa</strong>: nós analisamos minuciosamente o histórico de exames da FGV e filtramos apenas as normas e artigos estatisticamente relevantes. O texto bruto da lei é quebrado em blocos visuais lógicos, com <strong>artigos comentados, palavras-chave destacadas e mnemônicos</strong> cirúrgicos para as pegadinhas da banca.</p>
+                    <p>O resultado? Você estuda de forma focada e direcionada, cobrindo o conteúdo de maior peso na prova na metade do tempo convencional de leitura e garantindo uma <strong>retenção de longo prazo muito superior</strong> para gabaritar no dia do Exame.</p>
+                    
+                    <p style="margin-top: 15px; border-top: 1px dashed #16a34a; padding-top: 12px; margin-bottom: 0;">
+                        <strong>Método FocoLegis de Engenharia Reversa:</strong><br>
+                        Selecionamos os <strong>artigos mais quentes e com recorrência comprovada</strong> nas últimas 20 provas da FGV. Eliminamos mais de 65% da gordura jurídica inútil do edital e entregamos um roteiro visual direto focado na sua aprovação rápida.
+                    </p>
                 </div>
 
                 <div class="description-box">
@@ -479,9 +486,9 @@
                 </div>
 
                 <div class="price-tag">
-                    <small>Valor Normal Somado: R$ 159,92</small>
+                    <small>Preço antigo: R$ 159,92</small>
                     <span class="value-promo">R$ 59,99</span>
-                    <span class="parcelas">ou em até 6x no cartão de crédito</span>
+                    <span class="parcelas">ou parcelado em até 8x de R$ 8,72</span>
                 </div>
 
                 <div class="trust-container">
@@ -508,7 +515,6 @@
                         👁️ Visualizar uma Amostra em PDF
                     </a>
 
-                    <!-- BOTÃO ADICIONADO PARA MATÉRIAS INDIVIDUAIS -->
                     <a href="https://www.focolegis.com/?ref=INDIVIDUAIS" class="btn-individuais" id="btn-individuais">
                         PREFIRO MATÉRIAS INDIVIDUAIS
                     </a>
@@ -543,9 +549,7 @@
         </div>
     </div>
 
-    <footer>
-        <p>&copy; 2026 Foco Legis - Todos os direitos reservados.<br>Preparatórios para Ordem dos Advogados e Carreiras Jurídicas.</p>
-    </footer>
+    <footer><p>&copy; 2026 Foco Legis - Todos os direitos reservados.</footer>
 
     <a class="whatsapp-float"
        href="https://wa.me/5522988267366?text=Ol%C3%A1%2C%20estou%20na%20p%C3%A1gina%20do%20Combo%20OAB%20e%20tenho%20uma%20d%C3%BAvida!"
@@ -556,12 +560,12 @@
         <span class="wpp-balao">Dúvidas? Me chame!</span>
         <span class="wpp-icone">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.978-1.306A9.953 9.953 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18a7.946 7.946 0 0 1-4.073-1.117l-.292-.174-3.037.794.817-2.96-.19-.304A7.946 7.946 0 0 1 4 12c0-4.411 3.589-8 8-8s8 3.589 8 8-3.589 8-8 8zm4.406-5.884c-.241-.12-1.427-.703-1.648-.784-.221-.08-.382-.12-.543.12-.16.241-.622.784-.762.945-.14.16-.281.18-.522.06-.241-.12-1.018-.375-1.939-1.196-.717-.639-1.2-1.428-1.341-1.669-.14-.241-.015-.371.105-.491.108-.108.241-.281.361-.421.12-.14.16-.241.241-.401.08-.16.04-.301-.02-.421-.06-.12-.543-1.308-.744-1.791-.196-.47-.395-.406-.543-.413l-.462-.008c-.16 0-.421.06-.642.301-.22.241-.842.823-.842 2.007s.862 2.328.982 2.489c.12.16 1.696 2.591 4.11 3.632.575.248 1.023.396 1.372.507.577.183 1.101.157 1.516.095.462-.069 1.427-.583 1.628-1.146.2-.562.2-1.044.14-1.146-.06-.1-.22-.16-.461-.28z"/>
+                <path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.978-1.306A9.953 9.953 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18a7.946 7.946 0 0 1-4.073-1.117l-.292-.174-3.037.794.817-2.96-.19-.304A7.946 7.946 0 0 1 4 12c0-4.411 3.589 8 8-8s8 3.589 8 8-3.589 8-8 8zm4.406-5.884c-.241-.12-1.427-.703-1.648-.784-.221-.08-.382-.12-.543.12-.16.241-.622.784-.762.945-.14.16-.281.18-.522.06-.241-.12-1.018-.375-1.939-1.196-.717-.639-1.2-1.428-1.341-1.669-.14-.241-.015-.371.105-.491.108-.108.241-.281.361-.421.12-.14.16-.241.241-.401.08-.16.04-.301-.02-.421-.06-.12-.543-1.308-.744-1.791-.196-.47-.395-.406-.543-.413l-.462-.008c-.16 0-.421.06-.642.301-.22.241-.842.823-.842 2.007s.862 2.328.982 2.489c.12.16 1.696 2.591 4.11 3.632.575.248 1.023.396 1.372.507.577.183 1.101.157 1.516.095.462-.069 1.427-.583 1.628-1.146.2-.562.2-1.044.14-1.146-.06-.1-.22-.16-.461-.28z"/>
             </svg>
         </span>
     </a>
 
-<script>
+    <script>
         const scriptURL = 'https://script.google.com/macros/s/AKfycbykkgRcsWcXGVSqB17HGiWwdpvhH36iKUxogcplafKh9ndCddpHTiUzYmnxmSjnkUIpRw/exec';
         const visitorId = 'ACC-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5);
         window.currentLoc = { ip: '', estado: '', cidade: '' };
@@ -630,7 +634,7 @@
                 ip:        window.currentLoc.ip,
                 estado:    window.currentLoc.estado,
                 cidade:    window.currentLoc.cidade,
-                url:       'COMBO', // <-- AJUSTADO: Força o envio do nome do produto/página
+                url:       'OAB',
                 device:    /Mobile|Android|iP(hone|od|ad)/i.test(ua) ? 'Celular' : 'PC',
                 os:        detectarSO(),
                 utm:       detectarOrigem()
@@ -649,7 +653,7 @@
             function enviarPageView() {
                 if (enviado) return;
                 enviado = true;
-                enviarParaPlanilha({ type: 'COMBO' });
+                enviarParaPlanilha({ type: 'OAB' });
             }
             var fallbackTimer = setTimeout(enviarPageView, TIMEOUT_GEO);
             var apis = [
