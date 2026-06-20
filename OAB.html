@@ -561,7 +561,7 @@
         </span>
     </a>
 
-    <script>
+<script>
         const scriptURL = 'https://script.google.com/macros/s/AKfycbykkgRcsWcXGVSqB17HGiWwdpvhH36iKUxogcplafKh9ndCddpHTiUzYmnxmSjnkUIpRw/exec';
         const visitorId = 'ACC-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5);
         window.currentLoc = { ip: '', estado: '', cidade: '' };
@@ -630,6 +630,7 @@
                 ip:        window.currentLoc.ip,
                 estado:    window.currentLoc.estado,
                 cidade:    window.currentLoc.cidade,
+                url:       'COMBO', // <-- AJUSTADO: Força o envio do nome do produto/página
                 device:    /Mobile|Android|iP(hone|od|ad)/i.test(ua) ? 'Celular' : 'PC',
                 os:        detectarSO(),
                 utm:       detectarOrigem()
@@ -648,7 +649,6 @@
             function enviarPageView() {
                 if (enviado) return;
                 enviado = true;
-                // Alterado de 'pageview_combo_exclusivo' para 'COMBO' no registro
                 enviarParaPlanilha({ type: 'COMBO' });
             }
             var fallbackTimer = setTimeout(enviarPageView, TIMEOUT_GEO);
@@ -737,20 +737,17 @@
                 setInterval(atualizar, 1000);
             })();
 
-            // Envio do Clique de Compra (Checkout) para a Planilha e Pixels
             btnBuy.addEventListener('click', function() {
                 enviarParaPlanilha({ type: 'checkout', produto: 'COMBOOAB' });
                 if (typeof fbq === 'function') fbq('track', 'InitiateCheckout', { content_name: 'ComboOAB_LP' });
                 if (typeof ttq === 'object') ttq.track('InitiateCheckout');
             });
 
-            // Envio do Clique na Amostra para a Planilha e Pixel
             document.getElementById('btn-amostra-oab').addEventListener('click', function() {
                 enviarParaPlanilha({ type: 'amostra', produto: 'COMBOOAB' });
                 if (typeof fbq === 'function') fbq('track', 'ViewContent', { content_name: 'Amostra_ComboOAB_LP' });
             });
 
-            // Envio do Clique em Detalhes para a Planilha e Pixel
             document.getElementById('btn-detalhes-oab').addEventListener('click', function() {
                 var id = this.getAttribute('data-id');
                 enviarParaPlanilha({ type: 'detalhes', produto: id });
@@ -781,7 +778,6 @@
                 }
             });
 
-            // NOVO: Envio do Clique em Matérias Individuais para a Planilha antes do redirecionamento
             document.getElementById('btn-individuais').addEventListener('click', function() {
                 enviarParaPlanilha({ type: 'clique_individuais', produto: 'Navegacao' });
             });
