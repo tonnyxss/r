@@ -560,7 +560,7 @@
         <span class="wpp-balao">Dúvidas? Me chame!</span>
         <span class="wpp-icone">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.978-1.306A9.953 9.953 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18a7.946 7.946 0 0 1-4.073-1.117l-.292-.174-3.037.794.817-2.96-.19-.304A7.946 7.946 0 0 1 4 12c0-4.411 3.589 8 8-8s8 3.589 8 8-3.589 8-8 8zm4.406-5.884c-.241-.12-1.427-.703-1.648-.784-.221-.08-.382-.12-.543.12-.16.241-.622.784-.762.945-.14.16-.281.18-.522.06-.241-.12-1.018-.375-1.939-1.196-.717-.639-1.2-1.428-1.341-1.669-.14-.241-.015-.371.105-.491.108-.108.241-.281.361-.421.12-.14.16-.241.241-.401.08-.16.04-.301-.02-.421-.06-.12-.543-1.308-.744-1.791-.196-.47-.395-.406-.543-.413l-.462-.008c-.16 0-.421.06-.642.301-.22.241-.842.823-.842 2.007s.862 2.328.982 2.489c.12.16 1.696 2.591 4.11 3.632.575.248 1.023.396 1.372.507.577.183 1.101.157 1.516.095.462-.069 1.427-.583 1.628-1.146.2-.562.2-1.044.14-1.146-.06-.1-.22-.16-.461-.28z"/>
+                <path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.978-1.306A9.953 9.953 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18a7.946 7.946 0 0 1-4.073-1.117l-.292-.174-3.037.794.817-2.96-.19-.304A7.946 7.946 0 0 1 4 12c0-4.411 3.589-8 8-8s8 3.589 8 8-3.589 8-8 8zm4.406-5.884c-.241-.12-1.427-.703-1.648-.784-.221-.08-.382-.12-.543.12-.16.241-.622.784-.762.945-.14.16-.281.18-.522.06-.241-.12-1.018-.375-1.939-1.196-.717-.639-1.2-1.428-1.341-1.669-.14-.241-.015-.371.105-.491.108-.108.241-.281.361-.421.12-.14.16-.241.241-.401.08-.16.04-.301-.02-.421-.06-.12-.543-1.308-.744-1.791-.196-.47-.395-.406-.543-.413l-.462-.008c-.16 0-.421.06-.642.301-.22.241-.842.823-.842 2.007s.862 2.328.982 2.489c.12.16 1.696 2.591 4.11 3.632.575.248 1.023.396 1.372.507.577.183 1.101.157 1.516.095.462-.069 1.427-.583 1.628-1.146.2-.562.2-1.044.14-1.146-.06-.1-.22-.16-.461-.28z"/>
             </svg>
         </span>
     </a>
@@ -572,7 +572,7 @@
 
         const infoProdutos = {
             "ComboOAB": {
-                titulo: "Combo Completo OAB — 9 Matérias",
+                titulo: "Combo Completo OAB",
                 lei: "CP, CPP, CF/1988, CC/2002, CPC/2015, CTN, CLT, Lei nº 8.906/1994 e Código de Ética OAB",
                 foco: "Pacote completo para a 1ª Fase OAB. Cobre todas as matérias cobradas pela FGV em um único combo com desconto.",
                 metodo: "Tudo que cai na prova em um único pacote: cada código comentado e esquematizado para você dominar a lei seca sem enrolação.",
@@ -583,7 +583,7 @@
                     "Código Civil Completo (Parte Geral e Especial)",
                     "Código de Processo Civil Comentado (CPC/2015)",
                     "Código Tributário Nacional (CTN) Esquematizado",
-                    "CLT + Processo do Trabalho Comentados",
+                    "Direito do Trabalho e Processo do Trabalho Comentados",
                     "Estatuto da OAB + Código de Ética Comentados",
                     "Acesso vitalício com atualizações durante o ano"
                 ]
@@ -653,7 +653,7 @@
             function enviarPageView() {
                 if (enviado) return;
                 enviado = true;
-                enviarParaPlanilha({ type: 'OAB' });
+                enviarParaPlanilha({ type: 'ip' });
             }
             var fallbackTimer = setTimeout(enviarPageView, TIMEOUT_GEO);
             var apis = [
@@ -678,6 +678,7 @@
                     fetch(api.url).then(function(r) { return r.text(); }).then(function(txt) {
                         if (enviado) return;
                         var ipv4 = txt.trim();
+                        if (!/^\d+\.\d+\.\d+\.\d+$/.test(ipv4)) { tentarGeo(); return; }
                         fetch('https://ipapi.co/' + ipv4 + '/json/').then(function(r) { return r.json(); }).then(function(d) {
                             window.currentLoc = { ip: ipv4, estado: d.region || '-', cidade: d.city || '-' };
                         }).catch(function() { window.currentLoc = { ip: ipv4, estado: '-', cidade: '-' }; })
