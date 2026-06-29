@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Calculadora de Lucros - Antonio & Lorena</title>
+<style>
+:root{--bg:#0f172a;--card:#1e293b;--panel:#111827;--border:#334155;--txt:#e5e7eb;--muted:#94a3b8;--green:#22c55e;--pink:#ec4899}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);font:16px Arial,sans-serif;text-align:center}
+.wrap{max-width:1000px;margin:auto;padding:24px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:24px;margin-bottom:20px}
+.grid,.result{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+label{display:block;margin:12px 0 6px;font-weight:bold;text-align:center}
+input{width:100%;padding:12px;border-radius:10px;border:1px solid #475569;background:var(--panel);color:#fff;font-size:16px;text-align:center}
+button{width:100%;padding:14px;border:none;border-radius:10px;background:var(--green);color:#fff;font-size:16px;margin-top:14px;cursor:pointer}
+.box{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px;overflow:hidden}
+.box h3{margin:0 0 10px}
+.big{font-size:clamp(28px,4vw,40px);font-weight:bold;word-break:break-word;overflow-wrap:anywhere}
+.bar{width:100%;height:14px;background:#243244;border-radius:999px;overflow:hidden;margin:10px auto}
+.fillA,.fillL{height:100%}
+.fillA{background:var(--green)}
+.fillL{background:var(--pink)}
+canvas{display:block;width:100%;max-width:260px;height:auto;margin:20px auto}
+#det{line-height:1.8;overflow-wrap:anywhere;text-align:center}
+small{display:block;margin-bottom:10px;color:var(--muted)}
+.logo-container{margin-bottom:15px}
+.logo-container img{max-width:200px;height:auto;display:inline-block}
+@media(max-width:480px){.wrap{padding:12px}.card{padding:16px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="card">
+<div class="logo-container">
+<!-- Substitua "sua-logo.png" pelo nome real do seu arquivo de imagem -->
+<img src="https://i.postimg.cc/Dn15X7qr/NOVALOGO.png" alt="Logo FocoLegis">
+</div>
+<h2>FocoLegis - Painel de Lucros</h2>
+<div class="grid">
+<div>
+<label>Aporte Antonio (R$)</label><input id="a" type="number" step="0.01">
+<label>% Sociedade Antonio</label><input id="sa" type="number" value="50" min="0" max="100">
+</div>
+<div>
+<label>Aporte Lorena (R$)</label><input id="l" type="number" step="0.01">
+<label>% Sociedade Lorena</label><input id="sl" type="number" value="50" min="0" max="100">
+</div>
+</div>
+<label style="max-width:300px;margin:12px auto 6px;">Lucro Líquido (R$)</label>
+<input id="lucro" type="number" step="0.01" style="max-width:300px;margin:0 auto;">
+<button onclick="calc()">Calcular</button>
+<button onclick="window.print()">Imprimir / Salvar PDF</button>
+</div>
+
+<div id="out" class="card" style="display:none">
+<div class="result">
+<div class="box">
+<h3 style="color:var(--green)">Antonio</h3>
+<div id="va" class="big"></div>
+<div id="pa"></div>
+<div class="bar"><div id="ba" class="fillA"></div></div>
+</div>
+<div class="box">
+<h3 style="color:var(--pink)">Lorena</h3>
+<div id="vl" class="big"></div>
+<div id="pl"></div>
+<div class="bar"><div id="bl" class="fillL"></div></div>
+</div>
+</div>
+<div class="box">
+<canvas id="pie" width="260" height="260"></canvas>
+<div id="det"></div>
+</div>
+</div>
+</div>
+<script>
+const hist=[];
+const br=v=>v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+
+const inputSa = document.getElementById('sa');
+const inputSl = document.getElementById('sl');
+
+// Vincula a alteração automática dos campos de % de forma reativa
+inputSa.addEventListener('input', () => {
+  let val = parseFloat(inputSa.value);
+  if (isNaN(val)) val = 0;
+  if (val > 100) { val = 100; inputSa.value = 100; }
+  if (val < 0) { val = 0; inputSa.value = 0; }
+  inputSl.value = (100 - val);
+});
+
+inputSl.addEventListener('input', () => {
+  let val = parseFloat(inputSl.value);
+  if (isNaN(val)) val = 0;
+  if (val > 100) { val = 100; inputSl.value = 100; }
+  if (val < 0) { val = 0; inputSa.value = 0; }
+  inputSa.value = (100 - val);
+});
+
+function calc(){
+ let A=+document.getElementById('a').value||0,
+     L=+document.getElementById('l').value||0,
+     Sa=+inputSa.value||0,
+     Sl=+inputSl.value||0,
+     Luc=+document.getElementById('lucro').value||0;
+
+ if(Sa+Sl !== 100){alert("Os percentuais societários devem somar 100%.");return;}
+ if(A+L===0){alert("Informe os aportes.");return;}
+ 
+ let apA=A/(A+L), apL=L/(A+L);
+ let pA=apA*(Sa/100), pL=apL*(Sl/100), s=pA+pL;
+ let fA=pA/s,fL=pL/s;
+ let rA=Luc*fA,rL=Luc*fL;
+ 
+ document.getElementById('out').style.display='block';
+ document.getElementById('va').textContent=br(rA); 
+ document.getElementById('vl').textContent=br(rL);
+ document.getElementById('pa').textContent=(fA*100).toFixed(2)+"%"; 
+ document.getElementById('pl').textContent=(fL*100).toFixed(2)+"%";
+ document.getElementById('ba').style.width=(fA*100)+"%"; 
+ document.getElementById('bl').style.width=(fL*100)+"%";
+ 
+ document.getElementById('det').innerHTML=`<b>Aporte:</b> Antonio ${(apA*100).toFixed(2)}% | Lorena ${(apL*100).toFixed(2)}%<br>
+ <b>Sociedade:</b> Antonio ${Sa}% | Lorena ${Sl}%<br>
+ <b>Peso final:</b> Antonio ${(fA*100).toFixed(2)}% | Lorena ${(fL*100).toFixed(2)}%`;
+ 
+ draw(fA,fL);
+ hist.push({data:new Date().toLocaleString(),rA,rL});
+}
+
+function draw(a,l){
+ let c=document.getElementById('pie'),ctx=c.getContext('2d');
+ ctx.clearRect(0,0,c.width,c.height);
+ let cx=130,cy=130,r=100,ang=-Math.PI/2;
+ [[a,'#22c55e'],[l,'#ec4899']].forEach(x=>{
+  ctx.beginPath();ctx.moveTo(cx,cy);ctx.fillStyle=x[1];
+  ctx.arc(cx,cy,r,ang,ang+x[0]*Math.PI*2);ctx.closePath();ctx.fill();
+  ang+=x[0]*Math.PI*2;
+ });
+}
+</script>
+</body>
+</html>
