@@ -486,6 +486,7 @@
                 </div>
 
                 <div class="price-tag">
+                    <option value="59.99">
                     <small>Preço antigo: R$ 159,92</small>
                     <span class="value-promo">R$ 59,99</span>
                     <span class="parcelas">ou parcelado em até 8x de R$ 8,72</span>
@@ -742,9 +743,16 @@
                 setInterval(atualizar, 1000);
             })();
 
+            // ── ADAPTADO: DISPARO DO PIXEL DA META COM PREÇO E MOEDA DO COMBO OAB ──
             btnBuy.addEventListener('click', function() {
                 enviarParaPlanilha({ type: 'checkout', produto: 'COMBOOAB' });
-                if (typeof fbq === 'function') fbq('track', 'InitiateCheckout', { content_name: 'ComboOAB_LP' });
+                if (typeof fbq === 'function') {
+                    fbq('track', 'InitiateCheckout', {
+                        content_name: 'ComboOAB_LP',
+                        value: 59.99,
+                        currency: 'BRL'
+                    });
+                }
                 if (typeof ttq === 'object') ttq.track('InitiateCheckout');
             });
 
