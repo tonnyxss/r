@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>FocoLegis - Suporte</title>
     <style>
         * {
@@ -10,25 +10,33 @@
             padding: 0;
             box-sizing: border-box;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            height: 100dvh;
+            overflow: hidden;
+            background-color: #efeae2;
         }
 
         body {
-            background-color: #efeae2;
             background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
             display: flex;
             flex-direction: column;
-            height: 100vh;
         }
 
         /* Header do WhatsApp */
         .chat-header {
             background-color: #008069;
             color: white;
-            padding: 10px 16px;
+            padding: 12px 16px;
             display: flex;
             align-items: center;
             gap: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            flex-shrink: 0;
             z-index: 10;
         }
 
@@ -77,24 +85,30 @@
         .chat-container {
             flex: 1;
             overflow-y: auto;
-            padding: 20px;
+            overflow-x: hidden;
+            padding: 16px;
             display: flex;
             flex-direction: column;
             gap: 12px;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .message {
-            max-width: 80%;
+            max-width: 85%;
             padding: 8px 12px;
             border-radius: 8px;
             font-size: 15px;
             line-height: 1.4;
             position: relative;
-            animation: fadeIn 0.3s ease;
+            word-wrap: break-word;
+            animation: fadeIn 0.25s ease-out;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -102,22 +116,65 @@
             background-color: #ffffff;
             align-self: flex-start;
             border-top-left-radius: 0;
-            box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 1px rgba(0,0,0,0.12);
         }
 
         .message.sent {
             background-color: #d9fdd3;
             align-self: flex-end;
             border-top-right-radius: 0;
-            box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 1px rgba(0,0,0,0.12);
         }
 
         .message-time {
-            font-size: 11px;
+            font-size: 10px;
             color: #667781;
             text-align: right;
             margin-top: 4px;
             display: block;
+        }
+
+        /* Card de Arquivo PDF Estilo WhatsApp */
+        .pdf-attachment {
+            display: flex;
+            align-items: center;
+            background-color: #f0f2f5;
+            border-radius: 6px;
+            padding: 10px;
+            margin-top: 4px;
+            gap: 12px;
+            cursor: pointer;
+            border: 1px solid #e1e4e6;
+            transition: background 0.2s;
+        }
+
+        .pdf-attachment:hover {
+            background-color: #e3e6e8;
+        }
+
+        .pdf-icon {
+            font-size: 28px;
+            color: #f44336;
+        }
+
+        .pdf-details {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .pdf-name {
+            font-size: 14px;
+            font-weight: bold;
+            color: #3b3b3b;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .pdf-meta {
+            font-size: 11px;
+            color: #667781;
+            margin-top: 2px;
         }
 
         /* Container de Opções em Botões */
@@ -125,31 +182,31 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
-            max-width: 80%;
+            width: 85%;
             align-self: flex-start;
             margin-top: -4px;
-            animation: fadeIn 0.4s ease;
+            animation: fadeIn 0.3s ease-out;
         }
 
         .btn-option {
             background-color: #ffffff;
             color: #00a884;
             border: 1px solid #e1e1e1;
-            padding: 10px 14px;
+            padding: 12px 14px;
             border-radius: 8px;
             cursor: pointer;
             font-size: 14px;
             font-weight: 500;
             text-align: center;
             box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-            transition: background 0.2s;
+            transition: background 0.15s;
+            width: 100%;
         }
 
-        .btn-option:hover {
+        .btn-option:hover, .btn-option:active {
             background-color: #f7f9fa;
         }
 
-        /* Botão de Link Estilo Bloco WhatsApp (Mais discreto e ajustado ao conteúdo) */
         .btn-link {
             background-color: #00a884;
             color: white;
@@ -162,12 +219,11 @@
             font-size: 14px;
             text-align: center;
             margin-top: 4px;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
             box-shadow: 0 1px 2px rgba(0,0,0,0.2);
-            animation: fadeIn 0.3s ease;
         }
 
-        .btn-link:hover {
+        .btn-link:hover, .btn-link:active {
             background-color: #008069;
         }
 
@@ -195,20 +251,31 @@
             40% { transform: scale(1); }
         }
 
-        /* Input de envio */
+        /* Barra de Input Inferior Fixa */
         .chat-input-area {
             background-color: #f0f2f5;
             padding: 10px 16px;
             display: flex;
             align-items: center;
             gap: 12px;
+            flex-shrink: 0;
+            width: 100%;
+        }
+
+        .input-container-wrapper {
+            display: flex;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            gap: 12px;
+            align-items: center;
         }
 
         .input-wrapper {
             flex: 1;
             background-color: white;
             border-radius: 8px;
-            padding: 8px 12px;
+            padding: 10px 12px;
             display: flex;
             align-items: center;
         }
@@ -217,7 +284,7 @@
             width: 100%;
             border: none;
             outline: none;
-            font-size: 15px;
+            font-size: 16px;
             background: transparent;
         }
 
@@ -231,20 +298,65 @@
             background-color: #00a884;
             color: white;
             border: none;
-            width: 40px;
-            height: 40px;
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        /* Modal Visualizador de PDF (Estilo WhatsApp Web) */
+        .pdf-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            z-index: 100;
+            flex-direction: column;
+        }
+
+        .pdf-modal-header {
+            background-color: #111b21;
+            color: white;
+            padding: 14px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .pdf-modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .pdf-modal-body {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            background-color: #222e35;
+        }
+
+        .pdf-modal-body iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
         }
     </style>
 </head>
 <body>
 
-    <!-- Header -->
+    <!-- Header Chat -->
     <div class="chat-header">
         <div class="avatar">📚</div>
         <div class="chat-info">
@@ -258,255 +370,333 @@
 
     <!-- Campo de Input -->
     <div class="chat-input-area">
-        <div class="input-wrapper">
-            <input type="text" id="user-input" class="chat-input" placeholder="Digite seu nome..." autocomplete="off">
+        <div class="input-container-wrapper">
+            <div class="input-wrapper">
+                <input type="text" id="user-input" class="chat-input" placeholder="Digite seu nome..." autocomplete="off">
+            </div>
+            <button class="send-btn" id="send-btn">➤</button>
         </div>
-        <button class="send-btn" id="send-btn">➤</button>
+    </div>
+
+    <!-- Modal para Visualização de PDF -->
+    <div class="pdf-modal" id="pdf-modal">
+        <div class="pdf-modal-header">
+            <span id="pdf-modal-title">Visualizando Documento</span>
+            <button class="pdf-modal-close" onclick="closePdfModal()">✕</button>
+        </div>
+        <div class="pdf-modal-body">
+            <iframe id="pdf-iframe" src=""></iframe>
+        </div>
     </div>
 
     <script>
+        const chatContainer = document.getElementById('chat-container');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+        const chatStatus = document.getElementById('chat-status');
+        const pdfModal = document.getElementById('pdf-modal');
+        const pdfIframe = document.getElementById('pdf-iframe');
+        const pdfModalTitle = document.getElementById('pdf-modal-title');
 
-const chatContainer = document.getElementById('chat-container');
-const userInput = document.getElementById('user-input');
-const sendBtn = document.getElementById('send-btn');
-const chatStatus = document.getElementById('chat-status');
+        let userData = { name: '' };
+        let currentState = 'START';
 
-let userData = { name: '' };
-let currentState = 'START';
+        const chatFlow = {
+            START: {
+                execute: () => {
+                    sendBotMessage("Oi, digite o seu nome para eu te ajudar!");
+                    currentState = 'WAITING_FOR_NAME';
+                }
+            },
+            WAITING_FOR_NAME: {
+                handle: (text) => {
+                    userData.name = text;
+                    userInput.disabled = true;
+                    userInput.placeholder = "Escolha uma opção acima...";
 
-const chatFlow = {
-    START: {
-        execute: () => {
-            sendBotMessage("Oi, digite o seu nome para eu te ajudar!");
-            currentState = 'WAITING_FOR_NAME';
-        }
-    },
-    WAITING_FOR_NAME: {
-        handle: (text) => {
-            userData.name = text;
-            userInput.disabled = true;
-            userInput.placeholder = "Escolha uma opção acima...";
+                    sendBotMessage(`Prazer, *${userData.name}*! Seja muito bem-vindo(a) ao FocoLegis.`, 1000);
+                    
+                    setTimeout(() => {
+                        sendBotMessage("🔥 **Por que estudar com o FocoLegis?**\n\n• *Estudo Estratégico:* Mais de 80% das questões da OAB cobram a literalidade da lei. Nossos materiais trazem a lei seca cirurgicamente *esquematizada, grifada e comentada*.\n• *Acesso Vitalício:* Pague uma única vez e o material é seu para sempre.\n• *Atualizações Gratuitas:* Mudou a legislação ou saiu edital novo? Você recebe a nova versão sem pagar nada a mais.");
+                    }, 2200);
 
-            sendBotMessage(`Prazer, *${userData.name}*! Seja muito bem-vindo(a) ao FocoLegis.`, 1000);
-            
-            setTimeout(() => {
-                sendBotMessage("🔥 **Por que estudar com o FocoLegis?**\n\n• *Estudo Estratégico:* Mais de 80% das questões da OAB cobram a literalidade da lei. Nossos materiais trazem a lei seca cirurgicamente *esquematizada, grifada e comentada*.\n• *Acesso Vitalício:* Pague uma única vez e o material é seu para sempre.\n• *Atualizações Gratuitas:* Mudou a legislação ou saiu edital novo? Você recebe a nova versão sem pagar nada a mais.");
-            }, 2200);
+                    setTimeout(() => {
+                        sendBotMessage("Escolha abaixo o que deseja fazer ou qual dúvida quer tirar agora:");
+                    }, 4500);
 
-            setTimeout(() => {
-                sendBotMessage("Escolha abaixo o que deseja fazer ou qual dúvida quer tirar agora:");
-            }, 4500);
+                    setTimeout(() => {
+                        showMainMenu();
+                    }, 6000);
+                }
+            },
+            OAB_FLOW: {
+                execute: () => {
+                    sendBotMessage(`O *Combo OAB 1ª Fase* é o nosso campeão de aprovações, *${userData.name}*. Reunimos as matérias com maior peso na prova para garantir seus pontos de forma rápida:\n\n• Constitucional\n• Penal e Processo Penal\n• Civil e Processo Civil\n• Tributário\n• Direito e Processo do Trabalho\n• Ética Profissional (para gabaritar!)`);
+                    
+                    setTimeout(() => {
+                        sendBotMessage("Tudo de forma visual e direto ao ponto por apenas *R$ 59,99*. Um investimento único para garantir sua carteira da Ordem.");
+                    }, 2000);
 
-            setTimeout(() => {
-                showMainMenu();
-            }, 6000);
-        }
-    },
-    OAB_FLOW: {
-        execute: () => {
-            sendBotMessage(`O *Combo OAB 1ª Fase* é o nosso campeão de aprovações, *${userData.name}*. Reunimos as matérias com maior peso na prova para garantir seus pontos de forma rápida:\n\n• Constitucional\n• Penal e Processo Penal\n• Civil e Processo Civil\n• Tributário\n• Direito e Processo do Trabalho\n• Ética Profissional (para gabaritar!)`);
-            
-            setTimeout(() => {
-                sendBotMessage("Tudo de forma visual e direto ao ponto por apenas *R$ 59,99*. Um investimento único para garantir sua carteira da Ordem.");
-            }, 2000);
+                    setTimeout(() => {
+                        appendLinkButton("🔥 Garantir Combo OAB (R$ 59,99)", "https://www.focolegis.com/OAB?ref=chatbox");
+                        appendOptions([
+                            { text: "↩️ Voltar ao Menu Principal", action: () => selectOption("↩️ Voltar ao Menu Principal", 'RESET') }
+                        ]);
+                    }, 3500);
+                }
+            },
+            CHOOSE_CATALOG: {
+                execute: () => {
+                    sendBotMessage(`Perfeito, *${userData.name}*! Nossas leis individuais isoladas custam apenas *R$ 19,99* cada.`);
+                    sendBotMessage("Elas são ideais se você quer reforçar apenas aquela matéria específica onde seu rendimento está baixo.");
+                    
+                    setTimeout(() => {
+                        appendLinkButton("🛒 Ver Leis Individuais", "https://www.focolegis.com/?ref=chatbox");
+                        appendOptions([
+                            { text: "↩️ Voltar ao Menu Principal", action: () => selectOption("↩️ Voltar ao Menu Principal", 'RESET') }
+                        ]);
+                    }, 2000);
+                }
+            },
+            AMSTR_FLOW: {
+                execute: () => {
+                    sendBotMessage(`Com certeza, *${userData.name}*! Separei aqui as principais amostras gratuitas para você ver com os próprios olhos a qualidade e a organização visual dos nossos materiais.`);
+                    sendBotMessage("Clique em qualquer um dos arquivos abaixo para ler agora mesmo dentro desta conversa:");
 
-            setTimeout(() => {
-                appendLinkButton("🔥 Garantir Combo OAB (R$ 59,99)", "https://www.focolegis.com/OAB?ref=chatbox");
-                appendOptions([
-                    { text: "↩️ Voltar ao Menu Principal", action: () => selectOption("↩️ Voltar ao Menu Principal", 'RESET') }
-                ]);
-            }, 3500);
-        }
-    },
-    CHOOSE_CATALOG: {
-        execute: () => {
-            sendBotMessage(`Perfeito, *${userData.name}*! Nossas leis individuais isoladas custam apenas *R$ 19,99* cada.`);
-            sendBotMessage("Elas são ideais se você quer reforçar apenas aquela matéria específica (como o Estatuto da OAB ou o Código Penal) onde seu rendimento está baixo.");
-            
-            setTimeout(() => {
-                appendLinkButton("🛒 Ver Leis Individuais", "https://www.focolegis.com/?ref=chatbox");
-                appendOptions([
-                    { text: "↩️ Voltar ao Menu Principal", action: () => selectOption("↩️ Voltar ao Menu Principal", 'RESET') }
-                ]);
-            }, 2000);
-        }
-    },
-    DOUBT_EDITAL: {
-        execute: () => {
-            sendBotMessage("⚠️ *O material serve para o edital atual?*");
-            sendBotMessage("Sim! Todos os nossos materiais são rigorosamente revisados e atualizados de acordo com o último edital publicado e as alterações legislativas recentes.");
-            sendBotMessage("E lembre-se: como o seu acesso é *vitalício*, se qualquer lei mudar enquanto você estuda, você recebe a atualização de graça no seu e-mail.");
-            
-            setTimeout(() => {
-                appendOptions([
-                    { text: "⚖️ Ver o Combo OAB", action: () => selectOption("⚖️ Ver o Combo OAB", 'OAB_FLOW') },
-                    { text: "↩️ Voltar ao Menu Principal", action: () => selectOption("↩️ Voltar ao Menu Principal", 'RESET') }
-                ]);
-            }, 2000);
-        }
-    },
-    DOUBT_BASE: {
-        execute: () => {
-            sendBotMessage("❓ *Consigo entender mesmo se eu não tiver uma base boa?*");
-            sendBotMessage(`Com certeza, *${userData.name}*! O material foi desenhado justamente para quem odeia PDFs cansativos ou tem dificuldades de concentração.`);
-            sendBotMessage("A estruturação esquematizada funciona como um mapa visual. Os comentários dos professores explicam os artigos complexos de forma simples e mastigada, facilitando a memorização mesmo para quem está começando do zero absoluto.");
-            
-            setTimeout(() => {
-                appendOptions([
-                    { text: "⚖️ Ver o Combo OAB", action: () => selectOption("⚖️ Ver o Combo OAB", 'OAB_FLOW') },
-                    { text: "↩️ Voltar ao Menu Principal", action: () => selectOption("↩️ Voltar ao Menu Principal", 'RESET') }
-                ]);
-            }, 2500);
-        }
-    },
-    DELIVERY_INFO: {
-        execute: () => {
-            sendBotMessage("📧 *Como e quando eu recebo o acesso?*");
-            sendBotMessage("O envio é 100% automático e imediato. Assim que o pagamento é confirmado, os links para download dos PDFs chegam no seu e-mail.");
-            sendBotMessage("⚡ *Dica de ouro:* Pagando por *Pix*, o sistema aprova a compra em menos de 1 minuto e você já recebe o material na hora para começar a estudar hoje mesmo.");
-            
-            setTimeout(() => {
-                appendOptions([
-                    { text: "🔥 Garantir Combo OAB (R$ 59,99)", action: () => selectOption("🔥 Garantir Combo OAB (R$ 59,99)", 'OAB_FLOW') },
-                    { text: "↩️ Voltar ao Menu Principal", action: () => selectOption("↩️ Voltar ao Menu Principal", 'RESET') }
-                ]);
-            }, 2200);
-        }
-    },
-    HUMAN_SUPPORT: {
-        execute: () => {
-            sendBotMessage(`Sem problemas, *${userData.name}*! Se você tem alguma dúvida sobre o pagamento ou precisa de um suporte específico, clique no botão abaixo para falar direto com nosso atendimento no WhatsApp:`);
-            
-            setTimeout(() => {
-                appendLinkButton("📱 Falar com Atendente no WhatsApp", "https://wa.me/SEUNUMERODEWHATSAPP");
-                appendOptions([
-                    { text: "↩️ Voltar ao Menu Principal", action: () => selectOption("↩️ Voltar ao Menu Principal", 'RESET') }
-                ]);
-            }, 1500);
-        }
-    }
-};
+                    setTimeout(() => {
+                        appendPdfAttachment("FocoLegis - AMOSTRA - EAOAB.pdf", "FocoLegis - AMOSTRA - EAOAB.pdf");
+                        appendPdfAttachment("FocoLegis - AMOSTRA - Direito Constitucional.pdf", "FocoLegis - AMOSTRA - Direito Constitucional.pdf");
+                        appendPdfAttachment("FocoLegis - AMOSTRA - Direito Penal.pdf", "FocoLegis - AMOSTRA - Direito Penal.pdf");
+                        appendPdfAttachment("FocoLegis - AMOSTRA - Processo Penal.pdf", "FocoLegis - AMOSTRA - Processo Penal.pdf");
+                        appendPdfAttachment("FocoLegis - AMOSTRA - Direito Civil.pdf", "FocoLegis - AMOSTRA - Direito Civil.pdf");
+                        appendPdfAttachment("FocoLegis - AMOSTRA - Processo Civil.pdf", "FocoLegis - AMOSTRA - Processo Civil.pdf");
+                        appendPdfAttachment("FocoLegis - AMOSTRA - Direito Tributário.pdf", "FocoLegis - AMOSTRA - Direito Tributário.pdf");
+                        appendPdfAttachment("FocoLegis - AMOSTRA - CLT.pdf", "FocoLegis - AMOSTRA - CLT.pdf");
+                    }, 1500);
 
-// Menu focado exclusivamente na OAB e Leis Isoladas com as dúvidas frequentes inclusas
-function showMainMenu() {
-    appendOptions([
-        { text: "⚖️ Combo OAB 1ª Fase (R$ 59,99)", action: () => selectOption("⚖️ Combo OAB 1ª Fase (R$ 59,99)", 'OAB_FLOW') },
-        { text: "📚 Leis Individuais (R$ 19,99)", action: () => selectOption("📚 Leis Individuais (R$ 19,99)", 'CHOOSE_CATALOG') },
-        { text: "❓ Serve para quem está do zero?", action: () => selectOption("❓ Serve para quem está do zero?", 'DOUBT_BASE') },
-        { text: "⚠️ Está atualizado para o edital?", action: () => selectOption("⚠️ Está atualizado para o edital?", 'DOUBT_EDITAL') },
-        { text: "📧 Como recebo meu material?", action: () => selectOption("📧 Como recebo meu material?", 'DELIVERY_INFO') },
-        { text: "👤 Outras dúvidas / Falar com Atendente", action: () => selectOption("👤 Outras dúvidas / Falar com Atendente", 'HUMAN_SUPPORT') }
-    ]);
-}
-
-function formatMessage(text) {
-    return text
-        .replace(/\n/g, '<br>')
-        .replace(/\*(.*?)\*/g, '<strong>$1</strong>');
-}
-
-function getTime() {
-    const now = new Date();
-    return now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-}
-
-function appendMessage(text, side, isTyping = false) {
-    const msgDiv = document.createElement('div');
-    msgDiv.className = `message ${side} ${isTyping ? 'typing' : ''}`;
-    
-    if (isTyping) {
-        msgDiv.innerHTML = '<span></span><span></span><span></span>';
-        msgDiv.id = 'typing-indicator';
-    } else {
-        msgDiv.innerHTML = `${formatMessage(text)} <span class="message-time">${getTime()}</span>`;
-    }
-
-    chatContainer.appendChild(msgDiv);
-    chatContainer.scrollTop = chatContainer.scrollHeight;
-    return msgDiv;
-}
-
-function appendOptions(options) {
-    const container = document.createElement('div');
-    container.className = 'options-container';
-
-    options.forEach(opt => {
-        const btn = document.createElement('button');
-        btn.className = 'btn-option';
-        btn.innerText = opt.text;
-        btn.onclick = () => {
-            container.remove();
-            opt.action();
+                    setTimeout(() => {
+                        appendOptions([
+                            { text: "⚖️ Gostei! Ver o Combo OAB (R$ 59,99)", action: () => selectOption("⚖️ Gostei! Ver o Combo OAB (R$ 59,99)", 'OAB_FLOW') },
+                            { text: "↩️ Voltar ao Menu Principal", action: () => selectOption("↩️ Voltar ao Menu Principal", 'RESET') }
+                        ]);
+                    }, 4000);
+                }
+            },
+            DOUBT_EDITAL: {
+                execute: () => {
+                    sendBotMessage("⚠️ *O material serve para o edital atual?*");
+                    sendBotMessage("Sim! Todos os nossos materiais são rigorosamente revisados e atualizados de acordo com o último edital publicado e as alterações legislativas recentes.");
+                    sendBotMessage("E lembre-se: como o seu acesso é *vitalício*, se qualquer lei mudar enquanto você estuda, você recebe a atualização de graça no seu e-mail.");
+                    
+                    setTimeout(() => {
+                        appendOptions([
+                            { text: "⚖️ Ver o Combo OAB", action: () => selectOption("⚖️ Ver o Combo OAB", 'OAB_FLOW') },
+                            { text: "↩️ Voltar ao Menu Principal", action: () => selectOption("↩️ Voltar ao Menu Principal", 'RESET') }
+                        ]);
+                    }, 2000);
+                }
+            },
+            DOUBT_BASE: {
+                execute: () => {
+                    sendBotMessage("❓ *Consigo entender mesmo se eu não tiver uma base boa?*");
+                    sendBotMessage(`Com certeza, *${userData.name}*! O material foi desenhado justamente para quem odeia PDFs cansativos ou tem dificuldades de concentração.`);
+                    sendBotMessage("A estruturação esquematizada funciona como um mapa visual. Os comentários dos professores explicam os artigos complexos de forma simples e mastigada, facilitando a memorização mesmo para quem está começando do zero absoluto.");
+                    
+                    setTimeout(() => {
+                        appendOptions([
+                            { text: "⚖️ Ver o Combo OAB", action: () => selectOption("⚖️ Ver o Combo OAB", 'OAB_FLOW') },
+                            { text: "↩️ Voltar ao Menu Principal", action: () => selectOption("↩️ Voltar ao Menu Principal", 'RESET') }
+                        ]);
+                    }, 2500);
+                }
+            },
+            DELIVERY_INFO: {
+                execute: () => {
+                    sendBotMessage("📧 *Como e quando eu recebo o acesso?*");
+                    sendBotMessage("O envio é 100% automático e imediato. Assim que o pagamento é confirmado, os links para download dos PDFs chegam no seu e-mail.");
+                    sendBotMessage("⚡ *Dica de ouro:* Pagando por *Pix*, o sistema aprova a compra em menos de 1 minuto e você já recebe o material na hora para começar a estudar hoje mesmo.");
+                    
+                    setTimeout(() => {
+                        appendOptions([
+                            { text: "🔥 Garantir Combo OAB (R$ 59,99)", action: () => selectOption("🔥 Garantir Combo OAB (R$ 59,99)", 'OAB_FLOW') },
+                            { text: "↩️ Voltar ao Menu Principal", action: () => selectOption("↩️ Voltar ao Menu Principal", 'RESET') }
+                        ]);
+                    }, 2200);
+                }
+            },
+            HUMAN_SUPPORT: {
+                execute: () => {
+                    sendBotMessage(`Sem problemas, *${userData.name}*! Se você tem alguma dúvida sobre o pagamento ou precisa de um suporte específico, clique no botão abaixo para falar direto com nosso atendimento no WhatsApp:`);
+                    
+                    setTimeout(() => {
+                        appendLinkButton("📱 Falar com Atendente no WhatsApp", "https://wa.me/SEUNUMERODEWHATSAPP");
+                        appendOptions([
+                            { text: "↩️ Voltar ao Menu Principal", action: () => selectOption("↩️ Voltar ao Menu Principal", 'RESET') }
+                        ]);
+                    }, 1500);
+                }
+            }
         };
-        container.appendChild(btn);
-    });
 
-    chatContainer.appendChild(container);
-    chatContainer.scrollTop = chatContainer.scrollHeight;
-}
+        function showMainMenu() {
+            appendOptions([
+                { text: "⚖️ Combo OAB 1ª Fase (R$ 59,99)", action: () => selectOption("⚖️ Combo OAB 1ª Fase (R$ 59,99)", 'OAB_FLOW') },
+                { text: "📚 Leis Individuais (R$ 19,99)", action: () => selectOption("📚 Leis Individuais (R$ 19,99)", 'CHOOSE_CATALOG') },
+                { text: "📖 Ver Amostras dos Materiais", action: () => selectOption("📖 Ver Amostras dos Materiais", 'AMSTR_FLOW') },
+                { text: "❓ Serve para quem está do zero?", action: () => selectOption("❓ Serve para quem está do zero?", 'DOUBT_BASE') },
+                { text: "⚠️ Está atualizado para o edital?", action: () => selectOption("⚠️ Está atualizado para o edital?", 'DOUBT_EDITAL') },
+                { text: "📧 Como recebo meu material?", action: () => selectOption("📧 Como recebo meu material?", 'DELIVERY_INFO') },
+                { text: "👤 Outras dúvidas / Atendimento", action: () => selectOption("👤 Outras dúvidas / Atendimento", 'HUMAN_SUPPORT') }
+            ]);
+        }
 
-function appendLinkButton(text, url) {
-    const btnLink = document.createElement('a');
-    btnLink.className = 'btn-link';
-    btnLink.href = url;
-    btnLink.target = '_blank';
-    btnLink.innerText = text;
+        function formatMessage(text) {
+            return text
+                .replace(/\n/g, '<br>')
+                .replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+        }
 
-    chatContainer.appendChild(btnLink);
-    chatContainer.scrollTop = chatContainer.scrollHeight;
-}
+        function getTime() {
+            const now = new Date();
+            return now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        }
 
-function sendBotMessage(text, delay = 1400) {
-    chatStatus.innerText = 'Digitando...';
-    const typingIndicator = appendMessage('', 'received', true);
+        function appendMessage(text, side, isTyping = false) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${side} ${isTyping ? 'typing' : ''}`;
+            
+            if (isTyping) {
+                msgDiv.innerHTML = '<span></span><span></span><span></span>';
+                msgDiv.id = 'typing-indicator';
+            } else {
+                msgDiv.innerHTML = `${formatMessage(text)} <span class="message-time">${getTime()}</span>`;
+            }
 
-    setTimeout(() => {
-        typingIndicator.remove();
-        appendMessage(text, 'received');
-        chatStatus.innerText = 'Online';
-    }, delay);
-}
+            chatContainer.appendChild(msgDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            return msgDiv;
+        }
 
-function selectOption(chosenText, nextState) {
-    appendMessage(chosenText, 'sent');
-    
-    setTimeout(() => {
-        if (nextState === 'RESET') {
-            sendBotMessage(`Voltamos ao início, *${userData.name}*! Como posso te ajudar?`, 1000);
+        // Gera o balão do arquivo anexo em PDF simulando o WhatsApp
+        function appendPdfAttachment(displayName, fileUrl) {
+            const containerDiv = document.createElement('div');
+            containerDiv.className = 'message received';
+            containerDiv.style.padding = '6px';
+
+            const pdfCard = document.createElement('div');
+            pdfCard.className = 'pdf-attachment';
+            pdfCard.onclick = () => openPdfModal(displayName, fileUrl);
+
+            pdfCard.innerHTML = `
+                <div class="pdf-icon">📄</div>
+                <div class="pdf-details">
+                    <div class="pdf-name">${displayName}</div>
+                    <div class="pdf-meta">PDF • Visualizar documento</div>
+                </div>
+            `;
+
+            const timeSpan = document.createElement('span');
+            timeSpan.className = 'message-time';
+            timeSpan.innerHTML = getTime();
+
+            containerDiv.appendChild(pdfCard);
+            containerDiv.appendChild(timeSpan);
+            chatContainer.appendChild(containerDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function appendOptions(options) {
+            const container = document.createElement('div');
+            container.className = 'options-container';
+
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-option';
+                btn.innerText = opt.text;
+                btn.onclick = () => {
+                    container.remove();
+                    opt.action();
+                };
+                container.appendChild(btn);
+            });
+
+            chatContainer.appendChild(container);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function appendLinkButton(text, url) {
+            const btnLink = document.createElement('a');
+            btnLink.className = 'btn-link';
+            btnLink.href = url;
+            btnLink.target = '_blank';
+            btnLink.innerText = text;
+
+            chatContainer.appendChild(btnLink);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function sendBotMessage(text, delay = 1400) {
+            chatStatus.innerText = 'Digitando...';
+            const typingIndicator = appendMessage('', 'received', true);
+
             setTimeout(() => {
-                showMainMenu();
-            }, 1800);
-        } else {
-            currentState = nextState;
-            if (chatFlow[currentState] && chatFlow[currentState].execute) {
-                chatFlow[currentState].execute();
+                typingIndicator.remove();
+                appendMessage(text, 'received');
+                chatStatus.innerText = 'Online';
+            }, delay);
+        }
+
+        // Funções do Visualizador de PDF Integrado
+        function openPdfModal(title, url) {
+            pdfModalTitle.innerText = title;
+            pdfIframe.src = url;
+            pdfModal.style.display = 'flex';
+        }
+
+        function closePdfModal() {
+            pdfModal.style.display = 'none';
+            pdfIframe.src = '';
+        }
+
+        function selectOption(chosenText, nextState) {
+            appendMessage(chosenText, 'sent');
+            
+            setTimeout(() => {
+                if (nextState === 'RESET') {
+                    sendBotMessage(`Voltamos ao início, *${userData.name}*! Como posso te ajudar?`, 1000);
+                    setTimeout(() => {
+                        showMainMenu();
+                    }, 1800);
+                } else {
+                    currentState = nextState;
+                    if (chatFlow[currentState] && chatFlow[currentState].execute) {
+                        chatFlow[currentState].execute();
+                    }
+                }
+            }, 600);
+        }
+
+        function handleUserSend() {
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            if (currentState === 'WAITING_FOR_NAME') {
+                appendMessage(text, 'sent');
+                userInput.value = '';
+                setTimeout(() => {
+                    chatFlow.WAITING_FOR_NAME.handle(text);
+                }, 500);
             }
         }
-    }, 600);
-}
 
-function handleUserSend() {
-    const text = userInput.value.trim();
-    if (!text) return;
+        sendBtn.addEventListener('click', handleUserSend);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleUserSend();
+        });
 
-    if (currentState === 'WAITING_FOR_NAME') {
-        appendMessage(text, 'sent');
-        userInput.value = '';
-        setTimeout(() => {
-            chatFlow.WAITING_FOR_NAME.handle(text);
-        }, 500);
-    }
-}
-
-sendBtn.addEventListener('click', handleUserSend);
-userInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') handleUserSend();
-});
-
-window.onload = () => {
-    chatFlow.START.execute();
-};
-
+        window.onload = () => {
+            chatFlow.START.execute();
+        };
     </script>
 </body>
 </html>
