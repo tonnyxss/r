@@ -145,6 +145,7 @@
             gap: 12px;
             cursor: pointer;
             border: 1px solid #e1e4e6;
+            text-decoration: none; /* Tira o sublinhado do link */
             transition: background 0.2s;
         }
 
@@ -308,50 +309,6 @@
             font-size: 18px;
             flex-shrink: 0;
         }
-
-        /* Modal Visualizador de PDF (Estilo WhatsApp Web) */
-        .pdf-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.85);
-            z-index: 100;
-            flex-direction: column;
-        }
-
-        .pdf-modal-header {
-            background-color: #111b21;
-            color: white;
-            padding: 14px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: bold;
-        }
-
-        .pdf-modal-close {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
-        }
-
-        .pdf-modal-body {
-            flex: 1;
-            width: 100%;
-            height: 100%;
-            background-color: #222e35;
-        }
-
-        .pdf-modal-body iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
     </style>
 </head>
 <body>
@@ -378,25 +335,11 @@
         </div>
     </div>
 
-    <!-- Modal para Visualização de PDF -->
-    <div class="pdf-modal" id="pdf-modal">
-        <div class="pdf-modal-header">
-            <span id="pdf-modal-title">Visualizando Documento</span>
-            <button class="pdf-modal-close" onclick="closePdfModal()">✕</button>
-        </div>
-        <div class="pdf-modal-body">
-            <iframe id="pdf-iframe" src=""></iframe>
-        </div>
-    </div>
-
     <script>
         const chatContainer = document.getElementById('chat-container');
         const userInput = document.getElementById('user-input');
         const sendBtn = document.getElementById('send-btn');
         const chatStatus = document.getElementById('chat-status');
-        const pdfModal = document.getElementById('pdf-modal');
-        const pdfIframe = document.getElementById('pdf-iframe');
-        const pdfModalTitle = document.getElementById('pdf-modal-title');
 
         let userData = { name: '' };
         let currentState = 'START';
@@ -461,7 +404,7 @@
             AMSTR_FLOW: {
                 execute: () => {
                     sendBotMessage(`Com certeza, *${userData.name}*! Separei aqui as principais amostras gratuitas para você ver com os próprios olhos a qualidade e a organização visual dos nossos materiais.`);
-                    sendBotMessage("Clique em qualquer um dos arquivos abaixo para ler agora mesmo dentro desta conversa:");
+                    sendBotMessage("Clique em qualquer um dos arquivos abaixo para iniciar o download instantâneo:");
 
                     setTimeout(() => {
                         appendPdfAttachment("FocoLegis - AMOSTRA - EAOAB.pdf", "FocoLegis - AMOSTRA - EAOAB.pdf");
@@ -577,21 +520,22 @@
             return msgDiv;
         }
 
-        // Gera o balão do arquivo anexo em PDF simulando o WhatsApp
+        // Gera o balão do arquivo anexo transformando-o em link direto de download nativo
         function appendPdfAttachment(displayName, fileUrl) {
             const containerDiv = document.createElement('div');
             containerDiv.className = 'message received';
             containerDiv.style.padding = '6px';
 
-            const pdfCard = document.createElement('div');
+            const pdfCard = document.createElement('a');
             pdfCard.className = 'pdf-attachment';
-            pdfCard.onclick = () => openPdfModal(displayName, fileUrl);
+            pdfCard.href = fileUrl;
+            pdfCard.setAttribute('download', displayName); // Força o download do arquivo com o nome correto
 
             pdfCard.innerHTML = `
                 <div class="pdf-icon">📄</div>
                 <div class="pdf-details">
                     <div class="pdf-name">${displayName}</div>
-                    <div class="pdf-meta">PDF • Visualizar documento</div>
+                    <div class="pdf-meta">PDF • Toque para baixar</div>
                 </div>
             `;
 
@@ -644,18 +588,6 @@
                 appendMessage(text, 'received');
                 chatStatus.innerText = 'Online';
             }, delay);
-        }
-
-        // Funções do Visualizador de PDF Integrado
-        function openPdfModal(title, url) {
-            pdfModalTitle.innerText = title;
-            pdfIframe.src = url;
-            pdfModal.style.display = 'flex';
-        }
-
-        function closePdfModal() {
-            pdfModal.style.display = 'none';
-            pdfIframe.src = '';
         }
 
         function selectOption(chosenText, nextState) {
