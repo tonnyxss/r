@@ -478,10 +478,50 @@ const chatFlow = {
             currentState = 'WAITING_FOR_FREE_TEXT';
         },
         handle: (text) => {
-            const msg = text.toLowerCase();
+            // Remove acentos, caracteres especiais e deixa tudo minúsculo para busca perfeita
+            const msg = text.toLowerCase()
+                            .normalize("NFD")
+                            .replace(/[\u0300-\u036f]/g, "");
             
-            // 1. GATILHO DE COMPRA / AQUISIÇÃO (Sinônimos)
-            if (msg.includes('comprar') || msg.includes('adquirir') || msg.includes('adquiro') || msg.includes('como adquiro') || msg.includes('quero o material') || msg.includes('valores') || msg.includes('preco') || msg.includes('preço') || msg.includes('levar') || msg.includes('pegar')) {
+            // 1. GATILHO DE QUANTIDADE DE MATÉRIAS / COMBO INCOMPLETO
+            if (
+                msg.includes('so isso') || 
+                msg.includes('so essas') || 
+                msg.includes('so tem essas') || 
+                msg.includes('so tem algumas') || 
+                msg.includes('quais materias') || 
+                msg.includes('quais disciplinas') || 
+                msg.includes('mais materias') || 
+                msg.includes('mais disciplinas') || 
+                msg.includes('mais materia') || 
+                msg.includes('nao tem completo') || 
+                msg.includes('incompleto') || 
+                msg.includes('quantidade de materias') || 
+                msg.includes('todas as materias') || 
+                msg.includes('todas materias') || 
+                msg.includes('completo')
+            ) {
+                sendBotMessage("🎯 Entendo perfeitamente sua dúvida! Mas deixa eu te explicar a inteligência por trás do nosso material: ele foi desenhado para você ser aprovado sem carregar peso morto.");
+                
+                setTimeout(() => {
+                    sendBotMessage("Estudar as 20 matérias do edital é um erro que reprova muita gente. Não recomendamos perder tempo com disciplinas menores, que trazem apenas 2 ou 3 questões. O segredo estratégico é dominar o topo da prova.");
+                }, 2200);
+
+                setTimeout(() => {
+                    sendBotMessage("Por isso, o *Combo OAB 1ª Fase* foca estrategicamente no coração do edital:\n\n• Constitucional\n• Penal e Processo Penal\n• Civil e Processo Civil\n• Tributário\n• Direito e Processo do Trabalho\n• Ética Profissional\n\nGarantindo uma base forte nessas matérias peso-pesado, você ultrapassa os 40 pontos com folga e muito mais rápido!");
+                }, 4800);
+
+                setTimeout(() => {
+                    appendOptions([
+                        { text: "⚖️ Ver o Combo OAB (R$ 59,99)", action: () => selectOption("⚖️ Ver o Combo OAB (R$ 59,99)", 'OAB_FLOW') },
+                        { text: "↩️ Voltar ao Menu Principal", action: () => selectOption("↩️ Voltar ao Menu Principal", 'RESET') }
+                    ]);
+                }, 7500);
+                return;
+            }
+            
+            // 2. GATILHO DE COMPRA / AQUISIÇÃO
+            else if (msg.includes('comprar') || msg.includes('adquirir') || msg.includes('adquiro') || msg.includes('como adquiro') || msg.includes('quero o material') || msg.includes('valores') || msg.includes('preco') || msg.includes('levar') || msg.includes('pegar')) {
                 sendBotMessage(`Perfeito, *${userData.name}*! Você deseja comprar uma lei individual ou o Combo das principais matérias da OAB?`);
                 
                 setTimeout(() => {
@@ -492,50 +532,38 @@ const chatFlow = {
                 }, 1500);
                 return;
             } 
-            
-            // 2. NOVO GATILHO: SÓ TEM ESSAS MATÉRIAS? / COMPLETO / TODAS AS MATÉRIAS
-            else if (msg.includes('só tem essas') || msg.includes('so tem essas') || msg.includes('todas as matérias') || msg.includes('todas as materias') || msg.includes('todas materias') || msg.includes('completo') || msg.includes('quais materias') || msg.includes('quais matérias') || msg.includes('restante') || msg.includes('outras materias') || msg.includes('outras matérias')) {
-                sendBotMessage("🎯 Nosso material foi cirurgicamente desenhado para ser *eficiente*. Isso significa que organizamos as *principais matérias da prova* para que você estude apenas o que realmente é cobrado e garante a sua aprovação.");
-                
-                setTimeout(() => {
-                    sendBotMessage("⚠️ Não recomendamos e não é estrategicamente inteligente perder tempo com as matérias menores (aquelas que têm apenas 2 ou 3 questões na prova). O segredo para fazer os 40 pontos rápidos é gabaritar as disciplinas de grande peso, como Ética, Constitucional, Civil, Penal e Trabalho.");
-                }, 2200);
 
-                setTimeout(() => {
-                    sendBotMessage("Focar no que dá resultado poupa meses de leitura inútil! Vamos garantir seus pontos com o Combo OAB?");
-                }, 4500);
-
-                setTimeout(() => {
-                    appendOptions([
-                        { text: "⚖️ Ver o Combo OAB (R$ 59,99)", action: () => selectOption("⚖️ Ver o Combo OAB (R$ 59,99)", 'OAB_FLOW') },
-                        { text: "↩️ Voltar ao Menu Principal", action: () => selectOption("↩️ Voltar ao Menu Principal", 'RESET') }
-                    ]);
-                }, 5800);
-                return;
-            }
-
-// 3. Central de Respostas por Palavra-Chave Expandida
+            // 3. Central de Outras Respostas por Palavra-Chave (Agora testadas sem acento!)
             else if (msg.includes('boleto')) {
                 sendBotMessage("💡 *Sobre pagamentos via Boleto:* O banco leva de 1 a 2 dias úteis para compensar o pagamento. Assim que compensar, o sistema envia o material direto no seu e-mail de forma automática!");
                 sendBotMessage("Se quiser o material na hora, recomendo refazer a compra utilizando o *Pix*.");
             } 
-            else if (msg.includes('pix') || msg.includes('transferência') || msg.includes('transferencia')) {
+            else if (msg.includes('pix') || msg.includes('transferencia')) {
                 sendBotMessage("⚡ *Pagamento via Pix:* É a forma mais rápida! A aprovação é imediata e em menos de 1 minuto os links de download dos PDFs são enviados para o seu e-mail automático.");
             }
-            else if (msg.includes('parcela') || msg.includes('cartao') || msg.includes('cartão') || msg.includes('vezes') || msg.includes('crédito') || msg.includes('credito')) {
+            else if (msg.includes('parcela') || msg.includes('cartao') || msg.includes('vezes') || msg.includes('credito')) {
                 sendBotMessage("💳 *Parcelamento:* Sim! Você pode parcelar o seu combo no cartão de crédito diretamente na nossa página de checkout seguro.");
             } 
             else if (msg.includes('desconto') || msg.includes('cupom') || msg.includes('promo') || msg.includes('barato')) {
                 sendBotMessage("🔥 Nossos preços já estão no lote promocional máximo com mais de 50% de desconto aplicado direto no link!");
                 sendBotMessage("As legislações individuais saem por R$ 19,99 e o Combo OAB completo por R$ 59,99. Esse valor pode subir a qualquer momento.");
             } 
-            else if (msg.includes('imprimir') || msg.includes('impressao') || msg.includes('imprime') || msg.includes('físico') || msg.includes('fisico') || msg.includes('papel')) {
+            else if (msg.includes('imprimir') || msg.includes('impressao') || msg.includes('imprime') || msg.includes('fisico') || msg.includes('papel')) {
                 sendBotMessage("🖨️ *Impressão:* Sim! Os arquivos são entregues no formato PDF padrão de alta definição. Você pode baixar em qualquer dispositivo e imprimir na sua casa ou em uma gráfica se preferir estudar no papel.");
             } 
-            else if (msg.includes('garantia') || msg.includes('reembolso') || msg.includes('devolução') || msg.includes('devolver') || msg.includes('seguro')) {
+            else if (msg.includes('garantia') || msg.includes('reembolso') || msg.includes('devolucao') || msg.includes('devolver') || msg.includes('seguro')) {
                 sendBotMessage("🛡️ *Garantia Incondicional:* Confiamos tanto na metodologia da lei seca esquematizada que oferecemos *7 dias de garantia*. Se por qualquer motivo você achar que o material não é para você, basta pedir o reembolso e devolvemos 100% do seu dinheiro.");
             }
-            else if (msg.includes('não recebi') || msg.includes('nao recebi') || msg.includes('acesso') || msg.includes('email errado') || msg.includes('e-mail errado') || msg.includes('chegou')) {
+            else if (msg.includes('bug') || msg.includes('erro') || msg.includes('problema') || msg.includes('falhou') || msg.includes('recusado') || msg.includes('nao consigo') || msg.includes('travou') || msg.includes('deu errado')) {
+                sendBotMessage("⚠️ *Ops! Ocorreu algum probleminha técnico aí?*");
+                sendBotMessage("Fique tranquilo(a), falhas no carregamento do checkout ou instabilidades do banco acontecem. Nossa equipe de suporte consegue liberar o seu link alternativo ou gerar sua chave de acesso manualmente para você não perder o valor promocional.");
+                
+                setTimeout(() => {
+                    sendBotMessage("Clique no botão abaixo para falar direto comigo ou com um atendente no WhatsApp agora mesmo:");
+                    appendLinkButton("📱 Resolver Problema no WhatsApp", "https://wa.me/SEUNUMERODEWHATSAPP");
+                }, 2000);
+            }
+            else if (msg.includes('nao recebi') || msg.includes('acesso') || msg.includes('chegou')) {
                 sendBotMessage("📧 *Problemas com o Acesso?* Fique tranquilo(a)! Se você já comprou e não encontrou o e-mail, dê uma olhadinha na sua caixa de *Spam* ou na aba *Promoções*.");
                 sendBotMessage("Se mesmo assim não achar ou se digitou o e-mail errado na hora da compra, clique no botão abaixo para falar com nosso suporte humano que resolvemos isso para você na hora!");
                 setTimeout(() => {
