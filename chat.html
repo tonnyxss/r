@@ -145,7 +145,7 @@
             gap: 12px;
             cursor: pointer;
             border: 1px solid #e1e4e6;
-            text-decoration: none; /* Tira o sublinhado do link */
+            text-decoration: none;
             transition: background 0.2s;
         }
 
@@ -336,299 +336,394 @@
     </div>
 
     <script>
-        const chatContainer = document.getElementById('chat-container');
-        const userInput = document.getElementById('user-input');
-        const sendBtn = document.getElementById('send-btn');
-        const chatStatus = document.getElementById('chat-status');
+const chatContainer = document.getElementById('chat-container');
+const userInput = document.getElementById('user-input');
+const sendBtn = document.getElementById('send-btn');
+const chatStatus = document.getElementById('chat-status');
 
-        let userData = { name: '' };
-        let currentState = 'START';
+let userData = { name: '' };
+let currentState = 'START';
 
-        const chatFlow = {
-            START: {
-                execute: () => {
-                    sendBotMessage("Oi, digite o seu nome para eu te ajudar!");
-                    currentState = 'WAITING_FOR_NAME';
-                }
-            },
-            WAITING_FOR_NAME: {
-                handle: (text) => {
-                    userData.name = text;
-                    userInput.disabled = true;
-                    userInput.placeholder = "Escolha uma opção acima...";
-
-                    sendBotMessage(`Prazer, *${userData.name}*! Seja muito bem-vindo(a) ao FocoLegis.`, 1000);
-                    
-                    setTimeout(() => {
-                        sendBotMessage("🔥 **Por que estudar com o FocoLegis?**\n\n• *Estudo Estratégico:* Mais de 80% das questões da OAB cobram a literalidade da lei. Nossos materiais trazem a lei seca cirurgicamente *esquematizada, grifada e comentada*.\n• *Acesso Vitalício:* Pague uma única vez e o material é seu para sempre.\n• *Atualizações Gratuitas:* Mudou a legislação ou saiu edital novo? Você recebe a nova versão sem pagar nada a mais.");
-                    }, 2200);
-
-                    setTimeout(() => {
-                        sendBotMessage("Escolha abaixo o que deseja fazer ou qual dúvida quer tirar agora:");
-                    }, 4500);
-
-                    setTimeout(() => {
-                        showMainMenu();
-                    }, 6000);
-                }
-            },
-            OAB_FLOW: {
-                execute: () => {
-                    sendBotMessage(`O *Combo OAB 1ª Fase* é o nosso campeão de aprovações, *${userData.name}*. Reunimos as matérias com maior peso na prova para garantir seus pontos de forma rápida:\n\n• Constitucional\n• Penal e Processo Penal\n• Civil e Processo Civil\n• Tributário\n• Direito e Processo do Trabalho\n• Ética Profissional (para gabaritar!)`);
-                    
-                    setTimeout(() => {
-                        sendBotMessage("Tudo de forma visual e direto ao ponto por apenas *R$ 59,99*. Um investimento único para garantir sua carteira da Ordem.");
-                    }, 2000);
-
-                    setTimeout(() => {
-                        appendLinkButton("🔥 Garantir Combo OAB (R$ 59,99)", "https://www.focolegis.com/OAB?ref=chatbox");
-                        appendOptions([
-                            { text: "↩️ Voltar ao Menu Principal", action: () => selectOption("↩️ Voltar ao Menu Principal", 'RESET') }
-                        ]);
-                    }, 3500);
-                }
-            },
-            CHOOSE_CATALOG: {
-                execute: () => {
-                    sendBotMessage(`Perfeito, *${userData.name}*! Nossas leis individuais isoladas custam apenas *R$ 19,99* cada.`);
-                    sendBotMessage("Elas são ideais se você quer reforçar apenas aquela matéria específica onde seu rendimento está baixo.");
-                    
-                    setTimeout(() => {
-                        appendLinkButton("🛒 Ver Leis Individuais", "https://www.focolegis.com/?ref=chatbox");
-                        appendOptions([
-                            { text: "↩️ Voltar ao Menu Principal", action: () => selectOption("↩️ Voltar ao Menu Principal", 'RESET') }
-                        ]);
-                    }, 2000);
-                }
-            },
-            AMSTR_FLOW: {
-                execute: () => {
-                    sendBotMessage(`Com certeza, *${userData.name}*! Separei aqui as principais amostras gratuitas para você ver com os próprios olhos a qualidade e a organização visual dos nossos materiais.`);
-                    sendBotMessage("Clique em qualquer um dos arquivos abaixo para iniciar o download instantâneo:");
-
-                    setTimeout(() => {
-                        appendPdfAttachment("FocoLegis - AMOSTRA - EAOAB.pdf", "FocoLegis - AMOSTRA - EAOAB.pdf");
-                        appendPdfAttachment("FocoLegis - AMOSTRA - Direito Constitucional.pdf", "FocoLegis - AMOSTRA - Direito Constitucional.pdf");
-                        appendPdfAttachment("FocoLegis - AMOSTRA - Direito Penal.pdf", "FocoLegis - AMOSTRA - Direito Penal.pdf");
-                        appendPdfAttachment("FocoLegis - AMOSTRA - Processo Penal.pdf", "FocoLegis - AMOSTRA - Processo Penal.pdf");
-                        appendPdfAttachment("FocoLegis - AMOSTRA - Direito Civil.pdf", "FocoLegis - AMOSTRA - Direito Civil.pdf");
-                        appendPdfAttachment("FocoLegis - AMOSTRA - Processo Civil.pdf", "FocoLegis - AMOSTRA - Processo Civil.pdf");
-                        appendPdfAttachment("FocoLegis - AMOSTRA - Direito Tributário.pdf", "FocoLegis - AMOSTRA - Direito Tributário.pdf");
-                        appendPdfAttachment("FocoLegis - AMOSTRA - CLT.pdf", "FocoLegis - AMOSTRA - CLT.pdf");
-                    }, 1500);
-
-                    setTimeout(() => {
-                        appendOptions([
-                            { text: "⚖️ Gostei! Ver o Combo OAB (R$ 59,99)", action: () => selectOption("⚖️ Gostei! Ver o Combo OAB (R$ 59,99)", 'OAB_FLOW') },
-                            { text: "↩️ Voltar ao Menu Principal", action: () => selectOption("↩️ Voltar ao Menu Principal", 'RESET') }
-                        ]);
-                    }, 4000);
-                }
-            },
-            DOUBT_EDITAL: {
-                execute: () => {
-                    sendBotMessage("⚠️ *O material serve para o edital atual?*");
-                    sendBotMessage("Sim! Todos os nossos materiais são rigorosamente revisados e atualizados de acordo com o último edital publicado e as alterações legislativas recentes.");
-                    sendBotMessage("E lembre-se: como o seu acesso é *vitalício*, se qualquer lei mudar enquanto você estuda, você recebe a atualização de graça no seu e-mail.");
-                    
-                    setTimeout(() => {
-                        appendOptions([
-                            { text: "⚖️ Ver o Combo OAB", action: () => selectOption("⚖️ Ver o Combo OAB", 'OAB_FLOW') },
-                            { text: "↩️ Voltar ao Menu Principal", action: () => selectOption("↩️ Voltar ao Menu Principal", 'RESET') }
-                        ]);
-                    }, 2000);
-                }
-            },
-            DOUBT_BASE: {
-                execute: () => {
-                    sendBotMessage("❓ *Consigo entender mesmo se eu não tiver uma base boa?*");
-                    sendBotMessage(`Com certeza, *${userData.name}*! O material foi desenhado justamente para quem odeia PDFs cansativos ou tem dificuldades de concentração.`);
-                    sendBotMessage("A estruturação esquematizada funciona como um mapa visual. Os comentários dos professores explicam os artigos complexos de forma simples e mastigada, facilitando a memorização mesmo para quem está começando do zero absoluto.");
-                    
-                    setTimeout(() => {
-                        appendOptions([
-                            { text: "⚖️ Ver o Combo OAB", action: () => selectOption("⚖️ Ver o Combo OAB", 'OAB_FLOW') },
-                            { text: "↩️ Voltar ao Menu Principal", action: () => selectOption("↩️ Voltar ao Menu Principal", 'RESET') }
-                        ]);
-                    }, 2500);
-                }
-            },
-            DELIVERY_INFO: {
-                execute: () => {
-                    sendBotMessage("📧 *Como e quando eu recebo o acesso?*");
-                    sendBotMessage("O envio é 100% automático e imediato. Assim que o pagamento é confirmado, os links para download dos PDFs chegam no seu e-mail.");
-                    sendBotMessage("⚡ *Dica de ouro:* Pagando por *Pix*, o sistema aprova a compra em menos de 1 minuto e você já recebe o material na hora para começar a estudar hoje mesmo.");
-                    
-                    setTimeout(() => {
-                        appendOptions([
-                            { text: "🔥 Garantir Combo OAB (R$ 59,99)", action: () => selectOption("🔥 Garantir Combo OAB (R$ 59,99)", 'OAB_FLOW') },
-                            { text: "↩️ Voltar ao Menu Principal", action: () => selectOption("↩️ Voltar ao Menu Principal", 'RESET') }
-                        ]);
-                    }, 2200);
-                }
-            },
-            HUMAN_SUPPORT: {
-                execute: () => {
-                    sendBotMessage(`Sem problemas, *${userData.name}*! Se você tem alguma dúvida sobre o pagamento ou precisa de um suporte específico, clique no botão abaixo para falar direto com nosso atendimento no WhatsApp:`);
-                    
-                    setTimeout(() => {
-                        appendLinkButton("📱 Falar com Atendente no WhatsApp", "https://wa.me/SEUNUMERODEWHATSAPP");
-                        appendOptions([
-                            { text: "↩️ Voltar ao Menu Principal", action: () => selectOption("↩️ Voltar ao Menu Principal", 'RESET') }
-                        ]);
-                    }, 1500);
-                }
-            }
-        };
-
-        function showMainMenu() {
-            appendOptions([
-                { text: "⚖️ Combo OAB 1ª Fase (R$ 59,99)", action: () => selectOption("⚖️ Combo OAB 1ª Fase (R$ 59,99)", 'OAB_FLOW') },
-                { text: "📚 Leis Individuais (R$ 19,99)", action: () => selectOption("📚 Leis Individuais (R$ 19,99)", 'CHOOSE_CATALOG') },
-                { text: "📖 Ver Amostras dos Materiais", action: () => selectOption("📖 Ver Amostras dos Materiais", 'AMSTR_FLOW') },
-                { text: "❓ Serve para quem está do zero?", action: () => selectOption("❓ Serve para quem está do zero?", 'DOUBT_BASE') },
-                { text: "⚠️ Está atualizado para o edital?", action: () => selectOption("⚠️ Está atualizado para o edital?", 'DOUBT_EDITAL') },
-                { text: "📧 Como recebo meu material?", action: () => selectOption("📧 Como recebo meu material?", 'DELIVERY_INFO') },
-                { text: "👤 Outras dúvidas / Atendimento", action: () => selectOption("👤 Outras dúvidas / Atendimento", 'HUMAN_SUPPORT') }
-            ]);
+const chatFlow = {
+    START: {
+        execute: () => {
+            sendBotMessage("Oi, digite o seu nome para eu te ajudar!");
+            currentState = 'WAITING_FOR_NAME';
         }
+    },
+    WAITING_FOR_NAME: {
+        handle: (text) => {
+            userData.name = text;
+            userInput.disabled = true;
+            userInput.placeholder = "Escolha uma opção acima...";
 
-        function formatMessage(text) {
-            return text
-                .replace(/\n/g, '<br>')
-                .replace(/\*(.*?)\*/g, '<strong>$1</strong>');
-        }
-
-        function getTime() {
-            const now = new Date();
-            return now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-        }
-
-        function appendMessage(text, side, isTyping = false) {
-            const msgDiv = document.createElement('div');
-            msgDiv.className = `message ${side} ${isTyping ? 'typing' : ''}`;
-            
-            if (isTyping) {
-                msgDiv.innerHTML = '<span></span><span></span><span></span>';
-                msgDiv.id = 'typing-indicator';
-            } else {
-                msgDiv.innerHTML = `${formatMessage(text)} <span class="message-time">${getTime()}</span>`;
-            }
-
-            chatContainer.appendChild(msgDiv);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-            return msgDiv;
-        }
-
-        // Gera o balão do arquivo anexo transformando-o em link direto de download nativo
-        function appendPdfAttachment(displayName, fileUrl) {
-            const containerDiv = document.createElement('div');
-            containerDiv.className = 'message received';
-            containerDiv.style.padding = '6px';
-
-            const pdfCard = document.createElement('a');
-            pdfCard.className = 'pdf-attachment';
-            pdfCard.href = fileUrl;
-            pdfCard.setAttribute('download', displayName); // Força o download do arquivo com o nome correto
-
-            pdfCard.innerHTML = `
-                <div class="pdf-icon">📄</div>
-                <div class="pdf-details">
-                    <div class="pdf-name">${displayName}</div>
-                    <div class="pdf-meta">PDF • Toque para baixar</div>
-                </div>
-            `;
-
-            const timeSpan = document.createElement('span');
-            timeSpan.className = 'message-time';
-            timeSpan.innerHTML = getTime();
-
-            containerDiv.appendChild(pdfCard);
-            containerDiv.appendChild(timeSpan);
-            chatContainer.appendChild(containerDiv);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-
-        function appendOptions(options) {
-            const container = document.createElement('div');
-            container.className = 'options-container';
-
-            options.forEach(opt => {
-                const btn = document.createElement('button');
-                btn.className = 'btn-option';
-                btn.innerText = opt.text;
-                btn.onclick = () => {
-                    container.remove();
-                    opt.action();
-                };
-                container.appendChild(btn);
-            });
-
-            chatContainer.appendChild(container);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-
-        function appendLinkButton(text, url) {
-            const btnLink = document.createElement('a');
-            btnLink.className = 'btn-link';
-            btnLink.href = url;
-            btnLink.target = '_blank';
-            btnLink.innerText = text;
-
-            chatContainer.appendChild(btnLink);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-
-        function sendBotMessage(text, delay = 1400) {
-            chatStatus.innerText = 'Digitando...';
-            const typingIndicator = appendMessage('', 'received', true);
-
-            setTimeout(() => {
-                typingIndicator.remove();
-                appendMessage(text, 'received');
-                chatStatus.innerText = 'Online';
-            }, delay);
-        }
-
-        function selectOption(chosenText, nextState) {
-            appendMessage(chosenText, 'sent');
+            sendBotMessage(`Prazer, *${userData.name}*! Seja muito bem-vindo(a) ao FocoLegis.`, 1000);
             
             setTimeout(() => {
-                if (nextState === 'RESET') {
-                    sendBotMessage(`Voltamos ao início, *${userData.name}*! Como posso te ajudar?`, 1000);
-                    setTimeout(() => {
-                        showMainMenu();
-                    }, 1800);
-                } else {
-                    currentState = nextState;
-                    if (chatFlow[currentState] && chatFlow[currentState].execute) {
-                        chatFlow[currentState].execute();
-                    }
-                }
-            }, 600);
+                sendBotMessage("🔥 **Por que estudar com o FocoLegis?**\n\n• *Estudo Estratégico:* Mais de 80% das questões da OAB cobram a literalidade da lei. Nossos materiais trazem a lei seca cirurgicamente *esquematizada, grifada e comentada*.\n• *Acesso Vitalício:* Pague uma única vez e o material é seu para sempre.\n• *Atualizações Gratuitas:* Mudou a legislação ou saiu edital novo? Você recebe a nova versão sem pagar nada a mais.");
+            }, 2200);
+
+            setTimeout(() => {
+                sendBotMessage("Escolha abaixo o que deseja fazer ou qual dúvida quer tirar agora:");
+            }, 4500);
+
+            setTimeout(() => {
+                showMainMenu();
+            }, 6000);
         }
+    },
+    OAB_FLOW: {
+        execute: () => {
+            sendBotMessage(`O *Combo OAB 1ª Fase* é o nosso campeão de aprovações, *${userData.name}*. Reunimos as matérias com maior peso na prova para garantir seus pontos de forma rápida:\n\n• Constitucional\n• Penal e Processo Penal\n• Civil e Processo Civil\n• Tributário\n• Direito e Processo do Trabalho\n• Ética Profissional (para gabaritar!)`);
+            
+            setTimeout(() => {
+                sendBotMessage("Tudo de forma visual e direto ao ponto por apenas *R$ 59,99*. Um investimento único para garantir sua carteira da Ordem.");
+            }, 2000);
 
-        function handleUserSend() {
-            const text = userInput.value.trim();
-            if (!text) return;
+            setTimeout(() => {
+                appendLinkButton("🔥 Garantir Combo OAB (R$ 59,99)", "https://www.focolegis.com/OAB?ref=chatbox");
+                appendOptions([
+                    { text: "↩️ Voltar ao Menu Principal", action: () => selectOption("↩️ Voltar ao Menu Principal", 'RESET') }
+                ]);
+            }, 3500);
+        }
+    },
+    CHOOSE_CATALOG: {
+        execute: () => {
+            sendBotMessage(`Perfeito, *${userData.name}*! Nossas leis individuais isoladas custam apenas *R$ 19,99* cada.`);
+            sendBotMessage("Elas são ideais se você quer reforçar apenas aquela matéria específica onde seu rendimento está baixo.");
+            
+            setTimeout(() => {
+                appendLinkButton("🛒 Ver Leis Individuais", "https://www.focolegis.com/?ref=chatbox");
+                appendOptions([
+                    { text: "↩️ Voltar ao Menu Principal", action: () => selectOption("↩️ Voltar ao Menu Principal", 'RESET') }
+                ]);
+            }, 2000);
+        }
+    },
+    AMSTR_FLOW: {
+        execute: () => {
+            sendBotMessage(`Com certeza, *${userData.name}*! Separei aqui as principais amostras gratuitas para você ver com os próprios olhos a qualidade e a organização visual dos nossos materiais.`);
+            sendBotMessage("Clique em qualquer um dos arquivos abaixo para iniciar o download instantâneo:");
 
-            if (currentState === 'WAITING_FOR_NAME') {
-                appendMessage(text, 'sent');
-                userInput.value = '';
+            setTimeout(() => {
+                appendPdfAttachment("FocoLegis - AMOSTRA - EAOAB.pdf", "FocoLegis - AMOSTRA - EAOAB.pdf");
+                appendPdfAttachment("FocoLegis - AMOSTRA - Direito Constitucional.pdf", "FocoLegis - AMOSTRA - Direito Constitucional.pdf");
+                appendPdfAttachment("FocoLegis - AMOSTRA - Direito Penal.pdf", "FocoLegis - AMOSTRA - Direito Penal.pdf");
+                appendPdfAttachment("FocoLegis - AMOSTRA - Processo Penal.pdf", "FocoLegis - AMOSTRA - Processo Penal.pdf");
+                appendPdfAttachment("FocoLegis - AMOSTRA - Direito Civil.pdf", "FocoLegis - AMOSTRA - Direito Civil.pdf");
+                appendPdfAttachment("FocoLegis - AMOSTRA - Processo Civil.pdf", "FocoLegis - AMOSTRA - Processo Civil.pdf");
+                appendPdfAttachment("FocoLegis - AMOSTRA - Direito Tributário.pdf", "FocoLegis - AMOSTRA - Direito Tributário.pdf");
+                appendPdfAttachment("FocoLegis - AMOSTRA - CLT.pdf", "FocoLegis - AMOSTRA - CLT.pdf");
+            }, 1500);
+
+            setTimeout(() => {
+                appendOptions([
+                    { text: "⚖️ Gostei! Ver o Combo OAB (R$ 59,99)", action: () => selectOption("⚖️ Gostei! Ver o Combo OAB (R$ 59,99)", 'OAB_FLOW') },
+                    { text: "↩️ Voltar ao Menu Principal", action: () => selectOption("↩️ Voltar ao Menu Principal", 'RESET') }
+                ]);
+            }, 4000);
+        }
+    },
+    DOUBT_EDITAL: {
+        execute: () => {
+            sendBotMessage("⚠️ *O material serve para o edital atual?*");
+            sendBotMessage("Sim! Todos os nossos materiais são rigorosamente revisados e atualizados de acordo com o último edital publicado e as alterações legislativas recentes.");
+            sendBotMessage("E lembre-se: como o seu acesso é *vitalício*, se qualquer lei mudar enquanto você estuda, você recebe a atualização de graça no seu e-mail.");
+            
+            setTimeout(() => {
+                appendOptions([
+                    { text: "⚖️ Ver o Combo OAB", action: () => selectOption("⚖️ Ver o Combo OAB", 'OAB_FLOW') },
+                    { text: "↩️ Voltar ao Menu Principal", action: () => selectOption("↩️ Voltar ao Menu Principal", 'RESET') }
+                ]);
+            }, 2000);
+        }
+    },
+    DOUBT_BASE: {
+        execute: () => {
+            sendBotMessage("❓ *Consigo entender mesmo se eu não tiver uma base boa?*");
+            sendBotMessage(`Com certeza, *${userData.name}*! O material foi desenhado justamente para quem odeia PDFs cansativos ou tem dificuldades de concentração.`);
+            sendBotMessage("A estruturação esquematizada funciona como um mapa visual. Os comentários dos professores explicam os artigos complexos de forma simples e mastigada, facilitando a memorização mesmo para quem está começando do zero absoluto.");
+            
+            setTimeout(() => {
+                appendOptions([
+                    { text: "⚖️ Ver o Combo OAB", action: () => selectOption("⚖️ Ver o Combo OAB", 'OAB_FLOW') },
+                    { text: "↩️ Voltar ao Menu Principal", action: () => selectOption("↩️ Voltar ao Menu Principal", 'RESET') }
+                ]);
+            }, 2500);
+        }
+    },
+    DELIVERY_INFO: {
+        execute: () => {
+            sendBotMessage("📧 *Como e quando eu recebo o acesso?*");
+            sendBotMessage("O envio é 100% automático e imediato. Assim que o pagamento é confirmado, os links para download dos PDFs chegam no seu e-mail.");
+            sendBotMessage("⚡ *Dica de ouro:* Pagando por *Pix*, o sistema aprova a compra em menos de 1 minuto e você já recebe o material na hora para começar a estudar hoje mesmo.");
+            
+            setTimeout(() => {
+                appendOptions([
+                    { text: "🔥 Garantir Combo OAB (R$ 59,99)", action: () => selectOption("🔥 Garantir Combo OAB (R$ 59,99)", 'OAB_FLOW') },
+                    { text: "↩️ Voltar ao Menu Principal", action: () => selectOption("↩️ Voltar ao Menu Principal", 'RESET') }
+                ]);
+            }, 2200);
+        }
+    },
+    
+    HUMAN_SUPPORT: {
+        execute: () => {
+            userInput.disabled = false;
+            userInput.placeholder = "Digite sua dúvida aqui...";
+            userInput.focus();
+            
+            sendBotMessage(`Com certeza, *${userData.name}*! Pode digitar a sua dúvida ou pergunta aqui embaixo que eu vou tentar te responder agora mesmo.`);
+            currentState = 'WAITING_FOR_FREE_TEXT';
+        },
+        handle: (text) => {
+            const msg = text.toLowerCase();
+            
+            // 1. GATILHO DE COMPRA / AQUISIÇÃO (Sinônimos)
+            if (msg.includes('comprar') || msg.includes('adquirir') || msg.includes('adquiro') || msg.includes('como adquiro') || msg.includes('quero o material') || msg.includes('valores') || msg.includes('preco') || msg.includes('preço') || msg.includes('levar') || msg.includes('pegar')) {
+                sendBotMessage(`Perfeito, *${userData.name}*! Você deseja comprar uma lei individual ou o Combo das principais matérias da OAB?`);
+                
                 setTimeout(() => {
-                    chatFlow.WAITING_FOR_NAME.handle(text);
-                }, 500);
+                    appendOptions([
+                        { text: "📚 Lei Individual (R$ 19,99)", action: () => selectOption("📚 Quero uma Lei Individual", 'CHOOSE_CATALOG') },
+                        { text: "⚖️ Combo OAB 1ª Fase (R$ 59,99)", action: () => selectOption("⚖️ Quero o Combo OAB", 'OAB_FLOW') }
+                    ]);
+                }, 1500);
+                return;
+            } 
+            
+            // 2. NOVO GATILHO: SÓ TEM ESSAS MATÉRIAS? / COMPLETO / TODAS AS MATÉRIAS
+            else if (msg.includes('só tem essas') || msg.includes('so tem essas') || msg.includes('todas as matérias') || msg.includes('todas as materias') || msg.includes('todas materias') || msg.includes('completo') || msg.includes('quais materias') || msg.includes('quais matérias') || msg.includes('restante') || msg.includes('outras materias') || msg.includes('outras matérias')) {
+                sendBotMessage("🎯 Nosso material foi cirurgicamente desenhado para ser *eficiente*. Isso significa que organizamos as *principais matérias da prova* para que você estude apenas o que realmente é cobrado e garante a sua aprovação.");
+                
+                setTimeout(() => {
+                    sendBotMessage("⚠️ Não recomendamos e não é estrategicamente inteligente perder tempo com as matérias menores (aquelas que têm apenas 2 ou 3 questões na prova). O segredo para fazer os 40 pontos rápidos é gabaritar as disciplinas de grande peso, como Ética, Constitucional, Civil, Penal e Trabalho.");
+                }, 2200);
+
+                setTimeout(() => {
+                    sendBotMessage("Focar no que dá resultado poupa meses de leitura inútil! Vamos garantir seus pontos com o Combo OAB?");
+                }, 4500);
+
+                setTimeout(() => {
+                    appendOptions([
+                        { text: "⚖️ Ver o Combo OAB (R$ 59,99)", action: () => selectOption("⚖️ Ver o Combo OAB (R$ 59,99)", 'OAB_FLOW') },
+                        { text: "↩️ Voltar ao Menu Principal", action: () => selectOption("↩️ Voltar ao Menu Principal", 'RESET') }
+                    ]);
+                }, 5800);
+                return;
+            }
+
+// 3. Central de Respostas por Palavra-Chave Expandida
+            else if (msg.includes('boleto')) {
+                sendBotMessage("💡 *Sobre pagamentos via Boleto:* O banco leva de 1 a 2 dias úteis para compensar o pagamento. Assim que compensar, o sistema envia o material direto no seu e-mail de forma automática!");
+                sendBotMessage("Se quiser o material na hora, recomendo refazer a compra utilizando o *Pix*.");
+            } 
+            else if (msg.includes('pix') || msg.includes('transferência') || msg.includes('transferencia')) {
+                sendBotMessage("⚡ *Pagamento via Pix:* É a forma mais rápida! A aprovação é imediata e em menos de 1 minuto os links de download dos PDFs são enviados para o seu e-mail automático.");
+            }
+            else if (msg.includes('parcela') || msg.includes('cartao') || msg.includes('cartão') || msg.includes('vezes') || msg.includes('crédito') || msg.includes('credito')) {
+                sendBotMessage("💳 *Parcelamento:* Sim! Você pode parcelar o seu combo no cartão de crédito diretamente na nossa página de checkout seguro.");
+            } 
+            else if (msg.includes('desconto') || msg.includes('cupom') || msg.includes('promo') || msg.includes('barato')) {
+                sendBotMessage("🔥 Nossos preços já estão no lote promocional máximo com mais de 50% de desconto aplicado direto no link!");
+                sendBotMessage("As legislações individuais saem por R$ 19,99 e o Combo OAB completo por R$ 59,99. Esse valor pode subir a qualquer momento.");
+            } 
+            else if (msg.includes('imprimir') || msg.includes('impressao') || msg.includes('imprime') || msg.includes('físico') || msg.includes('fisico') || msg.includes('papel')) {
+                sendBotMessage("🖨️ *Impressão:* Sim! Os arquivos são entregues no formato PDF padrão de alta definição. Você pode baixar em qualquer dispositivo e imprimir na sua casa ou em uma gráfica se preferir estudar no papel.");
+            } 
+            else if (msg.includes('garantia') || msg.includes('reembolso') || msg.includes('devolução') || msg.includes('devolver') || msg.includes('seguro')) {
+                sendBotMessage("🛡️ *Garantia Incondicional:* Confiamos tanto na metodologia da lei seca esquematizada que oferecemos *7 dias de garantia*. Se por qualquer motivo você achar que o material não é para você, basta pedir o reembolso e devolvemos 100% do seu dinheiro.");
+            }
+            else if (msg.includes('não recebi') || msg.includes('nao recebi') || msg.includes('acesso') || msg.includes('email errado') || msg.includes('e-mail errado') || msg.includes('chegou')) {
+                sendBotMessage("📧 *Problemas com o Acesso?* Fique tranquilo(a)! Se você já comprou e não encontrou o e-mail, dê uma olhadinha na sua caixa de *Spam* ou na aba *Promoções*.");
+                sendBotMessage("Se mesmo assim não achar ou se digitou o e-mail errado na hora da compra, clique no botão abaixo para falar com nosso suporte humano que resolvemos isso para você na hora!");
+                setTimeout(() => {
+                    appendLinkButton("📱 Chamar Suporte no WhatsApp", "https://wa.me/SEUNUMERODEWHATSAPP");
+                }, 1500);
+            }
+            else if (msg.includes('cronograma') || msg.includes('organizar') || msg.includes('planejamento') || msg.includes('estudar')) {
+                sendBotMessage("📅 *Organização dos Estudos:* Nossos materiais são perfeitamente adaptáveis para qualquer cronograma ou reta final que você esteja seguindo, pois dividem os artigos por ordem de relevância e trazem os mapas visuais para memorização rápida.");
+            }
+            else if (msg.includes('falar com humano') || msg.includes('atendente') || msg.includes('suporte') || msg.includes('ajuda') || msg.includes('whatsapp') || msg.includes('whats')) {
+                sendBotMessage("Certinho! Vou liberar o link para você falar direto com nosso suporte humano:");
+                appendLinkButton("📱 Chamar Suporte no WhatsApp", "https://wa.me/SEUNUMERODEWHATSAPP");
+            } 
+            else {
+                sendBotMessage("Entendi! Para que você não fique esperando, vou deixar aqui o botão direto do nosso WhatsApp de atendimento humano. Lá conseguimos resolver qualquer caso específico bem rapidinho:");
+                appendLinkButton("📱 Chamar Suporte no WhatsApp", "https://wa.me/SEUNUMERODEWHATSAPP");
+            }
+
+            // Opções padrão de saída
+            setTimeout(() => {
+                appendOptions([
+                    { text: "❓ Tenho outra dúvida", action: () => {
+                        userInput.disabled = false;
+                        userInput.placeholder = "Digite sua outra dúvida...";
+                        userInput.focus();
+                        currentState = 'WAITING_FOR_FREE_TEXT';
+                    }},
+                    { text: "↩️ Voltar ao Menu Principal", action: () => selectOption("↩️ Voltar ao Menu Principal", 'RESET') }
+                ]);
+            }, 3000);
+        }
+    }
+};
+
+function showMainMenu() {
+    appendOptions([
+        { text: "⚖️ Combo OAB 1ª Fase (R$ 59,99)", action: () => selectOption("⚖️ Combo OAB 1ª Fase (R$ 59,99)", 'OAB_FLOW') },
+        { text: "📚 Leis Individuais (R$ 19,99)", action: () => selectOption("📚 Leis Individuais (R$ 19,99)", 'CHOOSE_CATALOG') },
+        { text: "📖 Ver Amostras dos Materiais", action: () => selectOption("📖 Ver Amostras dos Materiais", 'AMSTR_FLOW') },
+        { text: "❓ Serve para quem está do zero?", action: () => selectOption("❓ Serve para quem está do zero?", 'DOUBT_BASE') },
+        { text: "⚠️ Está atualizado para o edital?", action: () => selectOption("⚠️ Está atualizado para o edital?", 'DOUBT_EDITAL') },
+        { text: "📧 Como recebo meu material?", action: () => selectOption("📧 Como recebo meu material?", 'DELIVERY_INFO') },
+        { text: "👤 Outras dúvidas / Perguntar ao Bot", action: () => selectOption("👤 Outras dúvidas / Perguntar ao Bot", 'HUMAN_SUPPORT') }
+    ]);
+}
+
+function formatMessage(text) {
+    return text
+        .replace(/\n/g, '<br>')
+        .replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+}
+
+function getTime() {
+    const now = new Date();
+    return now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+}
+
+function appendMessage(text, side, isTyping = false) {
+    const msgDiv = document.createElement('div');
+    msgDiv.className = `message ${side} ${isTyping ? 'typing' : ''}`;
+    
+    if (isTyping) {
+        msgDiv.innerHTML = '<span></span><span></span><span></span>';
+        msgDiv.id = 'typing-indicator';
+            } else {
+        msgDiv.innerHTML = `${formatMessage(text)} <span class="message-time">${getTime()}</span>`;
+            }
+
+    chatContainer.appendChild(msgDiv);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+    return msgDiv;
+}
+
+function appendPdfAttachment(displayName, fileUrl) {
+    const containerDiv = document.createElement('div');
+    containerDiv.className = 'message received';
+    containerDiv.style.padding = '6px';
+
+    const pdfCard = document.createElement('a');
+    pdfCard.className = 'pdf-attachment';
+    pdfCard.href = fileUrl;
+    pdfCard.setAttribute('download', displayName);
+
+    pdfCard.innerHTML = `
+        <div class="pdf-icon">📄</div>
+        <div class="pdf-details">
+            <div class="pdf-name">${displayName}</div>
+            <div class="pdf-meta">PDF • Toque para baixar</div>
+        </div>
+    `;
+
+    const timeSpan = document.createElement('span');
+    timeSpan.className = 'message-time';
+    timeSpan.innerHTML = getTime();
+
+    containerDiv.appendChild(pdfCard);
+    containerDiv.appendChild(timeSpan);
+    chatContainer.appendChild(containerDiv);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+
+function appendOptions(options) {
+    const container = document.createElement('div');
+    container.className = 'options-container';
+
+    options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'btn-option';
+        btn.innerText = opt.text;
+        btn.onclick = () => {
+            container.remove();
+            opt.action();
+        };
+        container.appendChild(btn);
+    });
+
+    chatContainer.appendChild(container);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+
+function appendLinkButton(text, url) {
+    const btnLink = document.createElement('a');
+    btnLink.className = 'btn-link';
+    btnLink.href = url;
+    btnLink.target = '_blank';
+    btnLink.innerText = text;
+
+    chatContainer.appendChild(btnLink);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+
+function sendBotMessage(text, delay = 1400) {
+    chatStatus.innerText = 'Digitando...';
+    const typingIndicator = appendMessage('', 'received', true);
+
+    setTimeout(() => {
+        typingIndicator.remove();
+        appendMessage(text, 'received');
+        chatStatus.innerText = 'Online';
+    }, delay);
+}
+
+function selectOption(chosenText, nextState) {
+    appendMessage(chosenText, 'sent');
+    
+    setTimeout(() => {
+        if (nextState === 'RESET') {
+            userInput.disabled = true;
+            userInput.placeholder = "Escolha uma opção acima...";
+            sendBotMessage(`Voltamos ao início, *${userData.name}*! Como posso te ajudar?`, 1000);
+            setTimeout(() => {
+                showMainMenu();
+            }, 1800);
+        } else {
+            currentState = nextState;
+            if (chatFlow[currentState] && chatFlow[currentState].execute) {
+                chatFlow[currentState].execute();
             }
         }
+    }, 600);
+}
 
-        sendBtn.addEventListener('click', handleUserSend);
-        userInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handleUserSend();
-        });
+function handleUserSend() {
+    const text = userInput.value.trim();
+    if (!text) return;
 
-        window.onload = () => {
-            chatFlow.START.execute();
-        };
+    appendMessage(text, 'sent');
+    userInput.value = '';
+
+    setTimeout(() => {
+        if (currentState === 'WAITING_FOR_NAME') {
+            chatFlow.WAITING_FOR_NAME.handle(text);
+        } else if (currentState === 'WAITING_FOR_FREE_TEXT') {
+            userInput.disabled = true;
+            userInput.placeholder = "Aguardando resposta...";
+            chatFlow.HUMAN_SUPPORT.handle(text);
+        }
+    }, 500);
+}
+
+sendBtn.addEventListener('click', handleUserSend);
+userInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') handleUserSend();
+});
+
+window.onload = () => {
+    chatFlow.START.execute();
+};
     </script>
 </body>
 </html>
