@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FocoLegis - Suporte</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #efeae2;
+            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Header do WhatsApp */
+        .chat-header {
+            background-color: #008069;
+            color: white;
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+            z-index: 10;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .chat-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-info .name {
+            font-weight: bold;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .verified-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 15px;
+            height: 15px;
+            background-color: #00a884;
+            color: white;
+            border-radius: 50%;
+            font-size: 10px;
+        }
+
+        .chat-info .status {
+            font-size: 12px;
+            color: #d1f4cc;
+        }
+
+        /* Área de Mensagens */
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 15px;
+            line-height: 1.4;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.received {
+            background-color: #ffffff;
+            align-self: flex-start;
+            border-top-left-radius: 0;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+        }
+
+        .message.sent {
+            background-color: #d9fdd3;
+            align-self: flex-end;
+            border-top-right-radius: 0;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+        }
+
+        .message-time {
+            font-size: 11px;
+            color: #667781;
+            text-align: right;
+            margin-top: 4px;
+            display: block;
+        }
+
+        /* Container de Opções em Botões */
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-width: 80%;
+            align-self: flex-start;
+            margin-top: -4px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .btn-option {
+            background-color: #ffffff;
+            color: #00a884;
+            border: 1px solid #e1e1e1;
+            padding: 10px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            transition: background 0.2s;
+        }
+
+        .btn-option:hover {
+            background-color: #f7f9fa;
+        }
+
+        /* Botão de Link Estilo Bloco WhatsApp (Mais discreto e ajustado ao conteúdo) */
+        .btn-link {
+            background-color: #00a884;
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+            align-self: flex-start;
+            padding: 10px 16px;
+            border-radius: 18px;
+            font-weight: bold;
+            font-size: 14px;
+            text-align: center;
+            margin-top: 4px;
+            margin-bottom: 8px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .btn-link:hover {
+            background-color: #008069;
+        }
+
+        /* Indicador de digitando */
+        .typing {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 12px 16px !important;
+        }
+
+        .typing span {
+            width: 8px;
+            height: 8px;
+            background-color: #8696a0;
+            border-radius: 50%;
+            animation: bounce 1.3s infinite both;
+        }
+
+        .typing span:nth-child(2) { animation-delay: 0.15s; }
+        .typing span:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        /* Input de envio */
+        .chat-input-area {
+            background-color: #f0f2f5;
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            background-color: white;
+            border-radius: 8px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        .chat-input {
+            width: 100%;
+            border: none;
+            outline: none;
+            font-size: 15px;
+            background: transparent;
+        }
+
+        .chat-input:disabled {
+            background-color: #ffffff;
+            color: #999;
+            cursor: not-allowed;
+        }
+
+        .send-btn {
+            background-color: #00a884;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="chat-header">
+        <div class="avatar">📚</div>
+        <div class="chat-info">
+            <div class="name">FocoLegis - Suporte <span class="verified-badge">✓</span></div>
+            <div class="status" id="chat-status">Online</div>
+        </div>
+    </div>
+
+    <!-- Corpo do Chat -->
+    <div class="chat-container" id="chat-container"></div>
+
+    <!-- Campo de Input -->
+    <div class="chat-input-area">
+        <div class="input-wrapper">
+            <input type="text" id="user-input" class="chat-input" placeholder="Digite seu nome..." autocomplete="off">
+        </div>
+        <button class="send-btn" id="send-btn">➤</button>
+    </div>
+
+    <script>
+
+const chatContainer = document.getElementById('chat-container');
+const userInput = document.getElementById('user-input');
+const sendBtn = document.getElementById('send-btn');
+const chatStatus = document.getElementById('chat-status');
+
+let userData = { name: '' };
+let currentState = 'START';
+
+const chatFlow = {
+    START: {
+        execute: () => {
+            sendBotMessage("Oi, digite o seu nome para eu te ajudar!");
+            currentState = 'WAITING_FOR_NAME';
+        }
+    },
+    WAITING_FOR_NAME: {
+        handle: (text) => {
+            userData.name = text;
+            userInput.disabled = true;
+            userInput.placeholder = "Escolha uma opção acima...";
+
+            sendBotMessage(`Prazer, *${userData.name}*! Seja muito bem-vindo(a) ao FocoLegis.`, 1000);
+            
+            setTimeout(() => {
+                sendBotMessage("🔥 **Por que estudar com o FocoLegis?**\n\n• *Estudo Estratégico:* Mais de 80% das questões da OAB cobram a literalidade da lei. Nossos materiais trazem a lei seca cirurgicamente *esquematizada, grifada e comentada*.\n• *Acesso Vitalício:* Pague uma única vez e o material é seu para sempre.\n• *Atualizações Gratuitas:* Mudou a legislação ou saiu edital novo? Você recebe a nova versão sem pagar nada a mais.");
+            }, 2200);
+
+            setTimeout(() => {
+                sendBotMessage("Escolha abaixo o que deseja fazer ou qual dúvida quer tirar agora:");
+            }, 4500);
+
+            setTimeout(() => {
+                showMainMenu();
+            }, 6000);
+        }
+    },
+    OAB_FLOW: {
+        execute: () => {
+            sendBotMessage(`O *Combo OAB 1ª Fase* é o nosso campeão de aprovações, *${userData.name}*. Reunimos as matérias com maior peso na prova para garantir seus pontos de forma rápida:\n\n• Constitucional\n• Penal e Processo Penal\n• Civil e Processo Civil\n• Tributário\n• Direito e Processo do Trabalho\n• Ética Profissional (para gabaritar!)`);
+            
+            setTimeout(() => {
+                sendBotMessage("Tudo de forma visual e direto ao ponto por apenas *R$ 59,99*. Um investimento único para garantir sua carteira da Ordem.");
+            }, 2000);
+
+            setTimeout(() => {
+                appendLinkButton("🔥 Garantir Combo OAB (R$ 59,99)", "https://www.focolegis.com/OAB?ref=chatbox");
+                appendOptions([
+                    { text: "↩️ Voltar ao Menu Principal", action: () => selectOption("↩️ Voltar ao Menu Principal", 'RESET') }
+                ]);
+            }, 3500);
+        }
+    },
+    CHOOSE_CATALOG: {
+        execute: () => {
+            sendBotMessage(`Perfeito, *${userData.name}*! Nossas leis individuais isoladas custam apenas *R$ 19,99* cada.`);
+            sendBotMessage("Elas são ideais se você quer reforçar apenas aquela matéria específica (como o Estatuto da OAB ou o Código Penal) onde seu rendimento está baixo.");
+            
+            setTimeout(() => {
+                appendLinkButton("🛒 Ver Leis Individuais", "https://www.focolegis.com/?ref=chatbox");
+                appendOptions([
+                    { text: "↩️ Voltar ao Menu Principal", action: () => selectOption("↩️ Voltar ao Menu Principal", 'RESET') }
+                ]);
+            }, 2000);
+        }
+    },
+    DOUBT_EDITAL: {
+        execute: () => {
+            sendBotMessage("⚠️ *O material serve para o edital atual?*");
+            sendBotMessage("Sim! Todos os nossos materiais são rigorosamente revisados e atualizados de acordo com o último edital publicado e as alterações legislativas recentes.");
+            sendBotMessage("E lembre-se: como o seu acesso é *vitalício*, se qualquer lei mudar enquanto você estuda, você recebe a atualização de graça no seu e-mail.");
+            
+            setTimeout(() => {
+                appendOptions([
+                    { text: "⚖️ Ver o Combo OAB", action: () => selectOption("⚖️ Ver o Combo OAB", 'OAB_FLOW') },
+                    { text: "↩️ Voltar ao Menu Principal", action: () => selectOption("↩️ Voltar ao Menu Principal", 'RESET') }
+                ]);
+            }, 2000);
+        }
+    },
+    DOUBT_BASE: {
+        execute: () => {
+            sendBotMessage("❓ *Consigo entender mesmo se eu não tiver uma base boa?*");
+            sendBotMessage(`Com certeza, *${userData.name}*! O material foi desenhado justamente para quem odeia PDFs cansativos ou tem dificuldades de concentração.`);
+            sendBotMessage("A estruturação esquematizada funciona como um mapa visual. Os comentários dos professores explicam os artigos complexos de forma simples e mastigada, facilitando a memorização mesmo para quem está começando do zero absoluto.");
+            
+            setTimeout(() => {
+                appendOptions([
+                    { text: "⚖️ Ver o Combo OAB", action: () => selectOption("⚖️ Ver o Combo OAB", 'OAB_FLOW') },
+                    { text: "↩️ Voltar ao Menu Principal", action: () => selectOption("↩️ Voltar ao Menu Principal", 'RESET') }
+                ]);
+            }, 2500);
+        }
+    },
+    DELIVERY_INFO: {
+        execute: () => {
+            sendBotMessage("📧 *Como e quando eu recebo o acesso?*");
+            sendBotMessage("O envio é 100% automático e imediato. Assim que o pagamento é confirmado, os links para download dos PDFs chegam no seu e-mail.");
+            sendBotMessage("⚡ *Dica de ouro:* Pagando por *Pix*, o sistema aprova a compra em menos de 1 minuto e você já recebe o material na hora para começar a estudar hoje mesmo.");
+            
+            setTimeout(() => {
+                appendOptions([
+                    { text: "🔥 Garantir Combo OAB (R$ 59,99)", action: () => selectOption("🔥 Garantir Combo OAB (R$ 59,99)", 'OAB_FLOW') },
+                    { text: "↩️ Voltar ao Menu Principal", action: () => selectOption("↩️ Voltar ao Menu Principal", 'RESET') }
+                ]);
+            }, 2200);
+        }
+    },
+    HUMAN_SUPPORT: {
+        execute: () => {
+            sendBotMessage(`Sem problemas, *${userData.name}*! Se você tem alguma dúvida sobre o pagamento ou precisa de um suporte específico, clique no botão abaixo para falar direto com nosso atendimento no WhatsApp:`);
+            
+            setTimeout(() => {
+                appendLinkButton("📱 Falar com Atendente no WhatsApp", "https://wa.me/SEUNUMERODEWHATSAPP");
+                appendOptions([
+                    { text: "↩️ Voltar ao Menu Principal", action: () => selectOption("↩️ Voltar ao Menu Principal", 'RESET') }
+                ]);
+            }, 1500);
+        }
+    }
+};
+
+// Menu focado exclusivamente na OAB e Leis Isoladas com as dúvidas frequentes inclusas
+function showMainMenu() {
+    appendOptions([
+        { text: "⚖️ Combo OAB 1ª Fase (R$ 59,99)", action: () => selectOption("⚖️ Combo OAB 1ª Fase (R$ 59,99)", 'OAB_FLOW') },
+        { text: "📚 Leis Individuais (R$ 19,99)", action: () => selectOption("📚 Leis Individuais (R$ 19,99)", 'CHOOSE_CATALOG') },
+        { text: "❓ Serve para quem está do zero?", action: () => selectOption("❓ Serve para quem está do zero?", 'DOUBT_BASE') },
+        { text: "⚠️ Está atualizado para o edital?", action: () => selectOption("⚠️ Está atualizado para o edital?", 'DOUBT_EDITAL') },
+        { text: "📧 Como recebo meu material?", action: () => selectOption("📧 Como recebo meu material?", 'DELIVERY_INFO') },
+        { text: "👤 Outras dúvidas / Falar com Atendente", action: () => selectOption("👤 Outras dúvidas / Falar com Atendente", 'HUMAN_SUPPORT') }
+    ]);
+}
+
+function formatMessage(text) {
+    return text
+        .replace(/\n/g, '<br>')
+        .replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+}
+
+function getTime() {
+    const now = new Date();
+    return now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+}
+
+function appendMessage(text, side, isTyping = false) {
+    const msgDiv = document.createElement('div');
+    msgDiv.className = `message ${side} ${isTyping ? 'typing' : ''}`;
+    
+    if (isTyping) {
+        msgDiv.innerHTML = '<span></span><span></span><span></span>';
+        msgDiv.id = 'typing-indicator';
+    } else {
+        msgDiv.innerHTML = `${formatMessage(text)} <span class="message-time">${getTime()}</span>`;
+    }
+
+    chatContainer.appendChild(msgDiv);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+    return msgDiv;
+}
+
+function appendOptions(options) {
+    const container = document.createElement('div');
+    container.className = 'options-container';
+
+    options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'btn-option';
+        btn.innerText = opt.text;
+        btn.onclick = () => {
+            container.remove();
+            opt.action();
+        };
+        container.appendChild(btn);
+    });
+
+    chatContainer.appendChild(container);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+
+function appendLinkButton(text, url) {
+    const btnLink = document.createElement('a');
+    btnLink.className = 'btn-link';
+    btnLink.href = url;
+    btnLink.target = '_blank';
+    btnLink.innerText = text;
+
+    chatContainer.appendChild(btnLink);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+
+function sendBotMessage(text, delay = 1400) {
+    chatStatus.innerText = 'Digitando...';
+    const typingIndicator = appendMessage('', 'received', true);
+
+    setTimeout(() => {
+        typingIndicator.remove();
+        appendMessage(text, 'received');
+        chatStatus.innerText = 'Online';
+    }, delay);
+}
+
+function selectOption(chosenText, nextState) {
+    appendMessage(chosenText, 'sent');
+    
+    setTimeout(() => {
+        if (nextState === 'RESET') {
+            sendBotMessage(`Voltamos ao início, *${userData.name}*! Como posso te ajudar?`, 1000);
+            setTimeout(() => {
+                showMainMenu();
+            }, 1800);
+        } else {
+            currentState = nextState;
+            if (chatFlow[currentState] && chatFlow[currentState].execute) {
+                chatFlow[currentState].execute();
+            }
+        }
+    }, 600);
+}
+
+function handleUserSend() {
+    const text = userInput.value.trim();
+    if (!text) return;
+
+    if (currentState === 'WAITING_FOR_NAME') {
+        appendMessage(text, 'sent');
+        userInput.value = '';
+        setTimeout(() => {
+            chatFlow.WAITING_FOR_NAME.handle(text);
+        }, 500);
+    }
+}
+
+sendBtn.addEventListener('click', handleUserSend);
+userInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') handleUserSend();
+});
+
+window.onload = () => {
+    chatFlow.START.execute();
+};
+
+    </script>
+</body>
+</html>
