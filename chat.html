@@ -533,7 +533,41 @@ const chatFlow = {
                 return;
             } 
 
-            // 3. Central de Outras Respostas por Palavra-Chave (Agora testadas sem acento!)
+            // 3. GATILHO DE COMPARTILHAR / RATEIO / AMIGOS (Bloqueio)
+            else if (msg.includes('compartilhar') || msg.includes('rateio') || msg.includes('ratear') || msg.includes('amigos') || msg.includes('amigo') || msg.includes('dividir') || msg.includes('enviar para') || msg.includes('passar para')) {
+                sendBotMessage("🚫 *Sobre compartilhamento ou rateio:* Não é permitido. O acesso aos materiais do FocoLegis é estritamente *individual e intransferível*.");
+                sendBotMessage("O sistema possui monitoramento automático de downloads e acessos por IP e segurança. O compartilhamento indevido ou a tentativa de rateio violam os termos de uso e resultam no bloqueio imediato do acesso, sem direito a reembolso.");
+            }
+
+            // 4. GATILHO DE VÍDEO AULAS (Não tem)
+            else if (msg.includes('video') || msg.includes('aula') || msg.includes('videoaula') || msg.includes('assistir') || msg.includes('assistores')) {
+                sendBotMessage("❌ *O material possui vídeo aulas?* Não, nossos materiais são 100% focados em *arquivos digitais esquematizados (PDF)*.");
+                sendBotMessage("Focamos deliberadamente em leitura dinâmica, mapas visuais e lei seca comentada porque essa é, comprovadamente, a metodologia mais rápida e eficiente para memorizar o conteúdo de provas objetivas. Você ganha tempo eliminando horas de vídeos cansativos.");
+            }
+
+            // 5. GATILHO DE PLATAFORMAS / DISPOSITIVOS
+            else if (
+                msg.includes('tablet') || msg.includes('computador') || msg.includes('pc') || msg.includes('notebook') || 
+                msg.includes('celular') || msg.includes('iphone') || msg.includes('ios') || msg.includes('android') || 
+                msg.includes('rodar') || msg.includes('abrir em') || msg.includes('dispositivo') || msg.includes('tela')
+            ) {
+                sendBotMessage("📱 *Compatibilidade de Dispositivos:* Sim! Você pode estudar tranquilamente usando qualquer plataforma.");
+                sendBotMessage("Os conteúdos são entregues no formato PDF padrão de alta definição, o que significa que rodam perfeitamente em celulares (Android ou iPhone/iOS), tablets, iPads, computadores, PCs ou notebooks. Onde você estiver, seu material estará pronto para estudo.");
+            }
+
+            // 6. NOVO GATILHO: MATERIAL PARA CONCURSOS / OUTRAS CARREIRAS
+            else if (msg.includes('concurso') || msg.includes('concursos') || msg.includes('outras carreiras') || msg.includes('carreira policial') || msg.includes('carreiras policiais') || msg.includes('fiscal') || msg.includes('policia') || msg.includes('guardas')) {
+                sendBotMessage("🦅 *Serve para concursos públicos?* **SIM!** O método da lei seca esquematizada, grifada e comentada é perfeito e altamente recomendado para carreiras policiais, fiscais, tribunais e administrativas.");
+                sendBotMessage("Como a esmagadora maioria das bancas cobra a literalidade da lei nas questões de direito, nossos materiais isolados (como Código Penal, Processo Penal, Civil, etc.) vão acelerar drasticamente a sua memorização e garantir o seu acerto na prova!");
+            }
+
+            // 7. NOVO GATILHO: MATERIAL DE PORTUGUÊS
+            else if (msg.includes('portugues') || msg.includes('lingua portuguesa') || msg.includes('gramatica')) {
+                sendBotMessage("✍️ *Material de Português:* Sim! Em breve teremos novidades. Já estamos desenvolvendo um material exclusivo de **Português focado em concursos públicos**.");
+                sendBotMessage("Ele seguirá o mesmo padrão visual dinâmico do FocoLegis para você dominar a matéria mais cobrada do país sem decorebas cansativas. Fique atento(a) às nossas redes e e-mails de atualizações!");
+            }
+
+            // Central de Outras Respostas por Palavra-Chave
             else if (msg.includes('boleto')) {
                 sendBotMessage("💡 *Sobre pagamentos via Boleto:* O banco leva de 1 a 2 dias úteis para compensar o pagamento. Assim que compensar, o sistema envia o material direto no seu e-mail de forma automática!");
                 sendBotMessage("Se quiser o material na hora, recomendo refazer a compra utilizando o *Pix*.");
@@ -604,9 +638,9 @@ function showMainMenu() {
         { text: "📚 Leis Individuais (R$ 19,99)", action: () => selectOption("📚 Leis Individuais (R$ 19,99)", 'CHOOSE_CATALOG') },
         { text: "📖 Ver Amostras dos Materiais", action: () => selectOption("📖 Ver Amostras dos Materiais", 'AMSTR_FLOW') },
         { text: "❓ Serve para quem está do zero?", action: () => selectOption("❓ Serve para quem está do zero?", 'DOUBT_BASE') },
-        { text: "⚠️ Está atualizado para o edital?", action: () => selectOption("⚠️ Está atualizado para o edital?", 'DOUBT_EDITAL') },
-        { text: "📧 Como recebo meu material?", action: () => selectOption("📧 Como recebo meu material?", 'DELIVERY_INFO') },
-        { text: "👤 Outras dúvidas / Perguntar ao Bot", action: () => selectOption("👤 Outras dúvidas / Perguntar ao Bot", 'HUMAN_SUPPORT') }
+        { text: "❓ Está atualizado para o edital?", action: () => selectOption("❓️ Está atualizado para o edital?", 'DOUBT_EDITAL') },
+        { text: "❓ Como recebo meu material?", action: () => selectOption("❓ Como recebo meu material?", 'DELIVERY_INFO') },
+        { text: "❓ Outras dúvidas", action: () => selectOption("❓ Outras dúvidas", 'HUMAN_SUPPORT') }
     ]);
 }
 
