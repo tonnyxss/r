@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Combo OAB Completo 2026 - Foco Legis</title>
+    <title>Combo Principais da OAB - Foco Legis</title>
     
     <meta name="description" content="Gabarite a 1ª Fase da OAB 2026 com a estratégia definitiva de Lei Seca Comentada e Esquematizada. Acesso vitalício and atualizações inclusas!">
     
@@ -67,12 +67,10 @@
             animation: pulse 2s infinite;
         }
 
-        @media (max-width: 600px) {
-            @keyframes pulse {
-                0% { transform: scale(1); }
-                50% { transform: scale(1.05); }
-                100% { transform: scale(1); }
-            }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
 
         .main-container {
@@ -218,35 +216,42 @@
             font-size: 1.05em;
         }
 
+        /* Área de Preço com Máximo Destaque Promocional */
         .price-tag {
             background: #fff9db;
-            border: 1px dashed #f1c40f;
-            padding: 15px;
-            border-radius: 8px;
+            border: 2px dashed #f1c40f;
+            padding: 20px 15px;
+            border-radius: 10px;
             margin: 25px 0;
+            box-shadow: 0 4px 10px rgba(241, 196, 15, 0.15);
         }
 
         .price-tag small {
-            font-size: 1.05em;
-            color: var(--danger-color);
+            font-size: 1em;
+            color: #7f8c8d;
             text-decoration: line-through;
             display: block;
-            font-weight: bold;
+            font-weight: 600;
+            margin-bottom: 2px;
         }
 
         .price-tag .value-promo {
-            font-size: 3em;
+            font-size: 3.4em;
             color: var(--success-color);
             font-weight: 900;
-            margin: 5px 0;
+            margin: 2px 0;
             display: block;
+            letter-spacing: -1px;
+            line-height: 1.1;
+            animation: pulse 1.8s infinite ease-in-out;
         }
 
         .price-tag .parcelas {
-            font-size: 1em;
+            font-size: 1.1em;
             color: var(--text-dark);
-            font-weight: bold;
+            font-weight: 700;
             display: block;
+            margin-top: 4px;
         }
 
         .trust-container {
@@ -427,7 +432,7 @@
             header { padding: 30px 15px; }
             header h1 { font-size: 1.7em; }
             .product-focus-card h2 { font-size: 1.7em; }
-            .price-tag .value-promo { font-size: 2.3em; }
+            .price-tag .value-promo { font-size: 2.8em; }
             .card-body-content { padding: 20px 15px 0 15px; }
             .main-container { margin: -20px auto 30px; }
             .whatsapp-float { bottom: 15px; right: 15px; }
@@ -440,7 +445,7 @@
 <body>
 
     <header>
-        <div class="badge-promo">Oportunidade WhatsApp</div>
+        <div class="badge-promo">SUPER OFERTA!</div>
         <h1>FOCO LEGIS - PREPARAÇÃO OAB</h1>
         <p>Gabarite a Lei Seca na 1ª fase com o método esquematizado.</p>
     </header>
@@ -458,7 +463,7 @@
                     <img src="COMBOOAB.png" alt="Combo Completo OAB">
                 </div>
 
-                <h2>Combo Completo OAB 47</h2>
+                <h2>COMBO PRINCIPAIS DA OAB 47</h2>
                 <p class="subtitle-offer">A estratégia definitiva de engenharia reversa para dominar os artigos mais cobrados pela FGV.</p>
                 
                 <div class="method-box">
@@ -486,8 +491,7 @@
                 </div>
 
                 <div class="price-tag">
-                    <option value="59.99">
-                    <small>Preço antigo: R$ 159,92</small>
+                    <small>De R$ 159,92 por apenas:</small>
                     <span class="value-promo">R$ 59,99</span>
                     <span class="parcelas">ou parcelado em até 8x de R$ 8,72</span>
                 </div>
@@ -505,7 +509,7 @@
 
                 <div class="cta-area">
                     <a href="https://pay.hotmart.com/F106332914S" target="_blank" class="btn-main" id="btn-buy" data-id="ComboOAB">
-                        🚀 QUERO DISPARAR MINHA PONTUAÇÃO AGORA!
+                        🚀 QUERO SER APROVADO!
                     </a>
                     
                     <button class="btn-secondary" id="btn-detalhes-oab" data-id="ComboOAB">
@@ -743,7 +747,6 @@
                 setInterval(atualizar, 1000);
             })();
 
-            // ── ADAPTADO: DISPARO DO PIXEL DA META COM PREÇO E MOEDA DO COMBO OAB ──
             btnBuy.addEventListener('click', function() {
                 enviarParaPlanilha({ type: 'checkout', produto: 'COMBOOAB' });
                 if (typeof fbq === 'function') {

@@ -234,14 +234,8 @@
             flex-shrink: 0;
             transition: transform 0.2s ease;
         }
-        .whatsapp-float:hover .wpp-icone {
-            transform: scale(1.08);
-        }
-        .whatsapp-float .wpp-icone svg {
-            width: 26px;
-            height: 26px;
-            fill: #fff;
-        }
+        .whatsapp-float:hover .wpp-icone { transform: scale(1.08); }
+        .whatsapp-float .wpp-icone svg { width: 26px; height: 26px; fill: #fff; }
         .whatsapp-float:hover .wpp-balao,
         .whatsapp-float.mostrar-balao .wpp-balao {
             opacity: 1;
@@ -323,7 +317,7 @@
 
         <div class="grid-produtos">
             <div class="card">
-                <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">OFERTA 🔥</div>
+                <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">COMBO 🔥</div>
                 <img src="COMBOPENAL.png" alt="Combo CP e CPP">
                 <h3>Código Penal + Processo Penal</h3>
                 <div>
@@ -457,7 +451,7 @@
                 <br><br>
                 O acesso é liberado na hora para pagamentos via <strong>Pix</strong> ou cartão de crédito (parcelado ou à vista), e boleto após a compensação.
                 <br><br>
-                Você pode baixar quantas vezes quiser, fazer o download em vários locais e imprimir para acompanhar suas aulas.
+                Você pode baixar quantas vezes quiser, fazer o download em vários locais e imprimir para acompan suas aulas.
                 <br><br>
                 Use perfeitamente na tela do seu celular, computador e tablet onde e quando preferir.
             </p>
@@ -505,19 +499,22 @@
             <p id="modal-text">Informe seu WhatsApp para liberar o download do material gratuito.</p>
             
             <form id="whatsapp-form" style="width: 100%; display: flex; flex-direction: column; align-items: center; box-sizing: border-box;">
+                <!-- ADICIONADO O ATRIBUTO REQUIRED AQUI PARA TRAVAR O FORMULÁRIO -->
                 <input type="tel" id="whatsapp-input" placeholder="(00) 90000-0000" style="width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; text-align: center;" required>
-                
+
                 <div class="order-bump-box" style="width: 100%;">
                     <img src="COMBOOAB.png" alt="Combo OAB" class="order-bump-img">
                     <div class="order-bump-info">
                         <span class="order-bump-tag">Leve Mais por Menos 🔥</span>
-                        <p class="order-bump-title">Combo OAB 47 — Todas as 8 Principais Matérias</p>
+                        <p class="order-bump-title">Combo OAB 47 — Principais Matérias</p>
                         <span class="order-bump-price">Por apenas R$ 59,99</span>
                     </div>
                 </div>
 
                 <button type="button" id="btn-bump-combo" class="btn-bump-comprar">QUERO O COMBO</button>
-                <button type="submit" class="btn-bump-recusar">PREFIRO SÓ O RESUMO DE ÉTICA GRÁTIS</button>
+                
+                <button type="submit" class="btn-bump-recusar" id="btn-bump-recusar-submit">PREFIRO SÓ O RESUMO GRATUITO DE ÉTICA</button>
+            
             </form>
             
             <a href="OAB47.pdf" target="_blank" id="link-real" class="btn-download" style="display:none;" onclick="fecharModal('modal')">BAIXAR PDF AGORA</a>
@@ -541,7 +538,7 @@
         "Etica": {
             titulo: "Estatuto da Advocacia e da OAB",
             lei: "Lei nº 8.906/1994, Regulamento Geral e Código de Ética da OAB",
-            foco: "Focado em OAB e Concursos. Aborda prerrogativas profissionais, infrações disciplinares e estrutura da Ordem.",
+            foco: "Focado em OAB e Concursos. Aborda prerrogativas profissionais, infrações disciplinares and estrutura da Ordem.",
             metodo: "Mais de 70% das questões exigem o domínio da literalidade. Nosso material elimina o processo cansativo da leitura bruta.",
             conteudo: [
                 "Estatuto da OAB (Lei nº 8.906/1994) Esquematizado",
@@ -573,7 +570,7 @@
             titulo: "Combo Criminal Estratégico (CP + CPP)",
             lei: "Decreto-Lei nº 2.848/1940 (CP) e Decreto-Lei nº 3.689/1941 (CPP)",
             foco: "Focado em OAB e Concursos. Consolida a Parte Geral/Especial do CP e procedimentos, provas e recursos do CPP.",
-            metodo: "Mais de 70% das questões cobram o texto legal literal. Estruturamos os artigos comentados com esquemas para acelerar sua memorização.",
+            metodo: "Mais de 70% das questões cobram o text legal literal. Estruturamos os artigos comentados com esquemas para acelerar sua memorização.",
             conteudo: [
                 "Código Penal Completo (Parte Geral e Especial)",
                 "Código de Processo Penal Completo",
@@ -989,48 +986,25 @@
             });
         });
 
-        // ── LÓGICA DE CAPTURA DO WHATSAPP + BOTÕES DO ORDER BUMP ──
-        
-        // Ação 1: Lead escolhe comprar o Combo oferecido na Janela
+        // ── LÓGICA DE EXECUÇÃO DOS BOTÕES DO MODAL INTERNO ──
+
+        // Ação 1: Clique no Combo (Abre diretamente a LP OAB em nova aba sem validar nada)
         document.getElementById('btn-bump-combo').addEventListener('click', function() {
-            var whatsInput = document.getElementById('whatsapp-input');
+            enviarParaPlanilha({ type: 'whatsapp_bump_combo_direto_lp' });
+            if (typeof fbq === 'function') fbq('track', 'ViewContent', { content_name: 'ComboOAB_BumpLP' });
             
-            // Valida se ele digitou o whatsapp antes de ir pro checkout
-            if (!whatsInput.checkValidity()) {
-                whatsInput.reportValidity();
-                return;
-            }
-            
-            var whats = whatsInput.value;
-            
-            // 1. Salva os dados do lead normalmente (Garante que você não perde o contato)
-            enviarParaPlanilha({ type: 'whatsapp_bump_combo', whatsapp: whats });
-            if (typeof fbq === 'function') {
-                fbq('track', 'Lead');
-                // Dispara o Pixel avisando que ele iniciou o checkout do Combo via janela
-                fbq('track', 'InitiateCheckout', { content_name: 'COMBOOAB', value: 59.99, currency: 'BRL' });
-            }
-            
-            // 2. Direciona imediatamente para o Checkout do Combo OAB na Hotmart
-            window.open('https://pay.hotmart.com/F106332914S', '_blank');
-            
-            // 3. Altera a janela de fundo pra quando ele voltar já estar liberado o gratuito
-            document.getElementById('whatsapp-form').style.display = 'none';
-            document.getElementById('modal-text').innerHTML = '✅ Liberei seu material gratuito também!';
-            document.getElementById('link-real').style.display = 'block';
+            window.open('OAB.html?ref=orderbump', '_blank');
         });
 
-        // Ação 2: Lead clica em recusar e prefere apenas o material grátis de Ética
+        // Ação 2: Clique no Grátis (Exige validação do HTML e submete se correto)
         document.getElementById('whatsapp-form').addEventListener('submit', function(e) {
             e.preventDefault();
             var whats = document.getElementById('whatsapp-input').value;
             
             enviarParaPlanilha({ type: 'whatsapp_so_etica', whatsapp: whats });
-            
             document.getElementById('whatsapp-form').style.display = 'none';
             document.getElementById('modal-text').innerHTML = '✅ Liberado!';
             document.getElementById('link-real').style.display = 'block';
-            
             if (typeof fbq === 'function') fbq('track', 'Lead');
         });
     });
