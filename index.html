@@ -86,10 +86,20 @@
         .btn-detalhes { background-color: #7f8c8d; color: white; padding: 10px; border-radius: 5px; text-decoration: none; font-weight: bold; display: block; margin-top: 5px; cursor: pointer; font-size: 0.9em; border: none; text-align: center; width: 100%; box-sizing: border-box; }
         
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 2000; }
-        .modal-content { background: white; padding: 30px; border-radius: 10px; text-align: center; width: 90%; max-width: 400px; position: relative; box-sizing: border-box; max-height: 90vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        .modal-content { background: white; padding: 30px; border-radius: 10px; text-align: center; width: 90%; max-width: 420px; position: relative; box-sizing: border-box; max-height: 90vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
         .btn-download { background-color: #27ae60; color: white; padding: 12px; border-radius: 5px; width: 100%; border: none; cursor: pointer; font-weight: bold; text-decoration: none; display: block; margin-top: 10px; box-sizing: border-box; }
         .btn-download.disabled { background-color: #ccc !important; cursor: not-allowed; }
         .btn-fechar-modal { background: #e74c3c; color: white; border: none; padding: 10px 25px; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 15px; font-size: 0.95em; width: 100%; display: block; box-sizing: border-box; }
+
+        /* Estilos do Order Bump Interno do Modal */
+        .order-bump-box { border: 2px dashed #e74c3c; background: #fff9f8; border-radius: 8px; padding: 12px; margin: 15px 0; text-align: left; display: flex; align-items: center; gap: 10px; box-sizing: border-box; }
+        .order-bump-img { width: 65px; height: auto; border-radius: 4px; object-fit: cover; }
+        .order-bump-info { flex: 1; }
+        .order-bump-tag { background: #e74c3c; color: white; font-size: 0.6em; font-weight: bold; padding: 2px 5px; border-radius: 3px; text-transform: uppercase; display: inline-block; margin-bottom: 3px; }
+        .order-bump-title { font-size: 0.85em; font-weight: bold; margin: 0 0 2px 0; color: #1a252f; }
+        .order-bump-price { font-size: 0.9em; color: #27ae60; font-weight: bold; }
+        .btn-bump-comprar { background-color: #e74c3c; color: white; padding: 12px; border-radius: 5px; width: 100%; border: none; cursor: pointer; font-weight: bold; text-decoration: none; display: block; margin-top: 8px; box-sizing: border-box; font-size: 0.95em; text-align: center; }
+        .btn-bump-recusar { background: none; border: none; color: #7f8c8d; text-decoration: underline; font-size: 0.8em; margin-top: 10px; cursor: pointer; width: 100%; font-weight: 600; }
 
         .info-block { background: #f8f9fa; border-left: 3px solid #7f8c8d; padding: 10px 12px; margin-bottom: 10px; border-radius: 0 6px 6px 0; }
         .info-block-title { font-weight: bold; color: #1a252f; font-size: 0.95em; margin-bottom: 3px; display: block; }
@@ -212,7 +222,8 @@
             transition: opacity 0.3s ease, transform 0.3s ease;
             pointer-events: none;
         }
-        .whatsapp-float { bottom: 14px; right: 14px; }
+        @media (max-width: 600px) {
+            .whatsapp-float { bottom: 14px; right: 14px; }
             .whatsapp-float .wpp-icone { width: 44px; height: 44px; }
             .whatsapp-float .wpp-icone svg { width: 23px; height: 23px; }
             .whatsapp-float .wpp-balao { font-size: 0.7em; padding: 5px 8px; }
@@ -272,7 +283,7 @@
                 <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:4px;">SUPER COMBO 🔥🔥</div>
                 <span class="badge-mais-vendido">⭐ Mais Vendido</span>
                 <img src="COMBOOAB.png" alt="Combo OAB">
-                <h3>Combo OAB 47</h3>
+                <h3>Combo Principais da OAB</h3>
                 <div>
                     <span class="preco-antigo">R$ 159,92</span>
                     <span class="preco-novo">R$ 59,99</span>
@@ -286,7 +297,7 @@
 
         <div class="grid-produtos">
             <div class="card">
-                <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">COMBO 🔥</div>
+                <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">OFERTA 🔥</div>
                 <img src="COMBOPENAL.png" alt="Combo CP e CPP">
                 <h3>Código Penal + Processo Penal</h3>
                 <div>
@@ -299,7 +310,7 @@
             </div>
 
             <div class="card">
-                <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">NOVIDADE ⚡</div>
+                <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">OFERTA ⚡</div>
                 <img src="CLT.png" alt="Direito do Trabalho">
                 <h3>Direito e Processo do Trabalho</h3>
                 <div>
@@ -427,7 +438,7 @@
         </div>
 
         <div class="faq-item" style="border-left: 4px solid #f1c40f;">
-            <h3 style="color: #1a252f;">O acesso é vitalício e o conteúdo recebe atualizações?</h3>
+            <h3 style="color: #1a252f;">O acesso é vitalício e o conteúdo recebe updates?</h3>
             <p>
                 Sim! O seu prazo de acesso aos materiais é <strong>vitalício</strong>, ou seja, eles são seus para sempre.
                 <br><br>
@@ -465,11 +476,24 @@
     <div class="modal-overlay" id="modal">
         <div class="modal-content">
             <h3>Quase lá! 🚀</h3>
-            <p id="modal-text">Informe seu WhatsApp para liberar o download.</p>
-            <form id="whatsapp-form">
-                <input type="tel" id="whatsapp-input" placeholder="(00) 90000-0000" style="width: 100%; padding: 12px; margin: 15px 0; border: 1px solid #ccc; border-radius: 5px;" required>
-                <button type="submit" class="btn-download">LIBERAR ACESSO</button>
+            <p id="modal-text">Informe seu WhatsApp para liberar o download do material gratuito.</p>
+            
+            <form id="whatsapp-form" style="width: 100%; display: flex; flex-direction: column; align-items: center; box-sizing: border-box;">
+                <input type="tel" id="whatsapp-input" placeholder="(00) 90000-0000" style="width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; text-align: center;" required>
+                
+                <div class="order-bump-box" style="width: 100%;">
+                    <img src="COMBOOAB.png" alt="Combo OAB" class="order-bump-img">
+                    <div class="order-bump-info">
+                        <span class="order-bump-tag">Leve Mais por Menos 🔥</span>
+                        <p class="order-bump-title">Combo OAB 47 — Todas as 8 Principais Matérias</p>
+                        <span class="order-bump-price">Por apenas R$ 59,99</span>
+                    </div>
+                </div>
+
+                <button type="button" id="btn-bump-combo" class="btn-bump-comprar">QUERO O COMBO</button>
+                <button type="submit" class="btn-bump-recusar">PREFIRO SÓ O RESUMO DE ÉTICA GRÁTIS</button>
             </form>
+            
             <a href="OAB47.pdf" target="_blank" id="link-real" class="btn-download" style="display:none;" onclick="fecharModal('modal')">BAIXAR PDF AGORA</a>
         </div>
     </div>
@@ -541,7 +565,7 @@
                 "Parte Geral (Aplicação da Lei, Crime, Penas e Extinção de Punibilidade)",
                 "Parte Especial (Crimes contra a Pessoa e Patrimônio)",
                 "Parte Especial (Crimes contra a Dignidade Sexual e Incolumidade)",
-                "Parte Especial (Crimes contra a Fé Pública e Administração Pública)",
+                "Parte Especial (Crimes contra a Fé Pública e Administration Pública)",
                 "Esquemas de Dosimetria e Aplicação da Pena"
             ]
         },
@@ -917,8 +941,7 @@
                 
                 if (typeof fbq === 'function') {
                     if (tipo === 'checkout') {
-                        // Define o preço com base no ID do produto
-                        var valorProduto = 19.99; // Valor padrão para matérias individuais
+                        var valorProduto = 19.99;
                         
                         if (id === 'COMBOOAB') {
                             valorProduto = 59.99;
@@ -928,7 +951,6 @@
                             valorProduto = 9.99;
                         }
                         
-                        // Dispara o InitiateCheckout perfeitamente formatado
                         fbq('track', 'InitiateCheckout', {
                             content_name: id,
                             value: valorProduto,
@@ -941,13 +963,48 @@
             });
         });
 
+        // ── LÓGICA DE CAPTURA DO WHATSAPP + BOTÕES DO ORDER BUMP ──
+        
+        // Ação 1: Lead escolhe comprar o Combo oferecido na Janela
+        document.getElementById('btn-bump-combo').addEventListener('click', function() {
+            var whatsInput = document.getElementById('whatsapp-input');
+            
+            // Valida se ele digitou o whatsapp antes de ir pro checkout
+            if (!whatsInput.checkValidity()) {
+                whatsInput.reportValidity();
+                return;
+            }
+            
+            var whats = whatsInput.value;
+            
+            // 1. Salva os dados do lead normalmente (Garante que você não perde o contato)
+            enviarParaPlanilha({ type: 'whatsapp_bump_combo', whatsapp: whats });
+            if (typeof fbq === 'function') {
+                fbq('track', 'Lead');
+                // Dispara o Pixel avisando que ele iniciou o checkout do Combo via janela
+                fbq('track', 'InitiateCheckout', { content_name: 'COMBOOAB', value: 59.99, currency: 'BRL' });
+            }
+            
+            // 2. Direciona imediatamente para o Checkout do Combo OAB na Hotmart
+            window.open('https://pay.hotmart.com/F106332914S', '_blank');
+            
+            // 3. Altera a janela de fundo pra quando ele voltar já estar liberado o gratuito
+            document.getElementById('whatsapp-form').style.display = 'none';
+            document.getElementById('modal-text').innerHTML = '✅ Liberei seu material gratuito também!';
+            document.getElementById('link-real').style.display = 'block';
+        });
+
+        // Ação 2: Lead clica em recusar e prefere apenas o material grátis de Ética
         document.getElementById('whatsapp-form').addEventListener('submit', function(e) {
             e.preventDefault();
             var whats = document.getElementById('whatsapp-input').value;
-            enviarParaPlanilha({ type: 'whatsapp', whatsapp: whats });
+            
+            enviarParaPlanilha({ type: 'whatsapp_so_etica', whatsapp: whats });
+            
             document.getElementById('whatsapp-form').style.display = 'none';
             document.getElementById('modal-text').innerHTML = '✅ Liberado!';
             document.getElementById('link-real').style.display = 'block';
+            
             if (typeof fbq === 'function') fbq('track', 'Lead');
         });
     });
