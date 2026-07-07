@@ -222,6 +222,32 @@
             transition: opacity 0.3s ease, transform 0.3s ease;
             pointer-events: none;
         }
+        .whatsapp-float .wpp-icone {
+            width: 48px;
+            height: 48px;
+            background: #25d366;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 10px rgba(37,211,102,0.45);
+            flex-shrink: 0;
+            transition: transform 0.2s ease;
+        }
+        .whatsapp-float:hover .wpp-icone {
+            transform: scale(1.08);
+        }
+        .whatsapp-float .wpp-icone svg {
+            width: 26px;
+            height: 26px;
+            fill: #fff;
+        }
+        .whatsapp-float:hover .wpp-balao,
+        .whatsapp-float.mostrar-balao .wpp-balao {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
         @media (max-width: 600px) {
             .whatsapp-float { bottom: 14px; right: 14px; }
             .whatsapp-float .wpp-icone { width: 44px; height: 44px; }
