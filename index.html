@@ -212,34 +212,7 @@
             transition: opacity 0.3s ease, transform 0.3s ease;
             pointer-events: none;
         }
-        .whatsapp-float:hover .wpp-balao,
-        .whatsapp-float.mostrar-balao .wpp-balao {
-            opacity: 1;
-            transform: translateX(0);
-        }
-        .whatsapp-float .wpp-icone {
-            width: 48px;
-            height: 48px;
-            background: #25d366;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 3px 10px rgba(37,211,102,0.45);
-            flex-shrink: 0;
-            transition: transform 0.2s ease;
-        }
-        .whatsapp-float:hover .wpp-icone {
-            transform: scale(1.08);
-        }
-        .whatsapp-float .wpp-icone svg {
-            width: 26px;
-            height: 26px;
-            fill: #fff;
-        }
-
-        @media (max-width: 600px) {
-            .whatsapp-float { bottom: 14px; right: 14px; }
+        .whatsapp-float { bottom: 14px; right: 14px; }
             .whatsapp-float .wpp-icone { width: 44px; height: 44px; }
             .whatsapp-float .wpp-icone svg { width: 23px; height: 23px; }
             .whatsapp-float .wpp-balao { font-size: 0.7em; padding: 5px 8px; }
@@ -309,7 +282,7 @@
                 </div>
             </div>
 
-        </div><div class="divisor-materiais"><span>Mais Materiais</span></div>
+        </div><div class="divisor-materiais"><span>Mais Materials</span></div>
 
         <div class="grid-produtos">
             <div class="card">
@@ -330,7 +303,8 @@
                 <img src="CLT.png" alt="Direito do Trabalho">
                 <h3>Direito e Processo do Trabalho</h3>
                 <div>
-                    <span class="preco-novo">R$ 19,99</span>
+                    <span class="preco-antigo">R$ 19,99</span>
+                    <span class="preco-novo">R$ 9,99</span>
                     <button class="btn-detalhes" data-id="CLT">Detalhes</button>
                     <a href="https://pay.hotmart.com/N106377978R" target="_blank" class="btn-comprar" data-id="CLT">Comprar</a>
                     <a href="https://www.focolegis.com/FocoLegis - AMOSTRA - CLT.pdf" target="_blank" class="btn-amostra" data-id="CLT">Amostra</a>
@@ -483,7 +457,7 @@
                 <br><br>
                 Estamos constantemente expandindo nosso catálogo de códigos esquematizados e apostilas em PDF para atender novos editais.
                 <br><br>
-                Entre em contato conosco pelo <strong>WhatsApp de atendimento</strong> e envie a sua sugerão de conteúdo para a Ordem dos Advogados do Brasil (OAB) ou concursos públicos jurídicos.
+                Entre em contato conosco pelo <strong>WhatsApp de atendimento</strong> e envie a sua sugestão de conteúdo para a Ordem dos Advogados do Brasil (OAB) ou concursos públicos jurídicos.
             </p>
         </div>
     </div>
@@ -549,7 +523,7 @@
             titulo: "Combo Criminal Estratégico (CP + CPP)",
             lei: "Decreto-Lei nº 2.848/1940 (CP) e Decreto-Lei nº 3.689/1941 (CPP)",
             foco: "Focado em OAB e Concursos. Consolida a Parte Geral/Especial do CP e procedimentos, provas e recursos do CPP.",
-            metodo: "Mais de 70% das questões cobram o texto legal literal. Estruturamos os artigos comentados with esquemas para acelerar sua memorização.",
+            metodo: "Mais de 70% das questões cobram o texto legal literal. Estruturamos os artigos comentados com esquemas para acelerar sua memorização.",
             conteudo: [
                 "Código Penal Completo (Parte Geral e Especial)",
                 "Código de Processo Penal Completo",
@@ -672,7 +646,6 @@
         var search = window.location.search;
         var ua     = navigator.userAgent.toLowerCase();
 
-        // 0. ?ref= — parâmetro manual, maior prioridade
         var refParam = new URLSearchParams(search).get('ref');
         if (refParam) return '?utm_source=' + encodeURIComponent(refParam) + '&utm_medium=ref';
 
@@ -951,6 +924,8 @@
                             valorProduto = 59.99;
                         } else if (id === 'COMBOPENAL') {
                             valorProduto = 29.99;
+                        } else if (id === 'CLT') {
+                            valorProduto = 9.99;
                         }
                         
                         // Dispara o InitiateCheckout perfeitamente formatado
