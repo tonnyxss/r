@@ -1001,7 +1001,7 @@
             e.preventDefault();
             var whats = document.getElementById('whatsapp-input').value;
             
-            enviarParaPlanilha({ type: 'whatsapp_so_etica', whatsapp: whats });
+            enviarParaPlanilha({ type: 'whatsapp', whatsapp: whats });
             document.getElementById('whatsapp-form').style.display = 'none';
             document.getElementById('modal-text').innerHTML = '✅ Liberado!';
             document.getElementById('link-real').style.display = 'block';
