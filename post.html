@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>FocoLegis Studio - v38 (Paleta de Fonte Expandida)</title>
+    <title>FocoLegis Studio - v38 (Paleta de Fonte Pastel)</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         /* Base e Layout */
@@ -19,6 +19,7 @@
         .control-group:last-child { border-right: none; }
         
         /* Grades de Cores (Fonte) */
+        .color-grid-header { display: flex; align-items: center; gap: 5px; justify-content: space-between; width: 100%; }
         .color-grid { display: grid; grid-template-columns: repeat(8, 20px); gap: 4px; }
         .btn-color { width: 20px; height: 20px; border: 1px solid #ddd; border-radius: 3px; cursor: pointer; padding: 0; }
         .btn-color:hover { border-color: #333; transform: scale(1.05); }
@@ -112,8 +113,16 @@
             </div>
         </div>
 
+        <!-- SEÇÃO ATUALIZADA: PALETA DE CORES DA FONTE PASTEL EXPANDIDA (Cores fortes removidas, +100 tons pastel) -->
         <div class="control-group">
-            Cor do Texto (56 Cores)
+            <div class="color-grid-header">
+                <span>Cor do Texto</span>
+                <select id="paletteSelector" onchange="loadSelectedPalette()" style="font-size: 10px; border: 1px solid #ccc; border-radius: 3px;">
+                    <option value="1">Grupo 1 (50)</option>
+                    <option value="2">Grupo 2 (50)</option>
+                    <option value="3">Grupo 3 (50)</option>
+                </select>
+            </div>
             <div class="color-grid" id="fontColorGrid"></div>
         </div>
 
@@ -153,7 +162,7 @@
         </div>
         
         <div id="text-editor" contenteditable="true">
-            Selecione o texto e clique em uma cor!
+            Selecione o texto e clique em uma cor pastel!
         </div>
 
         <div class="sticker-area">
@@ -214,30 +223,79 @@
             }
         }
 
-        // NOVA GERAÇÃO AUTOMÁTICA DE 56 CORES PARA TEXTO
-        const textColors = [
-            // Linha 1: Neutros e tons de cinza
-            '#000000', '#1a1a1a', '#333333', '#4d4d4d', '#666666', '#808080', '#999999', '#ffffff',
-            // Linha 2: Vermelhos e Laranjas
-            '#800000', '#b30000', '#e60000', '#ff1a1a', '#ff4d4d', '#ff8080', '#ffb3b3', '#ffcccc',
-            '#803300', '#b34700', '#e65c00', '#ff6600', '#ff8533', '#ffa366', '#ffc299', '#ffe0cc',
-            // Linha 3: Amarelos e Verdes
-            '#806600', '#b38f00', '#e6b800', '#ffcc00', '#ffd633', '#ffe066', '#ffeb99', '#fff5cc',
-            '#004000', '#006600', '#008000', '#00b300', '#00e600', '#33ff33', '#66ff66', '#99ff99',
-            // Linha 4: Azuis e Roxos
-            '#000080', '#0000b3', '#0000e6', '#1a1aff', '#4d4dff', '#8080ff', '#b3b3ff', '#ccccff',
-            '#330080', '#4700b3', '#5c00e6', '#6600ff', '#8533ff', '#a366ff', '#c299ff', '#e0ccff'
+        // --- GERAÇÃO AUTOMÁTICA DE TRÊS GRUPOS DE CORES PASTEL (~150 CORES TOTAL) ---
+
+        // Grupo 1: Tons Variados (50) - Substituindo as 56 antigas e adicionando mais
+        const pastelPalette1 = [
+            // Neutros e Pretos Suaves (base)
+            '#ffffff', '#f5f5f5', '#ebebeb', '#e0e0e0', '#d6d6d6', '#cccccc', '#bfbfbf', '#333333',
+            // Pastéis: Linha Vermelho/Rosa Suave
+            '#ffebeb', '#ffd9d9', '#ffcccc', '#ffb8b8', '#ffa6a6', '#ff9494', '#ff8080', '#e67373',
+            // Pastéis: Linha Laranja Suave
+            '#fff5eb', '#ffe0cc', '#ffd6b3', '#ffcc99', '#ffc280', '#ffb866', '#ffad4d', '#e69c45',
+            // Pastéis: Linha Amarelo Suave
+            '#fffbe6', '#fff5cc', '#fff0b3', '#ffe680', '#ffdb4d', '#ffd11a', '#e6bd00', '#cca300',
+            // Pastéis: Linha Verde Suave
+            '#e6ffe6', '#ccffcc', '#b3ffb3', '#99ff99', '#80ff80', '#66e666', '#4dcc4d', '#33b333',
+            // Pastéis: Linha Azul Suave
+            '#e6f0ff', '#cce0ff', '#b3d1ff', '#99c2ff', '#80b3ff', '#66a3e6', '#4d94cc', '#3385b3',
+            // Pastéis: Linha Roxo Suave
+            '#f0e6ff', '#e0ccff', '#d1b3ff', '#c299ff', '#b380ff', '#a366e6', '#944dcc', '#8533b3',
+            // Acréscimos (mais 2 neutros escuros e 6 pastéis quentes)
+            '#1a1a1a', '#4d4d4d', '#ffedcc', '#ffdb99', '#ffca66', '#ffb833', '#ffa600', '#e69500'
+        ];
+
+        // Grupo 2: Tons Quentes (Rosa, Pêssego, Amarelo Suave) - 50 cores
+        const pastelPalette2 = [
+            '#ffffff', '#f5f5f5', '#ebebeb', '#e0e0e0', '#d6d6d6', '#cccccc', '#bfbfbf', '#333333',
+            '#fff7f7', '#ffeded', '#ffe3e3', '#ffd9d9', '#ffcccc', '#ffb8b8', '#ffa6a6', '#ff9494', 
+            '#ffeded', '#ffdbdb', '#ffc9c9', '#ffb8b8', '#ffa6a6', '#ff9494', '#ff8282', '#e67575',
+            '#fffaf7', '#fff3e6', '#ffe9d1', '#ffe0cc', '#ffd6b3', '#ffcc99', '#ffc280', '#ffb866',
+            '#fff9f0', '#fff3e6', '#ffe9cc', '#ffe0b3', '#ffd699', '#ffcc80', '#ffc266', '#ffb84d',
+            '#fffbe6', '#fff5cc', '#fff0b3', '#ffe680', '#ffdb4d', '#ffd11a', '#e6bd00', '#cca300',
+            '#1a1a1a', '#4d4d4d', // Neutros (manter consistência no Grid 8x7)
+        ];
+
+        // Grupo 3: Tons Frios (Verde Suave, Ciano, Azul, Roxo, Lavanda Suave) - 50 cores
+        const pastelPalette3 = [
+            '#ffffff', '#f5f5f5', '#ebebeb', '#e0e0e0', '#d6d6d6', '#cccccc', '#bfbfbf', '#333333',
+            '#f0fff0', '#e6ffe6', '#d6ffd6', '#ccffcc', '#b8ffb8', '#a6ffa6', '#94ff94', '#82ff82',
+            '#f7fffa', '#e6fdfa', '#d1faf5', '#ccfff7', '#b3ffe6', '#99ffd6', '#80ffc2', '#66ffad',
+            '#f7fbff', '#e6f3ff', '#d1e9ff', '#cce0ff', '#b3d1ff', '#99c2ff', '#80b3ff', '#66a3e6',
+            '#f9f7ff', '#f3e6ff', '#e9d1ff', '#e0ccff', '#d1b3ff', '#c299ff', '#b380ff', '#a366e6',
+            '#fcf9ff', '#f9f3ff', '#f3e9ff', '#ece0ff', '#e3d6ff', '#dbccff', '#d2b3ff', '#c9a6ff',
+            '#1a1a1a', '#4d4d4d', // Neutros
         ];
         
+        const palettes = {
+            "1": pastelPalette1,
+            "2": pastelPalette2,
+            "3": pastelPalette3
+        };
+
         const fontGrid = document.getElementById('fontColorGrid');
-        textColors.forEach(c => {
-            const btn = document.createElement('button');
-            btn.className = 'btn-color';
-            btn.style.backgroundColor = c;
-            btn.title = `Cor: ${c}`;
-            btn.onmousedown = (e) => { e.preventDefault(); applyColor(c); };
-            fontGrid.appendChild(btn);
-        });
+
+        // Função para carregar a paleta baseada na seleção do dropdown
+        function loadSelectedPalette() {
+            const selectedPaletteId = document.getElementById('paletteSelector').value;
+            renderPalette(palettes[selectedPaletteId]);
+        }
+
+        // Função para renderizar as cores no grid
+        function renderPalette(paletteArray) {
+            fontGrid.innerHTML = ''; // Limpa o grid atual
+            paletteArray.forEach(c => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-color';
+                btn.style.backgroundColor = c;
+                btn.title = `Cor Pastel: ${c}`;
+                btn.onmousedown = (e) => { e.preventDefault(); applyColor(c); };
+                fontGrid.appendChild(btn);
+            });
+        }
+
+        // Carrega o Grupo 1 por padrão ao abrir
+        loadSelectedPalette();
 
         // EMOJIS
         const emojis = ["🙏🏻","👏🏻","👀","🤓","⭐","🔥","🥇","🏆","🚨","🚀","✏️","🔍","📢","💥","💪🏻","👉🏻","👇🏻","👆🏻","👈🏻","✍🏻","🎯","❌","✅"];
