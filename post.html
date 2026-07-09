@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>FocoLegis Studio - v37</title>
+    <title>FocoLegis Studio - v38 (Paleta de Fonte Expandida)</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         /* Base e Layout */
@@ -18,7 +18,7 @@
         .control-group { display: flex; flex-direction: column; gap: 5px; font-size: 11px; font-weight: bold; border-right: 1px solid #ddd; padding-right: 15px; }
         .control-group:last-child { border-right: none; }
         
-        /* Grades de Cores */
+        /* Grades de Cores (Fonte) */
         .color-grid { display: grid; grid-template-columns: repeat(8, 20px); gap: 4px; }
         .btn-color { width: 20px; height: 20px; border: 1px solid #ddd; border-radius: 3px; cursor: pointer; padding: 0; }
         .btn-color:hover { border-color: #333; transform: scale(1.05); }
@@ -75,7 +75,7 @@
 
         /* 2. Posição quando estiver no modo FEED (Quadrado) */
         .mode-feed .sticker-area {
-            bottom: -35px;       /* ◄ DISTÂNCIA DA BORDA DE BAIXO NO FEED */
+            bottom: -40px;       /* ◄ DISTÂNCIA DA BORDA DE BAIXO NO FEED */
             right: -20px;        /* ◄ DISTÂNCIA DA BORDA DA DIREITA NO FEED */
         }
 
@@ -113,7 +113,7 @@
         </div>
 
         <div class="control-group">
-            Cor do Texto (16 Mais Usadas)
+            Cor do Texto (56 Cores)
             <div class="color-grid" id="fontColorGrid"></div>
         </div>
 
@@ -126,11 +126,6 @@
             </div>
             <label style="font-size:9px;">Espaçamento</label>
             <input type="range" min="0.5" max="2.5" step="0.1" value="1.3" oninput="document.getElementById('text-editor').style.lineHeight = this.value">
-        </div>
-
-        <div class="control-group">
-            Grifos (Marca-Texto)
-            <div class="color-grid" id="colorGrid"></div>
         </div>
 
         <div class="control-group">
@@ -219,12 +214,21 @@
             }
         }
 
+        // NOVA GERAÇÃO AUTOMÁTICA DE 56 CORES PARA TEXTO
         const textColors = [
-            '#000000', '#2d3748', '#4a5568', '#718096', 
-            '#e53e3e', '#dd6b20', '#3182ce', '#2b6cb0', 
-            '#38a169', '#2f855a', '#d69e2e', '#b7791f', 
-            '#4c51bf', '#6b46c1', '#b83280', '#ffffff'  
+            // Linha 1: Neutros e tons de cinza
+            '#000000', '#1a1a1a', '#333333', '#4d4d4d', '#666666', '#808080', '#999999', '#ffffff',
+            // Linha 2: Vermelhos e Laranjas
+            '#800000', '#b30000', '#e60000', '#ff1a1a', '#ff4d4d', '#ff8080', '#ffb3b3', '#ffcccc',
+            '#803300', '#b34700', '#e65c00', '#ff6600', '#ff8533', '#ffa366', '#ffc299', '#ffe0cc',
+            // Linha 3: Amarelos e Verdes
+            '#806600', '#b38f00', '#e6b800', '#ffcc00', '#ffd633', '#ffe066', '#ffeb99', '#fff5cc',
+            '#004000', '#006600', '#008000', '#00b300', '#00e600', '#33ff33', '#66ff66', '#99ff99',
+            // Linha 4: Azuis e Roxos
+            '#000080', '#0000b3', '#0000e6', '#1a1aff', '#4d4dff', '#8080ff', '#b3b3ff', '#ccccff',
+            '#330080', '#4700b3', '#5c00e6', '#6600ff', '#8533ff', '#a366ff', '#c299ff', '#e0ccff'
         ];
+        
         const fontGrid = document.getElementById('fontColorGrid');
         textColors.forEach(c => {
             const btn = document.createElement('button');
@@ -235,15 +239,7 @@
             fontGrid.appendChild(btn);
         });
 
-        const colors = ['#bfe0ff','#a9d4ff','#82caff','#3399ff','#c8f7c5','#b8f0c2','#7cfc00','#228b22','#fff3a6','#fff7bf','#ffd966','#ffcc00','#ffd1a6','#ffc48c','#ffb347','#ff8c00','#ffc1d6','#ffcadc','#f498ad','#ff1493','#dcc6ff','#d2b8ff','#c08dfa','#9400d3','#c2fff0','#c2f0ff','#e6ffc2','#ffd9c2','#ffffff','#f0f0f0','#d3d3d3','#000000'];
-        const grid = document.getElementById('colorGrid');
-        colors.forEach(c => {
-            const btn = document.createElement('button');
-            btn.className = 'btn-color'; btn.style.backgroundColor = c;
-            btn.onmousedown = (e) => { e.preventDefault(); document.execCommand('hiliteColor', false, c); };
-            grid.appendChild(btn);
-        });
-
+        // EMOJIS
         const emojis = ["🙏🏻","👏🏻","👀","🤓","⭐","🔥","🥇","🏆","🚨","🚀","✏️","🔍","📢","💥","💪🏻","👉🏻","👇🏻","👆🏻","👈🏻","✍🏻","🎯","❌","✅"];
         const sidebar = document.getElementById('emojiBoard');
         emojis.forEach(em => {
