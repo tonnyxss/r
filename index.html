@@ -80,6 +80,7 @@
         
         .preco-antigo { color: #e74c3c; text-decoration: line-through; font-size: 0.9em; font-weight: bold; margin-bottom: 2px; display: block; }
         .preco-novo { color: #27ae60; font-size: 1.3em; font-weight: bold; margin-bottom: 10px; display: block; }
+        .preco-parcelado { font-size: 0.8em; color: #555; font-weight: 600; display: block; margin-top: -6px; margin-bottom: 8px; }
         
         .btn-comprar { background-color: #27ae60; color: white; padding: 10px; border-radius: 5px; text-decoration: none; font-weight: bold; margin-top: 5px; display: block; border: none; cursor: pointer; font-size: 0.9em; text-align: center; box-sizing: border-box; }
         .btn-amostra { border: 2px solid #34495e; color: #34495e; padding: 8px; border-radius: 5px; text-decoration: none; font-weight: bold; display: block; margin-top: 5px; cursor: pointer; font-size: 0.85em; text-align: center; box-sizing: border-box; }
@@ -114,21 +115,21 @@
         .faq-item h3 { font-size: 1.1em; color: #2c3e50; margin-top: 0; margin-bottom: 10px; }
         .faq-item p { font-size: 0.9em; color: #555; line-height: 1.6; margin: 0; }
 
-        /* ── Card especial Combo OAB — neon vermelho pulsante ── */
-        @keyframes neon-respirar {
-            0%, 100% {
-                box-shadow:
-                    0 0 6px 1px rgba(231,76,60,0.6),
-                    0 0 14px 3px rgba(231,76,60,0.35),
-                    0 0 28px 6px rgba(231,76,60,0.15);
-            }
-            50% {
-                box-shadow:
-                    0 0 10px 3px rgba(231,76,60,0.95),
-                    0 0 24px 7px rgba(231,76,60,0.6),
-                    0 0 48px 12px rgba(231,76,60,0.3);
-            }
-        }
+/* ── Card especial Combo OAB — neon vermelho POTENTE ── */
+@keyframes neon-respirar {
+    0%, 100% {
+        box-shadow:
+            0 0 10px 2px rgba(231,76,60,0.8),
+            0 0 22px 5px rgba(231,76,60,0.5),
+            0 0 40px 10px rgba(231,76,60,0.25);
+    }
+    10% {
+        box-shadow:
+            0 0 16px 1px rgba(231,76,60,1),       /* 1 = Cor 100% pura sem transparência */
+            0 0 55px 10px rgba(231,76,60,0.85),   /* Espalhamento médio bem aceso */
+            0 0 85px 28px rgba(231,76,60,0.5);    /* Grande auréola de luz vermelha */
+    }
+}
         .card-destaque {
             border: 2px solid #e74c3c;
             position: relative;
@@ -270,7 +271,6 @@
             }
             .grid-principal .card:nth-child(2) img { max-width: 100%; }
             .grid-principal .card:nth-child(2) h3 { font-size: 1em; font-weight: 800; color: #1a252f; }
-            .grid-principal .card:nth-child(2) .preco-novo { font-size: 1.4em; color: #27ae60; }
         }
     </style>
 </head>
@@ -306,14 +306,15 @@
                 <h3>Combo Principais da OAB</h3>
                 <div>
                     <span class="preco-antigo">R$ 159,92</span>
-                    <span class="preco-novo">R$ 39,99</span>
+                    <span class="preco-novo" style="font-size: 1.55em; margin-bottom: 2px;">R$ 59,99</span>
+                    <span class="preco-parcelado">ou 8x de R$ 8,72</span>
                     <button class="btn-detalhes" data-id="ComboOAB">Detalhes</button>
                     <a href="https://pay.hotmart.com/F106332914S" target="_blank" class="btn-comprar" data-id="COMBOOAB">Comprar</a>
                     <a href="https://www.focolegis.com/FocoLegis%20-%20AMOSTRA%20-%20Direito%20Penal.pdf" target="_blank" class="btn-amostra" data-id="COMBOOAB">Amostra</a>
                 </div>
             </div>
 
-        </div><div class="divisor-materiais"><span>Mais Materials</span></div>
+        </div><div class="divisor-materiais"><span>Mais Materiais</span></div>
 
         <div class="grid-produtos">
             <div class="card">
@@ -436,7 +437,7 @@
             <p>
                 Mais de <strong>70% das questões</strong> da prova da OAB e de concursos cobram a pura literalidade dos artigos.
                 <br><br>
-                O caminho mais rápido para a aprovação é dominar a legislação sem aquele processo cansativo e difícil de reter o conhecimento da leitura bruta.
+                O caminho mais rápido para a aprovação é dominar a legislação com estratégia, sem aquele processo cansativo e difícil de reter o conhecimento da leitura bruta.
                 <br><br>
                 Entregamos uma metodologia com cada artigo comentado e esquematizado de forma didática em e-books de <strong>50 a 200 páginas</strong>, indo direto ao ponto e sem enrolação.
                 <br><br>
@@ -451,14 +452,14 @@
                 <br><br>
                 O acesso é liberado na hora para pagamentos via <strong>Pix</strong> ou cartão de crédito (parcelado ou à vista), e boleto após a compensação.
                 <br><br>
-                Você pode baixar quantas vezes quiser, fazer o download em vários locais e imprimir para acompan suas aulas.
+                Você pode baixar quantas vezes quiser, fazer o download em vários locais e imprimir para acompanhar suas aulas.
                 <br><br>
                 Use perfeitamente na tela do seu celular, computador e tablet onde e quando preferir.
             </p>
         </div>
 
         <div class="faq-item" style="border-left: 4px solid #f1c40f;">
-            <h3 style="color: #1a252f;">O acesso é vitalício e o conteúdo recebe updates?</h3>
+            <h3 style="color: #1a252f;">O acesso é vitalício e o conteúdo recebe atualizações?</h3>
             <p>
                 Sim! O seu prazo de acesso aos materiais é <strong>vitalício</strong>, ou seja, eles são seus para sempre.
                 <br><br>
@@ -499,7 +500,6 @@
             <p id="modal-text">Informe seu WhatsApp para liberar o download do material gratuito.</p>
             
             <form id="whatsapp-form" style="width: 100%; display: flex; flex-direction: column; align-items: center; box-sizing: border-box;">
-                <!-- ADICIONADO O ATRIBUTO REQUIRED AQUI PARA TRAVAR O FORMULÁRIO -->
                 <input type="tel" id="whatsapp-input" placeholder="(00) 90000-0000" style="width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; text-align: center;" required>
 
                 <div class="order-bump-box" style="width: 100%;">
@@ -507,7 +507,7 @@
                     <div class="order-bump-info">
                         <span class="order-bump-tag">Leve Mais por Menos 🔥</span>
                         <p class="order-bump-title">Combo OAB 47 — Principais Matérias</p>
-                        <span class="order-bump-price">Por apenas R$ 39,99</span>
+                        <span class="order-bump-price">Por apenas R$ 59,99</span>
                     </div>
                 </div>
 
@@ -538,7 +538,7 @@
         "Etica": {
             titulo: "Estatuto da Advocacia e da OAB",
             lei: "Lei nº 8.906/1994, Regulamento Geral e Código de Ética da OAB",
-            foco: "Focado em OAB e Concursos. Aborda prerrogativas profissionais, infrações disciplinares and estrutura da Ordem.",
+            foco: "Focado em OAB e Concursos. Aborda prerrogativas profissionais, infrações disciplinares e estrutura da Ordem.",
             metodo: "Mais de 70% das questões exigem o domínio da literalidade. Nosso material elimina o processo cansativo da leitura bruta.",
             conteudo: [
                 "Estatuto da OAB (Lei nº 8.906/1994) Esquematizado",
@@ -570,7 +570,7 @@
             titulo: "Combo Criminal Estratégico (CP + CPP)",
             lei: "Decreto-Lei nº 2.848/1940 (CP) e Decreto-Lei nº 3.689/1941 (CPP)",
             foco: "Focado em OAB e Concursos. Consolida a Parte Geral/Especial do CP e procedimentos, provas e recursos do CPP.",
-            metodo: "Mais de 70% das questões cobram o text legal literal. Estruturamos os artigos comentados com esquemas para acelerar sua memorização.",
+            metodo: "Mais de 70% das questões cobram o texto legal literal. Estruturamos os artigos comentados com esquemas para acelerar sua memorização.",
             conteudo: [
                 "Código Penal Completo (Parte Geral e Especial)",
                 "Código de Processo Penal Completo",
@@ -588,7 +588,7 @@
                 "Parte Geral (Aplicação da Lei, Crime, Penas e Extinção de Punibilidade)",
                 "Parte Especial (Crimes contra a Pessoa e Patrimônio)",
                 "Parte Especial (Crimes contra a Dignidade Sexual e Incolumidade)",
-                "Parte Especial (Crimes contra a Fé Pública e Administration Pública)",
+                "Parte Especial (Crimes contra a Fé Pública e Administração Pública)",
                 "Esquemas de Dosimetria e Aplicação da Pena"
             ]
         },
@@ -650,7 +650,7 @@
         "EAOAB": {
             titulo: "Estatuto da OAB Comentado",
             lei: "Lei nº 8.906/1994 (Estatuto da Ordem dos Advogados do Brasil)",
-            foco: "Focado em OAB e Concursos. Direitos do Advogado, impedimentos e incompatibilidades profissionais.",
+            foco: "Focado em OAB e Concursos. Direitos do Advogado, impedimentos e incompatividades profissionais.",
             metodo: "Conteúdo técnico de 50 a 200 páginas focado na retenção imediata das pegadinhas tradicionais das bancas.",
             conteudo: [
                 "Incompatibilidades e Impedimentos para o Exercício",
@@ -892,10 +892,10 @@
         });
 
         var btnTimer = document.getElementById('btn-timer');
-        var sec = 9;
+        var sec = 10;
         var t = setInterval(function() {
             sec--;
-            btnTimer.innerText = sec > 0 ? ('AGUARDE ' + sec + 's...') : 'BAIXAR';
+            btnTimer.innerText = sec > 0 ? ('DOWNLOAD LIBERADO EM ' + sec + 's...') : 'BAIXAR';
             if (sec <= 0) { clearInterval(t); btnTimer.classList.remove('disabled'); }
         }, 1000);
         btnTimer.addEventListener('click', function() {
@@ -947,7 +947,7 @@
                         </div>\
                         <div class="info-block" style="border-left-color:#9b59b6;">\
                             <span class="info-block-title">⚡ Entrega e Acesso</span>\
-                            <span class="info-block-text">Envio digital 100% automático e imediato via e-mail com acesso vitalício e updates durante o ano.</span>\
+                            <span class="info-block-text">Envio digital 100% automático e imediato via e-mail com acesso vitalício e atualizações durante o ano.</span>\
                         </div>';
 
                     abrirModal('modal-detalhes');
@@ -967,7 +967,7 @@
                         var valorProduto = 19.99;
                         
                         if (id === 'COMBOOAB') {
-                            valorProduto = 39.99;
+                            valorProduto = 59.99;
                         } else if (id === 'COMBOPENAL') {
                             valorProduto = 29.99;
                         } else if (id === 'CLT') {
