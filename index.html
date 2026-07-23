@@ -76,8 +76,25 @@
         }
 
         .card img { width: 100%; max-width: 140px; height: auto; margin: 0 auto 10px auto; object-fit: cover; border-radius: 8px; }
-        .card h3 { font-size: 1.1em; margin: 10px 0; }
+        .card h3 { font-size: 1.1em; margin: 10px 0 4px 0; }
         
+        /* Mini lista de detalhes */
+        .mini-beneficios {
+            list-style: none;
+            padding: 0;
+            margin: 4px 0 8px 0;
+            font-size: 0.68em;
+            color: #444;
+            text-align: left;
+            display: inline-block;
+            font-weight: 600;
+        }
+        .mini-beneficios li {
+            margin-bottom: 2px;
+            line-height: 1.25;
+            white-space: nowrap;
+        }
+
         .preco-antigo { color: #e74c3c; text-decoration: line-through; font-size: 0.9em; font-weight: bold; margin-bottom: 2px; display: block; }
         .preco-novo { color: #27ae60; font-size: 1.3em; font-weight: bold; margin-bottom: 10px; display: block; }
         .preco-parcelado { font-size: 0.8em; color: #555; font-weight: 600; display: block; margin-top: -6px; margin-bottom: 8px; }
@@ -115,21 +132,21 @@
         .faq-item h3 { font-size: 1.1em; color: #2c3e50; margin-top: 0; margin-bottom: 10px; }
         .faq-item p { font-size: 0.9em; color: #555; line-height: 1.6; margin: 0; }
 
-/* ── Card especial Combo OAB — neon vermelho POTENTE ── */
-@keyframes neon-respirar {
-    0%, 100% {
-        box-shadow:
-            0 0 10px 2px rgba(231,76,60,0.8),
-            0 0 22px 5px rgba(231,76,60,0.5),
-            0 0 40px 10px rgba(231,76,60,0.25);
-    }
-    10% {
-        box-shadow:
-            0 0 16px 1px rgba(231,76,60,1),       /* 1 = Cor 100% pura sem transparência */
-            0 0 55px 10px rgba(231,76,60,0.85),   /* Espalhamento médio bem aceso */
-            0 0 85px 28px rgba(231,76,60,0.5);    /* Grande auréola de luz vermelha */
-    }
-}
+        /* ── Card especial Combo OAB — neon vermelho POTENTE ── */
+        @keyframes neon-respirar {
+            0%, 100% {
+                box-shadow:
+                    0 0 10px 2px rgba(231,76,60,0.8),
+                    0 0 22px 5px rgba(231,76,60,0.5),
+                    0 0 40px 10px rgba(231,76,60,0.25);
+            }
+            10% {
+                box-shadow:
+                    0 0 16px 1px rgba(231,76,60,1),       /* 1 = Cor 100% pura sem transparência */
+                    0 0 55px 10px rgba(231,76,60,0.85),   /* Espalhamento médio bem aceso */
+                    0 0 85px 28px rgba(231,76,60,0.5);    /* Grande auréola de luz vermelha */
+            }
+        }
         .card-destaque {
             border: 2px solid #e74c3c;
             position: relative;
@@ -256,7 +273,8 @@
             .grid-principal { gap: 10px; }
             .grid-produtos { gap: 10px; grid-template-columns: repeat(2, 1fr); }
             .card { padding: 10px; min-height: 390px; }
-            .card h3 { font-size: 0.95em; margin: 6px 0; }
+            .card h3 { font-size: 0.95em; margin: 6px 0 2px 0; }
+            .mini-beneficios { font-size: 0.62em; margin: 2px 0 6px 0; }
 
             /* Card 1 (Grátis) — borda azul sutil */
             .grid-principal .card:nth-child(1) {
@@ -304,6 +322,11 @@
                 <span class="badge-mais-vendido">⭐ Mais Vendido</span>
                 <img src="COMBOOAB.png" alt="Combo OAB">
                 <h3>Combo Principais da OAB</h3>
+                <ul class="mini-beneficios">
+                    <li>✅ Acesso Vitalício</li>
+                    <li>✅ Atualizações gratuitas</li>
+                    <li>✅ Acesso imediato via e-mail</li>
+                </ul>
                 <div>
                     <span class="preco-antigo">R$ 159,92</span>
                     <span class="preco-novo" style="font-size: 1.55em; margin-bottom: 2px;">R$ 59,99</span>
@@ -321,6 +344,11 @@
                 <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">COMBO 🔥</div>
                 <img src="COMBOPENAL.png" alt="Combo CP e CPP">
                 <h3>Código Penal + Processo Penal</h3>
+                <ul class="mini-beneficios">
+                    <li>✅ Acesso Vitalício</li>
+                    <li>✅ Atualizações gratuitas</li>
+                    <li>✅ Acesso imediato via e-mail</li>
+                </ul>
                 <div>
                     <span class="preco-antigo">R$ 39,98</span>
                     <span class="preco-novo">R$ 29,99</span>
@@ -334,6 +362,11 @@
                 <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">OFERTA ⚡</div>
                 <img src="CLT.png" alt="Direito do Trabalho">
                 <h3>Direito e Processo do Trabalho</h3>
+                <ul class="mini-beneficios">
+                    <li>✅ Acesso Vitalício</li>
+                    <li>✅ Atualizações gratuitas</li>
+                    <li>✅ Acesso imediato via e-mail</li>
+                </ul>
                 <div>
                     <span class="preco-antigo">R$ 19,99</span>
                     <span class="preco-novo">R$ 9,99</span>
@@ -347,6 +380,11 @@
                 <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">DESTAQUE 🔥</div>
                 <img src="PENAL.png" alt="Direito Penal">
                 <h3>Código Penal Completo</h3>
+                <ul class="mini-beneficios">
+                    <li>✅ Acesso Vitalício</li>
+                    <li>✅ Atualizações gratuitas</li>
+                    <li>✅ Acesso imediato via e-mail</li>
+                </ul>
                 <div>
                     <span class="preco-novo">R$ 19,99</span>
                     <button class="btn-detalhes" data-id="Penal">Detalhes</button>
@@ -359,6 +397,11 @@
                 <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:15px;">DESTAQUE 🔥</div>
                 <img src="CONSTITUCIONAL.png" alt="Constitucional">
                 <h3>Direito Constitucional</h3>
+                <ul class="mini-beneficios">
+                    <li>✅ Acesso Vitalício</li>
+                    <li>✅ Atualizações gratuitas</li>
+                    <li>✅ Acesso imediato via e-mail</li>
+                </ul>
                 <div>
                     <span class="preco-novo">R$ 19,99</span>
                     <button class="btn-detalhes" data-id="Constitucional">Detalhes</button>
@@ -371,6 +414,11 @@
                 <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:15px;">DESTAQUE 🔥</div>
                 <img src="DIREITOCIVIL.png" alt="Civil">
                 <h3>Código Civil Completo</h3>
+                <ul class="mini-beneficios">
+                    <li>✅ Acesso Vitalício</li>
+                    <li>✅ Atualizações gratuitas</li>
+                    <li>✅ Acesso imediato via e-mail</li>
+                </ul>
                 <div>
                     <span class="preco-novo">R$ 19,99</span>
                     <button class="btn-detalhes" data-id="Civil">Detalhes</button>
@@ -383,6 +431,11 @@
                 <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:15px;">DESTAQUE 🔥</div>
                 <img src="PROCESSO CIVIL.png" alt="CPC">
                 <h3>Processo Civil - CPC</h3>
+                <ul class="mini-beneficios">
+                    <li>✅ Acesso Vitalício</li>
+                    <li>✅ Atualizações gratuitas</li>
+                    <li>✅ Acesso imediato via e-mail</li>
+                </ul>
                 <div>
                     <span class="preco-novo">R$ 19,99</span>
                     <button class="btn-detalhes" data-id="CPC">Detalhes</button>
@@ -395,6 +448,11 @@
                 <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">NOVIDADE ⚡</div>
                 <img src="EAOAB.png" alt="Estatuto da OAB">
                 <h3>Estatuto da OAB</h3>
+                <ul class="mini-beneficios">
+                    <li>✅ Acesso Vitalício</li>
+                    <li>✅ Atualizações gratuitas</li>
+                    <li>✅ Acesso imediato via e-mail</li>
+                </ul>
                 <div>
                     <span class="preco-novo">R$ 19,99</span>
                     <button class="btn-detalhes" data-id="EAOAB">Detalhes</button>
@@ -407,6 +465,11 @@
                 <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">NOVIDADE ⚡</div>
                 <img src="TRIBUTÁRIO.png" alt="Código Tributário">
                 <h3>Direito Tributário - CTN</h3>
+                <ul class="mini-beneficios">
+                    <li>✅ Acesso Vitalício</li>
+                    <li>✅ Atualizações gratuitas</li>
+                    <li>✅ Acesso imediato via e-mail</li>
+                </ul>
                 <div>
                     <span class="preco-novo">R$ 19,99</span>
                     <button class="btn-detalhes" data-id="Tributario">Detalhes</button>
@@ -419,6 +482,11 @@
                 <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">NOVIDADE ⚡</div>
                 <img src="PROCESSO PENAL.png" alt="Processo Penal">
                 <h3>Processo Penal</h3>
+                <ul class="mini-beneficios">
+                    <li>✅ Acesso Vitalício</li>
+                    <li>✅ Atualizações gratuitas</li>
+                    <li>✅ Acesso imediato via e-mail</li>
+                </ul>
                 <div>
                     <span class="preco-novo">R$ 19,99</span>
                     <button class="btn-detalhes" data-id="ProcessoPenal">Detalhes</button>
