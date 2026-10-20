@@ -8,7 +8,6 @@
 <meta name="description" content="Gabarite a OAB 2026 e concursos de Tribunais, Polícia e Magistratura. Baixe PDF grátis de Lei Seca comentada, resumos e códigos esquematizados atualizados!">
 <meta property="og:description" content="Material de estudo focado na aprovação: simulado, cronograma de estudos, gabarito, caderno de questões comentadas, mapas mentais e resumos para Concurso TJ, TRF, MP, Delegado e Exame da OAB Segunda Fase. Download de jurisprudência atualizada STF e STJ, informativos resumidos e Vade Mecum in PDF grátis.">
 <meta property="og:title" content="Lei Seca Comentada 2026 | Resumos, Mapas Mentais e Flashcards Direito">    
-<meta property="og:image" content="https://www.focolegis.com/fundopreto.png" />
 
     <script>
     !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
@@ -271,6 +270,87 @@
             .grid-principal .card:nth-child(2) h3 { font-size: 1em; font-weight: 800; color: #1a252f; }
             .grid-principal .card:nth-child(2) .preco-novo { font-size: 1.4em; color: #27ae60; }
         }
+
+        /* ── Popup de prova social ── */
+        .social-proof {
+            position: fixed;
+            bottom: 80px;
+            left: 16px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            padding: 10px 14px;
+            max-width: 230px;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateX(-260px);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border-left: 3px solid #27ae60;
+        }
+        .social-proof.visivel {
+            transform: translateX(0);
+        }
+        .social-proof-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1a252f, #2c3e50);
+            color: white;
+            font-size: 1em;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .social-proof-body { flex: 1; min-width: 0; }
+        .social-proof-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1px;
+        }
+        .social-proof-nome {
+            font-size: 0.78em;
+            font-weight: 700;
+            color: #1a252f;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .social-proof-estrelas {
+            font-size: 0.7em;
+            color: #f1c40f;
+            letter-spacing: 1px;
+            flex-shrink: 0;
+        }
+        .social-proof-texto {
+            font-size: 0.72em;
+            color: #555;
+            line-height: 1.35;
+        }
+        .social-proof-fechar {
+            position: absolute;
+            top: 5px;
+            right: 7px;
+            background: none;
+            border: none;
+            color: #aaa;
+            font-size: 0.75em;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0;
+        }
+        @media (max-width: 600px) {
+            .social-proof {
+                bottom: 70px;
+                left: 10px;
+                max-width: 200px;
+                padding: 8px 12px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -302,7 +382,7 @@
                 <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:4px;">SUPER COMBO 🔥🔥</div>
                 <span class="badge-mais-vendido">⭐ Mais Vendido</span>
                 <img src="COMBOOAB.png" alt="Combo OAB">
-                <h3>Principais da OAB e Concursos</h3>
+                <h3>Principais OAB e Concursos</h3>
                 <ul class="mini-beneficios">
                     <li>✅ Acesso Vitalício</li>
                     <li>✅ Atualizações gratuitas</li>
@@ -311,7 +391,7 @@
                 <div>
                     <span class="preco-antigo">R$ 179,91</span>
                     <span class="preco-novo" style="font-size: 1.55em; margin-bottom: 2px;">R$ 59,99</span>
-                    <span class="preco-parcelado">ou em 12 x de R$ 6,20</span>
+                    <span class="preco-parcelado">ou 12 x de R$ 6,20</span>
                     <button class="btn-detalhes" data-id="ComboOAB">Detalhes</button>
                     <a href="https://pay.hotmart.com/F106332914S?checkoutMode=10" target="_blank" class="btn-comprar" data-id="COMBOOAB">Comprar</a>
                     <a href="https://www.focolegis.com/FocoLegis%20-%20AMOSTRA%20-%20Direito%20Civil.pdf" target="_blank" class="btn-amostra" data-id="COMBOOAB">Amostra</a>
@@ -351,7 +431,7 @@
                     <span class="preco-antigo">R$ 39,98</span>
                     <span class="preco-novo">R$ 29,99</span>
                     <button class="btn-detalhes" data-id="ComboPenal">Detalhes</button>
-                    <a href="https://pay.hotmart.com/F105957304E?checkoutMode=10" target="_blank" class="btn-comprar" data-id="COMBOPENAL">Comprar</a>
+                    <a href="https://pay.hotmart.com/F105957304E" target="_blank" class="btn-comprar" data-id="COMBOPENAL">Comprar</a>
                     <a href="https://www.focolegis.com/FocoLegis%20-%20AMOSTRA%20-%20Direito%20Penal.pdf" target="_blank" class="btn-amostra" data-id="COMBOPENAL">Amostra</a>
                 </div>
             </div>
@@ -437,7 +517,7 @@
                 <div>
                     <span class="preco-novo">R$ 19,99</span>
                     <button class="btn-detalhes" data-id="Civil">Detalhes</button>
-                    <a href="https://pay.hotmart.com/M106167121V" target="_blank" class="btn-comprar" data-id="CIVIL">Comprar</a>
+                    <a href="https://pay.hotmart.com/B105423919E" target="_blank" class="btn-comprar" data-id="CIVIL">Comprar</a>
                     <a href="https://www.focolegis.com/FocoLegis%20-%20AMOSTRA%20-%20Direito%20Civil.pdf" target="_blank" class="btn-amostra" data-id="CIVIL">Amostra</a>
                 </div>
             </div>
@@ -496,7 +576,7 @@
             <div class="card">
                 <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">NOVIDADE ⚡</div>
                 <img src="PROCESSO PENAL.png" alt="Processo Penal">
-                <h3>Processo Penal</h3>
+                <h3>Processo Penal - CPP</h3>
                 <ul class="mini-beneficios">
                     <li>✅ Acesso Vitalício</li>
                     <li>✅ Atualizações gratuitas</li>
@@ -1127,6 +1207,83 @@
             </svg>
         </span>
     </a>
+
+
+    <!-- Popup de prova social -->
+    <div class="social-proof" id="social-proof-popup">
+        <button class="social-proof-fechar" id="social-proof-fechar">✕</button>
+        <div class="social-proof-avatar" id="sp-avatar">M</div>
+        <div class="social-proof-body">
+            <div class="social-proof-header">
+                <span class="social-proof-nome" id="sp-nome">Mariana S.</span>
+                <span class="social-proof-estrelas">★★★★★</span>
+            </div>
+            <div class="social-proof-texto" id="sp-texto">Material incrível, passei na OAB! 🎉</div>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        var depoimentos = [
+            { nome: "Mariana S.",   inicial: "M", texto: "Material incrível, passei na OAB!! 🎉" },
+            { nome: "Rafael T.",    inicial: "R", texto: "Lei seca nunca foi tão fácil de estudar." },
+            { nome: "Camila O.",    inicial: "C", texto: "Comprei ontem, já estou adorando!" },
+            { nome: "Lucas M.",     inicial: "L", texto: "Brabo d+." },
+            { nome: "Fefa N.",     inicial: "F", texto: "Leitura da lei melhorou 200%" },
+            { nome: "Fernanda P.",  inicial: "F", texto: "Melhor custo benefício que já vi." },
+            { nome: "Bruno A.",     inicial: "B", texto: "Passei na 1ª fase com esse material! ❤️" },
+            { nome: "Juliana R.",   inicial: "J", texto: "Esquematizado e direto ao ponto." },
+            { nome: "Souza C.",   inicial: "S", texto: "Rapaz, mto bom, parabéns." },
+            { nome: "Thiago N.",    inicial: "T", texto: "Comprei o combo e não me arrependi." }
+        ];
+
+        var popup   = document.getElementById('social-proof-popup');
+        var elNome  = document.getElementById('sp-nome');
+        var elAvt   = document.getElementById('sp-avatar');
+        var elTexto = document.getElementById('sp-texto');
+        var btnFech = document.getElementById('social-proof-fechar');
+        var fechado = false;
+        var idx     = Math.floor(Math.random() * depoimentos.length);
+
+        function mostrarProximo() {
+            if (fechado) return;
+            idx = (idx + 1) % depoimentos.length;
+            var d = depoimentos[idx];
+            popup.classList.remove('visivel');
+            setTimeout(function() {
+                elNome.textContent  = d.nome;
+                elAvt.textContent   = d.inicial;
+                elTexto.textContent = d.texto;
+                popup.classList.add('visivel');
+                setTimeout(function() {
+                    if (!fechado) popup.classList.remove('visivel');
+                }, 4000);
+            }, 500);
+        }
+
+        // Aparece pela primeira vez após 5s
+        setTimeout(function() {
+            if (fechado) return;
+            var d = depoimentos[idx];
+            elNome.textContent  = d.nome;
+            elAvt.textContent   = d.inicial;
+            elTexto.textContent = d.texto;
+            popup.classList.add('visivel');
+            setTimeout(function() {
+                if (!fechado) popup.classList.remove('visivel');
+            }, 4000);
+        }, 5000);
+
+        // Rotaciona a cada 18s
+        setInterval(mostrarProximo, 18000);
+
+        // Botão fechar
+        btnFech.addEventListener('click', function() {
+            fechado = true;
+            popup.classList.remove('visivel');
+        });
+    })();
+    </script>
 
 </body>
 </html>
