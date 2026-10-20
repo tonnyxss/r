@@ -74,7 +74,22 @@ const chatStatus = document.getElementById('chat-status');
 let userData = { name: '' };
 let currentState = 'START';
 
+// ── CONFIGURAÇÕES (altere aqui preços e links) ───────────────────────────────
+const PRECO_COMBO = 'R$ 59,99';
+const PRECO_LEI   = 'R$ 19,99';
+const NOME_COMBO  = 'Combo OAB e Concursos';
+const CHECKOUT_URL = 'https://pay.hotmart.com/F106332914S';
+const WPP_URL      = 'https://wa.me/5522988341575';
+const CATALOGO_URL = 'https://www.focolegis.com/?ref=chatbox';
+const BRAVE_IOS_URL     = 'https://apps.apple.com/app/brave-private-web-browser-vpn/id1052879175';
+const BRAVE_ANDROID_URL = 'https://play.google.com/store/apps/details?id=com.brave.browser';
+const BRAVE_PC_URL      = 'https://brave.com/download/';
+
 // ── FUNÇÕES UTILITÁRIAS ──────────────────────────────────────────────────────
+
+function escapeHtml(text) {
+    return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
 
 function formatMessage(text) {
     return text.replace(/\n/g, '<br>').replace(/\*(.*?)\*/g, '<strong>$1</strong>');
@@ -91,7 +106,8 @@ function appendMessage(text, side, isTyping = false) {
         div.innerHTML = '<span></span><span></span><span></span>';
         div.id = 'typing-indicator';
     } else {
-        div.innerHTML = `${formatMessage(text)} <span class="message-time">${getTime()}</span>`;
+        const safe = side === 'sent' ? escapeHtml(text) : text;
+        div.innerHTML = `${formatMessage(safe)} <span class="message-time">${getTime()}</span>`;
     }
     chatContainer.appendChild(div);
     chatContainer.scrollTop = chatContainer.scrollHeight;
@@ -106,6 +122,18 @@ function sendBotMessage(text, delay = 1400) {
         appendMessage(text, 'received');
         chatStatus.innerText = 'Online';
     }, delay);
+}
+
+// Envia uma lista de mensagens em sequência (ordem garantida) e, ao final, executa "done"
+function sayAll(list, done) {
+    let i = 0;
+    (function next() {
+        if (i >= list.length) { if (done) done(); return; }
+        const text = list[i++];
+        const d = Math.min(900 + text.length * 8, 2600);
+        sendBotMessage(text, d);
+        setTimeout(next, d + 250);
+    })();
 }
 
 function appendOptions(options) {
@@ -127,6 +155,7 @@ function appendLinkButton(text, url) {
     a.className = 'btn-link';
     a.href = url;
     a.target = '_blank';
+    a.rel = 'noopener';
     a.innerText = text;
     chatContainer.appendChild(a);
     chatContainer.scrollTop = chatContainer.scrollHeight;
@@ -150,35 +179,88 @@ function appendPdfAttachment(displayName, fileUrl) {
     chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
-function voltarMenu(delay = 3000) {
-    setTimeout(() => {
-        appendOptions([
-            { text: '⚖️ Ver o Combo OAB (R$ 69,99)', action: () => selectOption('⚖️ Ver o Combo OAB', 'OAB_FLOW') },
-            { text: '↩️ Voltar ao Menu Principal', action: () => selectOption('↩️ Voltar ao Menu Principal', 'RESET') }
-        ]);
-    }, delay);
+function copiarTexto(texto, onOk, onFail) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(texto).then(onOk).catch(() => copiarFallback(texto, onOk, onFail));
+    } else {
+        copiarFallback(texto, onOk, onFail);
+    }
+}
+
+function copiarFallback(texto, onOk, onFail) {
+    try {
+        const ta = document.createElement('textarea');
+        ta.value = texto;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        const ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        ok ? onOk() : onFail();
+    } catch (e) { onFail(); }
+}
+
+function enableFreeText(placeholder) {
+    userInput.disabled = false;
+    userInput.placeholder = placeholder || 'Digite sua dúvida aqui...';
+    userInput.focus();
+    currentState = 'WAITING_FOR_FREE_TEXT';
+}
+
+function disableInput(placeholder) {
+    userInput.disabled = true;
+    userInput.placeholder = placeholder || 'Escolha uma opção acima...';
+}
+
+// Menu padrão exibido ao final das respostas
+function voltarMenu() {
+    appendOptions([
+        { text: `⚖️ Ver o ${NOME_COMBO} (${PRECO_COMBO})`, action: () => selectOption(`⚖️ Ver o ${NOME_COMBO}`, 'OAB_FLOW') },
+        { text: '❓ Tenho outra dúvida',                    action: () => selectOption('❓ Tenho outra dúvida', 'ASK_AGAIN') },
+        { text: '↩️ Voltar ao Menu Principal',              action: () => selectOption('↩️ Voltar ao Menu Principal', 'RESET') }
+    ]);
+}
+
+// Menu padrão ao final dos tutoriais de pagamento
+function menuPosTutorial() {
+    appendOptions([
+        { text: '🔁 Tentar pagar de novo',        action: () => selectOption('🔁 Tentar pagar de novo', 'RETRY_PAY') },
+        { text: '🛠️ Ver outros tutoriais',        action: () => selectOption('🛠️ Ver outros tutoriais', 'PAY_MENU') },
+        { text: '👨‍💼 Falar com um atendente',      action: () => selectOption('👨‍💼 Falar com um atendente', 'HUMAN_WPP') },
+        { text: '↩️ Voltar ao Menu Principal',    action: () => selectOption('↩️ Voltar ao Menu Principal', 'RESET') }
+    ]);
 }
 
 function irParaSuporteWpp() {
-    sendBotMessage('Vou te transferir para um *atendente humano* agora! Ele responde rapidinho e resolve qualquer caso. 👇');
-    setTimeout(() => { appendLinkButton('📱 Falar com um Atendente no WhatsApp', 'https://wa.me/5522988341575'); }, 1800);
+    sayAll(['Vou te transferir para um *atendente humano* agora! Ele responde rapidinho e resolve qualquer caso. 👇'], () => {
+        appendLinkButton('📱 Falar com um Atendente no WhatsApp', WPP_URL);
+        setTimeout(() => {
+            appendOptions([
+                { text: '❓ Tenho outra dúvida',       action: () => selectOption('❓ Tenho outra dúvida', 'ASK_AGAIN') },
+                { text: '↩️ Voltar ao Menu Principal', action: () => selectOption('↩️ Voltar ao Menu Principal', 'RESET') }
+            ]);
+        }, 600);
+    });
 }
 
 // ── MENU PRINCIPAL ───────────────────────────────────────────────────────────
 
 function showMainMenu() {
     appendOptions([
-        { text: '⚖️ Combo OAB 1ª Fase (R$ 69,99)',        action: () => selectOption('⚖️ Combo OAB 1ª Fase', 'OAB_FLOW') },
-        { text: '📚 Leis Individuais (R$ 19,99)',           action: () => selectOption('📚 Leis Individuais', 'CHOOSE_CATALOG') },
-        { text: '📖 Ver Amostras Gratuitas',                action: () => selectOption('📖 Ver Amostras', 'AMSTR_FLOW') },
-        { text: '🎓 Serve para Concursos Públicos?',        action: () => selectOption('🎓 Serve para Concursos?', 'CONCURSOS_FLOW') },
-        { text: '❓ Serve para quem está do zero?',         action: () => selectOption('❓ Serve do zero?', 'DOUBT_BASE') },
-        { text: '⏱️ Não tenho muito tempo para estudar',   action: () => selectOption('⏱️ Pouco tempo', 'DOUBT_TEMPO') },
-        { text: '💰 O preço parece alto para mim',          action: () => selectOption('💰 Preço alto', 'DOUBT_PRECO') },
-        { text: '🔍 Quero ver antes de decidir',            action: () => selectOption('🔍 Quero ver antes', 'DOUBT_VER') },
-        { text: '❓ Está atualizado para o edital?',        action: () => selectOption('❓ Atualizado?', 'DOUBT_EDITAL') },
-        { text: '📧 Como recebo meu material?',             action: () => selectOption('📧 Como recebo?', 'DELIVERY_INFO') },
-        { text: '❓ Outras dúvidas',                        action: () => selectOption('❓ Outras dúvidas', 'HUMAN_SUPPORT') }
+        { text: `⚖️ ${NOME_COMBO} (${PRECO_COMBO})`,        action: () => selectOption(`⚖️ ${NOME_COMBO}`, 'OAB_FLOW') },
+        { text: `📚 Leis Individuais (${PRECO_LEI})`,        action: () => selectOption('📚 Leis Individuais', 'CHOOSE_CATALOG') },
+        { text: '📖 Ver Amostras Gratuitas',                 action: () => selectOption('📖 Ver Amostras', 'AMSTR_FLOW') },
+        { text: '🎓 Serve para Concursos Públicos?',         action: () => selectOption('🎓 Serve para Concursos?', 'CONCURSOS_FLOW') },
+        { text: '❓ Serve para quem está do zero?',          action: () => selectOption('❓ Serve do zero?', 'DOUBT_BASE') },
+        { text: '⏱️ Não tenho muito tempo para estudar',    action: () => selectOption('⏱️ Pouco tempo', 'DOUBT_TEMPO') },
+        { text: '💰 O preço parece alto para mim',           action: () => selectOption('💰 Preço alto', 'DOUBT_PRECO') },
+        { text: '🔍 Quero ver antes de decidir',             action: () => selectOption('🔍 Quero ver antes', 'DOUBT_VER') },
+        { text: '❓ Está atualizado para o edital?',         action: () => selectOption('❓ Atualizado?', 'DOUBT_EDITAL') },
+        { text: '📧 Como recebo meu material?',              action: () => selectOption('📧 Como recebo?', 'DELIVERY_INFO') },
+        { text: '🛠️ Problema para pagar / tela branca',     action: () => selectOption('🛠️ Problema para pagar', 'PAY_TROUBLE') },
+        { text: '❓ Outras dúvidas',                         action: () => selectOption('❓ Outras dúvidas', 'HUMAN_SUPPORT') }
     ]);
 }
 
@@ -195,56 +277,54 @@ const chatFlow = {
 
     WAITING_FOR_NAME: {
         handle: (text) => {
-            userData.name = text.split(' ')[0];
-            userInput.disabled = true;
-            userInput.placeholder = 'Escolha uma opção acima...';
-            sendBotMessage(`Prazer, *${userData.name}*! Sou o assistente do FocoLegis. 😊`, 1000);
-            setTimeout(() => {
-                sendBotMessage('🔥 *Por que estudar com o FocoLegis?*\n\n• *+80% das questões* da OAB e concursos cobram literalidade da lei\n• Lei seca *esquematizada, comentada e grifada* — sem enrolação\n• *Acesso vitalício* — pague uma vez, é seu para sempre\n• *Atualizações gratuitas* — mudou a lei, você recebe sem pagar nada a mais');
-            }, 2200);
-            setTimeout(() => {
-                sendBotMessage('Como posso te ajudar hoje?');
-            }, 4500);
-            setTimeout(() => { showMainMenu(); }, 6000);
+            let first = text.trim().split(/\s+/)[0].replace(/[^\p{L}'\-]/gu, '');
+            if (!first) first = 'amigo(a)';
+            userData.name = first.charAt(0).toUpperCase() + first.slice(1);
+            disableInput();
+            sayAll([
+                `Prazer, *${userData.name}*! Sou o assistente do FocoLegis. 😊`,
+                '🔥 *Por que estudar com o FocoLegis?*\n\n• *+80% das questões* da OAB e concursos cobram literalidade da lei\n• Lei seca *esquematizada, comentada e grifada* — sem enrolação\n• *Acesso vitalício* — pague uma vez, é seu para sempre\n• *Atualizações gratuitas* — mudou a lei, você recebe sem pagar nada a mais',
+                'Como posso te ajudar hoje?'
+            ], () => showMainMenu());
         }
     },
 
+    // ── VENDAS ──────────────────────────────────────────────────────────────
+
     OAB_FLOW: {
         execute: () => {
-            sendBotMessage(`*${userData.name}*, o *Combo OAB 1ª Fase* reúne as matérias de maior peso na prova — tudo que você precisa para ultrapassar os 40 pontos com segurança:\n\n• Direito Penal e Processo Penal\n• Direito Civil e Processo Civil\n• Direito Constitucional\n• Direito Tributário\n• Direito e Processo do Trabalho\n• Direito Administrativo\n• Ética Profissional da OAB`);
-            setTimeout(() => {
-                sendBotMessage('Tudo esquematizado, comentado e direto ao ponto por *R$ 69,99* — um investimento único para garantir sua carteira da Ordem. 🎯');
-            }, 2000);
-            setTimeout(() => {
-                appendLinkButton('🔥 Garantir Combo OAB (R$ 69,99)', 'https://pay.hotmart.com/F106332914S');
+            sayAll([
+                `*${userData.name}*, o *${NOME_COMBO}* reúne as matérias de maior peso na *1ª Fase da OAB* e também nos principais *concursos públicos* — tudo que você precisa para ultrapassar os 40 pontos com segurança:\n\n• Direito Penal e Processo Penal\n• Direito Civil e Processo Civil\n• Direito Constitucional\n• Direito Tributário\n• Direito e Processo do Trabalho\n• Direito Administrativo\n• Ética Profissional da OAB`,
+                `Tudo esquematizado, comentado e direto ao ponto por *${PRECO_COMBO}* — um investimento único para garantir sua carteira da Ordem e se preparar para os concursos. 🎯\n\nSe a página de pagamento der qualquer problema (tela branca, travando), é só me avisar que eu resolvo! 😉`
+            ], () => {
+                appendLinkButton(`🔥 Garantir ${NOME_COMBO} (${PRECO_COMBO})`, CHECKOUT_URL);
                 appendOptions([
-                    { text: '📖 Ver uma Amostra Antes', action: () => selectOption('📖 Ver Amostra', 'AMSTR_FLOW') },
-                    { text: '↩️ Voltar ao Menu Principal', action: () => selectOption('↩️ Voltar', 'RESET') }
+                    { text: '📖 Ver uma Amostra Antes',              action: () => selectOption('📖 Ver Amostra', 'AMSTR_FLOW') },
+                    { text: '🛠️ Estou com problema para pagar',      action: () => selectOption('🛠️ Problema para pagar', 'PAY_TROUBLE') },
+                    { text: '↩️ Voltar ao Menu Principal',           action: () => selectOption('↩️ Voltar', 'RESET') }
                 ]);
-            }, 3500);
+            });
         }
     },
 
     CHOOSE_CATALOG: {
         execute: () => {
-            sendBotMessage(`*${userData.name}*, nossas leis individuais custam *R$ 19,99* cada — ideais para reforçar a matéria onde você está mais fraco ou complementar o combo.`);
-            setTimeout(() => {
-                sendBotMessage('Temos disponível:\n\n• Código Penal\n• Código de Processo Penal\n• Código Civil\n• Código de Processo Civil\n• Constituição Federal\n• Código Tributário Nacional (CTN)\n• CLT + Processo do Trabalho\n• Estatuto da OAB\n• Direito Administrativo');
-            }, 1500);
-            setTimeout(() => {
-                appendLinkButton('🛒 Ver Catálogo Completo', 'https://www.focolegis.com/?ref=chatbox');
+            sayAll([
+                `*${userData.name}*, nossas leis individuais custam *${PRECO_LEI}* cada — ideais para reforçar a matéria onde você está mais fraco ou complementar o combo.`,
+                'Temos disponível:\n\n• Código Penal\n• Código de Processo Penal\n• Código Civil\n• Código de Processo Civil\n• Constituição Federal\n• Código Tributário Nacional (CTN)\n• CLT + Processo do Trabalho\n• Estatuto da OAB\n• Direito Administrativo'
+            ], () => {
+                appendLinkButton('🛒 Ver Catálogo Completo', CATALOGO_URL);
                 appendOptions([
-                    { text: '⚖️ Ver o Combo OAB (R$ 69,99)', action: () => selectOption('⚖️ Ver Combo', 'OAB_FLOW') },
-                    { text: '↩️ Voltar ao Menu Principal', action: () => selectOption('↩️ Voltar', 'RESET') }
+                    { text: `⚖️ Ver o ${NOME_COMBO} (${PRECO_COMBO})`, action: () => selectOption('⚖️ Ver Combo', 'OAB_FLOW') },
+                    { text: '↩️ Voltar ao Menu Principal',              action: () => selectOption('↩️ Voltar', 'RESET') }
                 ]);
-            }, 3000);
+            });
         }
     },
 
     AMSTR_FLOW: {
         execute: () => {
-            sendBotMessage(`Claro, *${userData.name}*! Veja a qualidade com os próprios olhos antes de decidir — baixe qualquer amostra gratuita agora:`);
-            setTimeout(() => {
+            sayAll([`Claro, *${userData.name}*! Veja a qualidade com os próprios olhos antes de decidir — baixe qualquer amostra gratuita agora:`], () => {
                 appendPdfAttachment('Amostra — Estatuto da OAB', 'FocoLegis - AMOSTRA - EAOAB.pdf');
                 appendPdfAttachment('Amostra — Direito Constitucional', 'FocoLegis - AMOSTRA - Direito Constitucional.pdf');
                 appendPdfAttachment('Amostra — Direito Penal', 'FocoLegis - AMOSTRA - Direito Penal.pdf');
@@ -254,272 +334,567 @@ const chatFlow = {
                 appendPdfAttachment('Amostra — Direito Tributário', 'FocoLegis - AMOSTRA - Direito Tributário.pdf');
                 appendPdfAttachment('Amostra — CLT', 'FocoLegis - AMOSTRA - CLT.pdf');
                 appendPdfAttachment('Amostra — Direito Administrativo', 'FocoLegis - AMOSTRA - Direito Administrativo.pdf');
-            }, 1200);
-            setTimeout(() => {
-                sendBotMessage('Gostou do formato? Depois de ver o material fica muito mais fácil decidir. 😊');
-            }, 3500);
-            setTimeout(() => {
-                appendOptions([
-                    { text: '🔥 Quero o Combo OAB (R$ 69,99)', action: () => selectOption('🔥 Quero o Combo', 'OAB_FLOW') },
-                    { text: '📚 Ver Leis Individuais (R$ 19,99)', action: () => selectOption('📚 Leis Individuais', 'CHOOSE_CATALOG') },
-                    { text: '↩️ Voltar ao Menu Principal', action: () => selectOption('↩️ Voltar', 'RESET') }
-                ]);
-            }, 5000);
+                sayAll(['Gostou do formato? Depois de ver o material fica muito mais fácil decidir. 😊\n\nSe o PDF não abrir, é só me dizer que eu te ajudo.'], () => {
+                    appendOptions([
+                        { text: `🔥 Quero o ${NOME_COMBO} (${PRECO_COMBO})`, action: () => selectOption('🔥 Quero o Combo', 'OAB_FLOW') },
+                        { text: `📚 Ver Leis Individuais (${PRECO_LEI})`,     action: () => selectOption('📚 Leis Individuais', 'CHOOSE_CATALOG') },
+                        { text: '↩️ Voltar ao Menu Principal',                action: () => selectOption('↩️ Voltar', 'RESET') }
+                    ]);
+                });
+            });
         }
     },
 
     CONCURSOS_FLOW: {
         execute: () => {
-            sendBotMessage(`*Sim, ${userData.name}!* Nossos materiais são usados por candidatos de diversas carreiras jurídicas além da OAB.`);
-            setTimeout(() => {
-                sendBotMessage('✅ *Carreiras atendidas:*\n\n• *Magistratura* (TJ, TRF, TRT)\n• *Ministério Público* (MP Estadual e Federal)\n• *Defensoria Pública* (DPE e DPU)\n• *Delegado de Polícia* (Civil e Federal)\n• *Polícia Civil e Federal* (agente, escrivão, perito)\n• *Tribunais* (TJ, TRF, TRT, TCE, TCU)\n• *Procuradorias* (PGE, PGM, AGU)\n• *Fiscal e Tributário* (Receita Federal, SEFAZ)\n• *Carreiras Militares* com prova de direito');
-            }, 1800);
-            setTimeout(() => {
-                sendBotMessage('A metodologia da lei seca esquematizada funciona perfeitamente para *qualquer banca* (CESPE, FCC, FGV, VUNESP, etc.), porque todas cobram a literalidade dos artigos.');
-            }, 4000);
-            setTimeout(() => {
+            sayAll([
+                `*Sim, ${userData.name}!* O *${NOME_COMBO}* é usado por candidatos de diversas carreiras jurídicas, além da OAB.`,
+                '✅ *Carreiras atendidas:*\n\n• *Magistratura* (TJ, TRF, TRT)\n• *Ministério Público* (MP Estadual e Federal)\n• *Defensoria Pública* (DPE e DPU)\n• *Delegado de Polícia* (Civil e Federal)\n• *Polícia Civil e Federal* (agente, escrivão, perito)\n• *Tribunais* (TJ, TRF, TRT, TCE, TCU)\n• *Procuradorias* (PGE, PGM, AGU)\n• *Fiscal e Tributário* (Receita Federal, SEFAZ)\n• *Carreiras Militares* com prova de direito',
+                'A metodologia da lei seca esquematizada funciona perfeitamente para *qualquer banca* (CESPE, FCC, FGV, VUNESP, etc.), porque todas cobram a literalidade dos artigos.'
+            ], () => {
                 appendOptions([
-                    { text: '📖 Ver Amostras Gratuitas', action: () => selectOption('📖 Ver Amostras', 'AMSTR_FLOW') },
-                    { text: '📚 Ver Leis Individuais (R$ 19,99)', action: () => selectOption('📚 Ver Catálogo', 'CHOOSE_CATALOG') },
-                    { text: '↩️ Voltar ao Menu Principal', action: () => selectOption('↩️ Voltar', 'RESET') }
+                    { text: '📖 Ver Amostras Gratuitas',                    action: () => selectOption('📖 Ver Amostras', 'AMSTR_FLOW') },
+                    { text: `⚖️ Ver o ${NOME_COMBO} (${PRECO_COMBO})`,      action: () => selectOption('⚖️ Ver Combo', 'OAB_FLOW') },
+                    { text: `📚 Ver Leis Individuais (${PRECO_LEI})`,       action: () => selectOption('📚 Ver Catálogo', 'CHOOSE_CATALOG') },
+                    { text: '↩️ Voltar ao Menu Principal',                  action: () => selectOption('↩️ Voltar', 'RESET') }
                 ]);
-            }, 5500);
+            });
         }
     },
 
+    // ── OBJEÇÕES ────────────────────────────────────────────────────────────
+
     DOUBT_BASE: {
         execute: () => {
-            sendBotMessage(`*${userData.name}*, o material foi feito *exatamente* para quem está começando do zero ou tem dificuldade com textos de lei.`);
-            setTimeout(() => {
-                sendBotMessage('Em vez de jogar o artigo bruto na sua frente, a gente:\n\n📌 *Destaca* as palavras-chave que as bancas cobram\n🗂️ *Esquematiza* os conceitos em blocos visuais\n💬 *Comenta* os pontos mais confusos em linguagem simples\n🎯 *Elimina* a gordura jurídica que não cai na prova\n\nO resultado é um estudo *muito mais rápido* e com retenção muito maior.');
-            }, 2000);
-            voltarMenu(4000);
+            sayAll([
+                `*${userData.name}*, o material foi feito *exatamente* para quem está começando do zero ou tem dificuldade com textos de lei.`,
+                'Em vez de jogar o artigo bruto na sua frente, a gente:\n\n📌 *Destaca* as palavras-chave que as bancas cobram\n🗂️ *Esquematiza* os conceitos em blocos visuais\n💬 *Comenta* os pontos mais confusos em linguagem simples\n🎯 *Elimina* a gordura jurídica que não cai na prova\n\nO resultado é um estudo *muito mais rápido* e com retenção muito maior.'
+            ], voltarMenu);
         }
     },
 
     DOUBT_TEMPO: {
         execute: () => {
-            sendBotMessage(`*${userData.name}*, esse é exatamente o perfil de quem mais se beneficia do nosso material!`);
-            setTimeout(() => {
-                sendBotMessage('⏱️ Quem tem pouco tempo *não pode se dar ao luxo* de ler artigo por artigo em um PDF de 400 páginas.\n\nNosso material já *filtrou, organizou e destacou* tudo que cai na prova. Você vai direto ao que importa — sem enrolação, sem texto desnecessário.\n\nCandidatos relatam que substituíram *semanas de leitura* por poucos dias de revisão focada.');
-            }, 1800);
-            voltarMenu(4000);
+            sayAll([
+                `*${userData.name}*, esse é exatamente o perfil de quem mais se beneficia do nosso material!`,
+                '⏱️ Quem tem pouco tempo *não pode se dar ao luxo* de ler artigo por artigo em um PDF de 400 páginas.\n\nNosso material já *filtrou, organizou e destacou* tudo que cai na prova. Você vai direto ao que importa — sem enrolação, sem texto desnecessário.\n\nCandidatos relatam que substituíram *semanas de leitura* por poucos dias de revisão focada.'
+            ], voltarMenu);
         }
     },
 
     DOUBT_PRECO: {
         execute: () => {
-            sendBotMessage(`Entendo, *${userData.name}*. Vamos colocar na balança:`);
-            setTimeout(() => {
-                sendBotMessage('💡 O Combo OAB sai por *R$ 69,99* — menos do que uma única aula particular de 1 hora.\n\nMas mais importante: é um pagamento *único*. O acesso é vitalício, as atualizações são gratuitas e você estuda quantas vezes quiser.\n\nCompare com cursinhos que cobram de *R$ 800 a R$ 5.000 por mês* e ainda exigem que você assista horas de vídeo. Aqui você vai direto ao ponto — e paga uma vez só.');
-            }, 1800);
-            setTimeout(() => {
-                sendBotMessage('E se em *7 dias* você achar que o material não é para você, devolvemos *100% do seu dinheiro*. Sem perguntas. ✅');
-            }, 4200);
-            voltarMenu(5800);
+            sayAll([
+                `Entendo, *${userData.name}*. Vamos colocar na balança:`,
+                `💡 O ${NOME_COMBO} sai por *${PRECO_COMBO}* — menos do que uma única aula particular de 1 hora.\n\nMas mais importante: é um pagamento *único*. O acesso é vitalício, as atualizações são gratuitas e você estuda quantas vezes quiser.\n\nCompare com cursinhos que cobram de *R$ 800 a R$ 5.000 por mês* e ainda exigem que você assista horas de vídeo. Aqui você vai direto ao ponto — e paga uma vez só.`,
+                'E se em *7 dias* você achar que o material não é para você, devolvemos *100% do seu dinheiro*. Sem perguntas. ✅'
+            ], voltarMenu);
         }
     },
 
     DOUBT_VER: {
         execute: () => {
-            sendBotMessage(`Ótima decisão, *${userData.name}*! Antes de qualquer compra, veja o material com os próprios olhos.`);
-            setTimeout(() => {
-                sendBotMessage('Temos amostras gratuitas de todas as matérias. Baixe, leia, e aí decide com segurança. 👇');
-            }, 1500);
-            setTimeout(() => { chatFlow.AMSTR_FLOW.execute(); }, 2800);
+            sayAll([
+                `Ótima decisão, *${userData.name}*! Antes de qualquer compra, veja o material com os próprios olhos.`,
+                'Temos amostras gratuitas de todas as matérias. Baixe, leia, e aí decide com segurança. 👇'
+            ], () => chatFlow.AMSTR_FLOW.execute());
         }
     },
 
     DOUBT_EDITAL: {
         execute: () => {
-            sendBotMessage('✅ *Sim!* Todos os materiais são revisados e atualizados conforme as alterações legislativas e os últimos editais.');
-            setTimeout(() => {
-                sendBotMessage(`E como o acesso é *vitalício*, *${userData.name}*, se qualquer lei mudar enquanto você estuda — você recebe a versão nova no seu e-mail sem pagar nada a mais.`);
-            }, 2000);
-            voltarMenu(3500);
+            sayAll([
+                '✅ *Sim!* Todos os materiais são revisados e atualizados conforme as alterações legislativas e os últimos editais.',
+                `E como o acesso é *vitalício*, *${userData.name}*, se qualquer lei mudar enquanto você estuda — você recebe a versão nova no seu e-mail sem pagar nada a mais.`
+            ], voltarMenu);
         }
     },
+
+    // ── ENTREGA ─────────────────────────────────────────────────────────────
 
     DELIVERY_INFO: {
         execute: () => {
-            sendBotMessage('📧 *Como funciona a entrega:*\n\n1. Você finaliza a compra na página segura da Hotmart\n2. O sistema aprova o pagamento automaticamente\n3. Os links de download chegam no seu *e-mail em minutos*\n4. Você baixa os PDFs e já começa a estudar');
-            setTimeout(() => {
-                sendBotMessage('⚡ *Dica:* pagando por *Pix* a aprovação é imediata — em menos de 1 minuto você já tem o material.\n\nBoleto leva 1 a 2 dias úteis para compensar.');
-            }, 2200);
-            voltarMenu(4000);
+            sayAll([
+                '📧 *Como funciona a entrega:*\n\n1. Você finaliza a compra na página segura da Hotmart\n2. O sistema aprova o pagamento automaticamente\n3. Os links de download chegam no seu *e-mail em minutos*\n4. Você baixa os PDFs e já começa a estudar',
+                '⚡ *Dica:* pagando por *Pix* a aprovação é imediata — em menos de 1 minuto você já tem o material.\n\nBoleto leva 1 a 2 dias úteis para compensar.'
+            ], voltarMenu);
         }
     },
 
+    DELIVERY_PROBLEM: {
+        execute: () => {
+            sayAll([
+                `Fique tranquilo(a), *${userData.name}*! Vamos localizar seu material. 📧`,
+                '🔎 *Confira nesta ordem:*\n\n1️⃣ Procure na caixa de *Spam*, *Lixo eletrônico* e na aba *Promoções* (Gmail) por e-mails da *Hotmart* ou do *FocoLegis*\n2️⃣ Veja se você olhou o *e-mail certo* — é o mesmo que você digitou no checkout\n3️⃣ Pagou no *boleto*? Ele leva *1 a 2 dias úteis* para compensar\n4️⃣ Pagou no *Pix* ou *cartão*? A liberação costuma ser em poucos minutos\n5️⃣ Se o e-mail for Outlook/Hotmail, confira também a pasta *Lixo Eletrônico*',
+                'Se mesmo assim não encontrar, nosso suporte resolve na hora. Tenha em mãos o *e-mail usado na compra* e o *comprovante de pagamento*: 👇'
+            ], () => irParaSuporteWpp());
+        }
+    },
+
+    PDF_PROBLEM: {
+        execute: () => {
+            sayAll([
+                `Vamos resolver, *${userData.name}*! Quando o PDF não abre, quase sempre é o *aplicativo de leitura* ou o download que não terminou. 📄`,
+                '✅ *Tente isto:*\n\n1️⃣ Aguarde o download terminar por completo (arquivos grandes demoram um pouco)\n2️⃣ *Não abra* o PDF dentro do navegador do WhatsApp, Instagram ou Facebook — baixe e abra pelo app de arquivos\n3️⃣ Use um leitor de PDF: *Adobe Acrobat Reader* (gratuito), *Google Drive* (Android) ou o app *Arquivos / Livros* (iPhone)\n4️⃣ Confira se há *espaço livre* no celular\n5️⃣ Tente baixar de novo em *janela anônima* ou no *Brave*\n6️⃣ Se puder, abra no *computador* — funciona sempre',
+                'Ainda não deu certo? Chame nosso atendente que ele te envia o arquivo de outra forma: 👇'
+            ], () => {
+                appendLinkButton('📱 Falar com um Atendente no WhatsApp', WPP_URL);
+                setTimeout(() => voltarMenu(), 600);
+            });
+        }
+    },
+
+    // ── PROBLEMAS DE PAGAMENTO / NAVEGADOR ──────────────────────────────────
+
+    PAY_TROUBLE: {
+        execute: () => {
+            sayAll([
+                `Poxa, *${userData.name}*, sinto muito por isso! 😕 Fique tranquilo(a): na grande maioria das vezes é um problema do *navegador* (cache, cookies, extensão ou o navegador interno do Instagram/WhatsApp) — e se resolve em poucos minutos.`,
+                '✅ *Faça isto agora, nesta ordem:*\n\n1️⃣ Abra o link de pagamento em uma *janela anônima* (guia privada)\n2️⃣ Se não resolver, use *outro navegador* — recomendamos o *Brave Browser* (gratuito e muito estável para pagamentos)\n3️⃣ *Limpe os cookies e o cache* do navegador\n4️⃣ Desative *VPN, bloqueadores de anúncio e extensões*\n5️⃣ Se estiver abrindo pelo *Instagram, Facebook ou WhatsApp*, toque nos *3 pontinhos* e escolha *Abrir no navegador*\n6️⃣ Quer agilidade? Pague por *Pix* — a aprovação é na hora',
+                'Escolha abaixo o que você quer que eu te ensine passo a passo: 👇'
+            ], () => chatFlow.PAY_MENU.showOptions());
+        }
+    },
+
+    PAY_MENU: {
+        showOptions: () => {
+            appendOptions([
+                { text: '🕶️ Como abrir janela anônima',               action: () => selectOption('🕶️ Janela anônima', 'INCOGNITO_FLOW') },
+                { text: '🦁 Baixar o Brave no iPhone (App Store)',     action: () => selectOption('🦁 Brave no iPhone', 'BRAVE_IOS') },
+                { text: '🦁 Baixar o Brave no Android (Play Store)',   action: () => selectOption('🦁 Brave no Android', 'BRAVE_ANDROID') },
+                { text: '🖥️ Baixar o Brave no computador',            action: () => selectOption('🖥️ Brave no computador', 'BRAVE_PC') },
+                { text: '🧹 Limpar cookies e cache',                   action: () => selectOption('🧹 Limpar cookies e cache', 'CACHE_FLOW') },
+                { text: '📲 Abri o link pelo Instagram / WhatsApp',    action: () => selectOption('📲 Abri pelo Instagram/WhatsApp', 'INAPP_BROWSER') },
+                { text: '🔁 Tentar pagar de novo',                     action: () => selectOption('🔁 Tentar pagar de novo', 'RETRY_PAY') },
+                { text: '👨‍💼 Falar com um atendente',                   action: () => selectOption('👨‍💼 Falar com um atendente', 'HUMAN_WPP') },
+                { text: '↩️ Voltar ao Menu Principal',                 action: () => selectOption('↩️ Voltar ao Menu Principal', 'RESET') }
+            ]);
+        },
+        execute: () => {
+            sayAll(['Claro! Qual tutorial você quer ver? 👇'], () => chatFlow.PAY_MENU.showOptions());
+        }
+    },
+
+    INCOGNITO_FLOW: {
+        execute: () => {
+            sayAll([
+                '🕶️ *Como abrir uma janela anônima:*\n\n📱 *iPhone (Safari):* toque no ícone de abas (dois quadradinhos) → *Particular* → toque no *+* para abrir uma nova guia.\n\n🤖 *Android (Chrome):* toque nos *3 pontinhos ⋮* → *Nova guia anônima*.\n\n🦁 *Brave:* toque no menu → *Nova guia privada*.\n\n🖥️ *Computador:* pressione *Ctrl + Shift + N* (Chrome, Edge e Brave) ou *Ctrl + Shift + P* (Firefox). No Mac, use *Cmd + Shift + N*.',
+                'Agora *copie o link de pagamento*, cole na janela anônima e tente de novo. 😉'
+            ], menuPosTutorial);
+        }
+    },
+
+    BRAVE_IOS: {
+        execute: () => {
+            sayAll([
+                '🦁 *Baixar o Brave no iPhone (App Store):*\n\n1. Abra a *App Store*\n2. Toque em *Buscar* (lupa) e digite *Brave*\n3. Escolha *Brave Private Web Browser* e toque em *Obter* (pode pedir Face ID ou senha do Apple ID)\n4. Quando terminar, toque em *Abrir*\n5. Cole o link de pagamento na barra de endereço e conclua a compra',
+                'Se preferir, toque no botão abaixo para ir direto à App Store: 👇'
+            ], () => {
+                appendLinkButton('🍎 Abrir Brave na App Store', BRAVE_IOS_URL);
+                setTimeout(menuPosTutorial, 500);
+            });
+        }
+    },
+
+    BRAVE_ANDROID: {
+        execute: () => {
+            sayAll([
+                '🦁 *Baixar o Brave no Android (Play Store):*\n\n1. Abra a *Google Play Store*\n2. Toque na busca e digite *Brave*\n3. Escolha *Brave Private Web Browser* e toque em *Instalar*\n4. Quando terminar, toque em *Abrir*\n5. Cole o link de pagamento na barra de endereço e conclua a compra',
+                'Se preferir, toque no botão abaixo para ir direto à Play Store: 👇'
+            ], () => {
+                appendLinkButton('🤖 Abrir Brave na Play Store', BRAVE_ANDROID_URL);
+                setTimeout(menuPosTutorial, 500);
+            });
+        }
+    },
+
+    BRAVE_PC: {
+        execute: () => {
+            sayAll([
+                '🖥️ *Baixar o Brave no computador (Windows, Mac ou Linux):*\n\n1. Acesse *brave.com/download*\n2. Clique em *Download Brave*\n3. Abra o arquivo baixado e siga a instalação (próximo, próximo, concluir)\n4. Abra o Brave, cole o link de pagamento e conclua a compra',
+                'Toque no botão abaixo para ir direto ao site oficial: 👇'
+            ], () => {
+                appendLinkButton('🖥️ Baixar Brave (site oficial)', BRAVE_PC_URL);
+                setTimeout(menuPosTutorial, 500);
+            });
+        }
+    },
+
+    CACHE_FLOW: {
+        execute: () => {
+            sayAll(['🧹 Limpar cookies e cache resolve a maioria das telas brancas e pretas. Em qual aparelho você está? 👇'], () => {
+                appendOptions([
+                    { text: '🤖 Android (Chrome)',        action: () => selectOption('🤖 Android', 'CACHE_ANDROID') },
+                    { text: '🍎 iPhone (Safari)',         action: () => selectOption('🍎 iPhone', 'CACHE_IOS') },
+                    { text: '🖥️ Computador',             action: () => selectOption('🖥️ Computador', 'CACHE_PC') },
+                    { text: '↩️ Voltar aos tutoriais',    action: () => selectOption('↩️ Voltar aos tutoriais', 'PAY_MENU') }
+                ]);
+            });
+        }
+    },
+
+    CACHE_ANDROID: {
+        execute: () => {
+            sayAll([
+                '🤖 *Limpar cookies e cache no Android (Chrome):*\n\n1. Abra o *Chrome* e toque nos *3 pontinhos ⋮*\n2. Toque em *Histórico* → *Limpar dados de navegação*\n3. Em período, escolha *Todo o período*\n4. Marque *Cookies e dados do site* e *Imagens e arquivos armazenados em cache*\n5. Toque em *Limpar dados*\n6. *Feche o navegador por completo* e abra de novo\n\n💡 Se persistir: *Configurações do celular → Apps → Chrome → Armazenamento → Limpar cache*.\n\n🦁 No *Brave*: menu → *Configurações* → *Privacidade e segurança* → *Limpar dados de navegação*.',
+                'Depois, abra o link de pagamento em *janela anônima*. 😉'
+            ], menuPosTutorial);
+        }
+    },
+
+    CACHE_IOS: {
+        execute: () => {
+            sayAll([
+                '🍎 *Limpar cookies e cache no iPhone (Safari):*\n\n1. Abra *Ajustes* do iPhone\n2. Role até *Safari*\n3. Toque em *Limpar Histórico e Dados de Sites*\n4. Confirme em *Limpar Histórico e Dados*\n5. Feche o Safari por completo e abra de novo\n\n💡 Usa o *Chrome* no iPhone? Abra o Chrome → *⋯* → *Configurações* → *Privacidade e segurança* → *Limpar dados de navegação*.',
+                'Depois, abra o link de pagamento em *navegação Particular* (ou no *Brave*). 😉'
+            ], menuPosTutorial);
+        }
+    },
+
+    CACHE_PC: {
+        execute: () => {
+            sayAll([
+                '🖥️ *Limpar cookies e cache no computador:*\n\n1. Com o navegador aberto, pressione *Ctrl + Shift + Delete* (no Mac: *Cmd + Shift + Delete*)\n2. Em período, escolha *Todo o período*\n3. Marque *Cookies e outros dados de sites* e *Imagens e arquivos armazenados em cache*\n4. Clique em *Limpar dados*\n5. *Feche o navegador por completo* e abra de novo\n\nEsse atalho funciona no Chrome, Edge, Firefox e Brave.',
+                'Depois, abra o link de pagamento em *janela anônima* (Ctrl + Shift + N). 😉'
+            ], menuPosTutorial);
+        }
+    },
+
+    INAPP_BROWSER: {
+        execute: () => {
+            sayAll([
+                '📲 Muita gente abre o link de dentro do *Instagram, Facebook, TikTok ou WhatsApp* — e o navegador interno desses aplicativos costuma travar pagamentos (tela branca ou preta).',
+                '✅ *Como resolver:*\n\n1. Com a página aberta, toque nos *3 pontinhos ⋯* (ou no ícone de compartilhar)\n2. Escolha *Abrir no navegador* / *Abrir no Safari* / *Abrir no Chrome*\n3. Melhor ainda: copie o link, abra uma *janela anônima* ou o *Brave* e cole lá'
+            ], menuPosTutorial);
+        }
+    },
+
+    RETRY_PAY: {
+        execute: () => {
+            sayAll([`Perfeito, *${userData.name}*! Depois de seguir os passos, abra o pagamento *já na janela anônima ou no Brave*. Copie o link e cole lá: 👇`], () => {
+                appendLinkButton(`🔥 Abrir pagamento (${PRECO_COMBO})`, CHECKOUT_URL);
+                appendOptions([
+                    { text: '📋 Copiar link de pagamento', action: () => {
+                        copiarTexto(CHECKOUT_URL,
+                            () => { sayAll(['📋 *Link copiado!* Agora cole na barra de endereço da janela anônima ou do Brave.'], menuPosTutorial); },
+                            () => { sayAll(['Não consegui copiar automaticamente. Segure o botão verde acima e escolha *Copiar link*.'], menuPosTutorial); }
+                        );
+                    }},
+                    { text: '🛠️ Ainda não funcionou',      action: () => selectOption('🛠️ Ainda não funcionou', 'HUMAN_WPP') },
+                    { text: '↩️ Voltar ao Menu Principal', action: () => selectOption('↩️ Voltar ao Menu Principal', 'RESET') }
+                ]);
+            });
+        }
+    },
+
+    CARD_REFUSED: {
+        execute: () => {
+            sayAll([
+                `Entendo, *${userData.name}*! 💳 Cartão recusado é bem comum e quase nunca é falha do nosso site — geralmente é uma *trava de segurança do banco*.`,
+                '✅ *Tente isto:*\n\n1️⃣ Confira *número, validade, CVV e nome* exatamente como estão no cartão\n2️⃣ Veja se há *limite disponível* e se as *compras online* estão liberadas no app do banco\n3️⃣ Procure no app do banco uma *notificação para autorizar a compra* e libere\n4️⃣ Tente *outro cartão* ou outra bandeira\n5️⃣ Pague por *Pix* — aprova em menos de 1 minuto e não depende de limite de cartão',
+                'Se preferir, também posso te ajudar com o navegador (janela anônima, Brave, cache): 👇'
+            ], () => {
+                appendOptions([
+                    { text: '🛠️ Ver tutoriais de navegador',   action: () => selectOption('🛠️ Ver tutoriais', 'PAY_MENU') },
+                    { text: '🔁 Tentar pagar de novo',         action: () => selectOption('🔁 Tentar pagar de novo', 'RETRY_PAY') },
+                    { text: '👨‍💼 Falar com um atendente',       action: () => selectOption('👨‍💼 Falar com um atendente', 'HUMAN_WPP') },
+                    { text: '↩️ Voltar ao Menu Principal',     action: () => selectOption('↩️ Voltar ao Menu Principal', 'RESET') }
+                ]);
+            });
+        }
+    },
+
+    PIX_PROBLEM: {
+        execute: () => {
+            sayAll([
+                `Vamos resolver, *${userData.name}*! ⚡`,
+                '✅ *Problemas com o Pix — confira:*\n\n1️⃣ Se o *QR Code não aparece*, abra o pagamento em *janela anônima* ou no *Brave*\n2️⃣ Use a opção *Pix Copia e Cola* e cole no app do seu banco\n3️⃣ O código Pix tem *validade* — se expirou, volte ao checkout e gere um novo\n4️⃣ Já pagou? A aprovação costuma levar *menos de 1 minuto* — confira seu *e-mail e Spam*\n5️⃣ Se o banco der erro, confirme o *limite de Pix* do seu horário (alguns bancos reduzem à noite)'
+            ], () => {
+                appendOptions([
+                    { text: '🛠️ Ver tutoriais de navegador',   action: () => selectOption('🛠️ Ver tutoriais', 'PAY_MENU') },
+                    { text: '🔁 Tentar pagar de novo',         action: () => selectOption('🔁 Tentar pagar de novo', 'RETRY_PAY') },
+                    { text: '👨‍💼 Falar com um atendente',       action: () => selectOption('👨‍💼 Falar com um atendente', 'HUMAN_WPP') },
+                    { text: '↩️ Voltar ao Menu Principal',     action: () => selectOption('↩️ Voltar ao Menu Principal', 'RESET') }
+                ]);
+            });
+        }
+    },
+
+    TECH_MENU: {
+        execute: () => {
+            sayAll([`Poxa, *${userData.name}*, vamos resolver! Me conta onde está o problema: 👇`], () => {
+                appendOptions([
+                    { text: '💳 Não consigo pagar (tela branca / travando)', action: () => selectOption('💳 Não consigo pagar', 'PAY_TROUBLE') },
+                    { text: '📧 Paguei e não recebi o material',            action: () => selectOption('📧 Paguei e não recebi', 'DELIVERY_PROBLEM') },
+                    { text: '📄 Não consigo abrir / baixar o PDF',          action: () => selectOption('📄 PDF não abre', 'PDF_PROBLEM') },
+                    { text: '👨‍💼 Falar com um atendente',                    action: () => selectOption('👨‍💼 Falar com um atendente', 'HUMAN_WPP') },
+                    { text: '↩️ Voltar ao Menu Principal',                  action: () => selectOption('↩️ Voltar ao Menu Principal', 'RESET') }
+                ]);
+            });
+        }
+    },
+
+    HUMAN_WPP: {
+        execute: () => { irParaSuporteWpp(); }
+    },
+
+    // ── DÚVIDA LIVRE ────────────────────────────────────────────────────────
+
     HUMAN_SUPPORT: {
         execute: () => {
-            userInput.disabled = false;
-            userInput.placeholder = 'Digite sua dúvida aqui...';
-            userInput.focus();
+            enableFreeText('Digite sua dúvida aqui...');
             sendBotMessage(`*${userData.name}*, pode digitar sua dúvida aqui embaixo que vou tentar te responder agora mesmo!`);
-            currentState = 'WAITING_FOR_FREE_TEXT';
         },
-        handle: (text) => {
-            const msg = text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        handle: (text) => { responderTextoLivre(text); }
+    },
 
-            // ── GATILHOS DE CONCURSO / CARREIRA ─────────────────────────────
-            if (msg.includes('magistratura') || msg.includes('juiz') || msg.includes('juiza') || msg.includes('magistrado')) {
-                sendBotMessage('⚖️ *Para Magistratura!* Nosso material é amplamente usado por candidatos a Juiz Estadual e Federal.');
-                setTimeout(() => { sendBotMessage('As bancas de magistratura (VUNESP, FCC, CESPE) cobram muito a literalidade dos artigos — especialmente CP, CPP, CC, CPC, CF e Administrativo. Nosso esquema visual acelera drasticamente a memorização desse volume de conteúdo.'); }, 1800);
-                voltarMenu(4000); return;
-            }
-            if (msg.includes('ministerio publico') || msg.includes('promotor') || msg.includes('promotora') || msg.includes('procurador') || msg.includes(' mp ') || msg.includes('mpc') || msg.includes('mpf') || msg.includes('mpe')) {
-                sendBotMessage('🏛️ *Para o Ministério Público!* MP Estadual e Federal estão entre os concursos onde mais usamos nossos materiais.');
-                setTimeout(() => { sendBotMessage('As provas do MP são extremamente técnicas e exigem domínio profundo da lei seca. Nossos comentários estratégicos e destaques de artigos te colocam na frente de quem estuda apenas pela doutrina.'); }, 1800);
-                voltarMenu(4000); return;
-            }
-            if (msg.includes('defensoria') || msg.includes('defensor') || msg.includes('dpe') || msg.includes('dpu')) {
-                sendBotMessage('🛡️ *Para a Defensoria Pública!* DPE e DPU são concursos que exigem muito de Direito Civil, Processo Civil, Penal e Constitucional — exatamente o foco do nosso combo.');
-                setTimeout(() => { sendBotMessage('Candidatos da defensoria relatam que o esquema visual dos artigos acelera muito a revisão pré-prova, quando o tempo é curto e o volume é alto.'); }, 1800);
-                voltarMenu(4000); return;
-            }
-            if (msg.includes('delegado') || msg.includes('delegada') || msg.includes('policia civil') || msg.includes('policia federal') || msg.includes('agente') || msg.includes('escrivao') || msg.includes('perito') || msg.includes('pc ') || msg.includes('pf ')) {
-                sendBotMessage('🚔 *Para Carreiras Policiais!* Delegado, Agente, Escrivão e Perito — todas essas carreiras cobram fortemente Direito Penal, Processo Penal e Administrativo.');
-                setTimeout(() => { sendBotMessage('Nosso Código Penal Esquematizado e o Código de Processo Penal são os preferidos entre candidatos a Delegado. O Direito Administrativo também é essencial para a maioria dos editais policiais.'); }, 1800);
-                voltarMenu(4000); return;
-            }
-            if (msg.includes('tribunal') || msg.includes('tj') || msg.includes('trf') || msg.includes('trt') || msg.includes('tce') || msg.includes('tcu') || msg.includes('analista') || msg.includes('tecnico judiciario')) {
-                sendBotMessage('🏛️ *Para Tribunais!* TJ, TRF, TRT, TCE e TCU têm provas com forte cobrança de lei seca — especialmente Processo Civil, Administrativo e Constitucional.');
-                setTimeout(() => { sendBotMessage('Nossos materiais de CPC, Administrativo e CF são os mais indicados para quem mira em tribunais. O esquema visual ajuda muito na revisão de artigos específicos cobrados nessas provas.'); }, 1800);
-                voltarMenu(4000); return;
-            }
-            if (msg.includes('concurso') || msg.includes('carreira') || msg.includes('edital') || msg.includes('fiscal') || msg.includes('receita') || msg.includes('sefaz') || msg.includes('agu') || msg.includes('pge') || msg.includes('pgm') || msg.includes('procuradoria')) {
-                chatFlow.CONCURSOS_FLOW.execute(); return;
-            }
-
-            // ── GATILHOS DE AMOSTRA ──────────────────────────────────────────
-            if (msg.includes('amostra') || msg.includes('exemplo') || msg.includes('ver antes') || msg.includes('como e o material') || msg.includes('como sao') || msg.includes('qualidade') || msg.includes('ver o material') || msg.includes('antes de comprar') || msg.includes('gratuito') || msg.includes('gratis') || msg.includes('baixar') || msg.includes('pdf gratis')) {
-                chatFlow.AMSTR_FLOW.execute(); return;
-            }
-
-            // ── OBJEÇÃO: PREÇO ───────────────────────────────────────────────
-            if (msg.includes('caro') || msg.includes('muito caro') || msg.includes('nao tenho dinheiro') || msg.includes('sem dinheiro') || msg.includes('desconto') || msg.includes('cupom') || msg.includes('promo') || msg.includes('barato') || msg.includes('preco') || msg.includes('valor') || msg.includes('cobram') || msg.includes('cobrado')) {
-                chatFlow.DOUBT_PRECO.execute(); return;
-            }
-
-            // ── OBJEÇÃO: TEMPO ───────────────────────────────────────────────
-            if (msg.includes('tempo') || msg.includes('corrido') || msg.includes('agitado') || msg.includes('trabalho') || msg.includes('nao tenho tempo') || msg.includes('pouco tempo') || msg.includes('reta final') || msg.includes('uma semana') || msg.includes('poucos dias') || msg.includes('rapido') || msg.includes('urgente')) {
-                chatFlow.DOUBT_TEMPO.execute(); return;
-            }
-
-            // ── OBJEÇÃO: BOM O SUFICIENTE ────────────────────────────────────
-            if (msg.includes('funciona') || msg.includes('realmente funciona') || msg.includes('confiavel') || msg.includes('vale a pena') || msg.includes('compensa') || msg.includes('nao sei se') || msg.includes('tenho duvida se') || msg.includes('incerto') || msg.includes('melhor que') || msg.includes('diferente de')) {
-                sendBotMessage(`*${userData.name}*, entendo a dúvida — e ela é saudável antes de qualquer compra.`);
-                setTimeout(() => { sendBotMessage('Nosso diferencial é simples: em vez de te dar mais conteúdo, a gente te dá o *conteúdo certo* — filtrado, esquematizado e comentado.\n\nA literalidade da lei é o que as bancas cobram. Então é exatamente isso que entregamos, sem enrolação e sem 500 páginas de doutrina.'); }, 1800);
-                setTimeout(() => { sendBotMessage('E se em *7 dias* você achar que não foi o que esperava, devolvemos *100% do valor*. Você não tem nada a perder — só a garantir sua aprovação. ✅'); }, 4000);
-                voltarMenu(5500); return;
-            }
-
-            // ── GATILHO: MATÉRIAS / COMBO ────────────────────────────────────
-            if (msg.includes('materias') || msg.includes('disciplinas') || msg.includes('quais') || msg.includes('completo') || msg.includes('incompleto') || msg.includes('todas') || msg.includes('combo') || msg.includes('pacote')) {
-                sendBotMessage('🎯 O *Combo OAB 1ª Fase* cobre estrategicamente as matérias de *maior peso* na prova:');
-                setTimeout(() => { sendBotMessage('• Direito Penal e Processo Penal\n• Direito Civil e Processo Civil\n• Direito Constitucional\n• Direito Tributário\n• Direito e Processo do Trabalho\n• Direito Administrativo\n• Ética Profissional da OAB\n\nEstas matérias respondem por mais de *80% da nota* na 1ª Fase. Dominar o topo da prova é o caminho mais rápido para os 40 pontos.'); }, 1800);
-                voltarMenu(4000); return;
-            }
-
-            // ── GATILHO: COMPRA / PAGAMENTO ──────────────────────────────────
-            if (msg.includes('comprar') || msg.includes('adquirir') || msg.includes('pagar') || msg.includes('levar') || msg.includes('pegar') || msg.includes('quero o material') || msg.includes('como compro') || msg.includes('como adquiro')) {
-                sendBotMessage(`Ótimo, *${userData.name}*! Você quer o Combo Completo ou uma lei individual?`);
-                setTimeout(() => {
-                    appendOptions([
-                        { text: '⚖️ Combo OAB 1ª Fase (R$ 69,99)', action: () => selectOption('⚖️ Combo OAB', 'OAB_FLOW') },
-                        { text: '📚 Lei Individual (R$ 19,99)', action: () => selectOption('📚 Lei Individual', 'CHOOSE_CATALOG') }
-                    ]);
-                }, 1500); return;
-            }
-
-            // ── GATILHO: PIX / BOLETO / CARTÃO ──────────────────────────────
-            if (msg.includes('pix') || msg.includes('transferencia')) {
-                sendBotMessage('⚡ *Pix* é a forma mais rápida! Aprovação em menos de 1 minuto e o material já está no seu e-mail.'); voltarMenu(2500); return;
-            }
-            if (msg.includes('boleto')) {
-                sendBotMessage('💡 *Boleto* leva 1 a 2 dias úteis para compensar. Se quiser o material na hora, recomendo o *Pix*.'); voltarMenu(2500); return;
-            }
-            if (msg.includes('parcela') || msg.includes('cartao') || msg.includes('credito') || msg.includes('vezes')) {
-                sendBotMessage('💳 Sim! Você pode *parcelar no cartão de crédito* direto no checkout seguro da Hotmart — sem precisar de nada extra.'); voltarMenu(2500); return;
-            }
-
-            // ── GATILHO: ENTREGA / ACESSO ────────────────────────────────────
-            if (msg.includes('nao recebi') || msg.includes('nao chegou') || msg.includes('cadê') || msg.includes('cade o material') || msg.includes('nao encontrei') || msg.includes('spam') || msg.includes('email') || msg.includes('acesso')) {
-                sendBotMessage('📧 Primeiro, verifique sua caixa de *Spam* ou a aba *Promoções* no Gmail — o e-mail automático às vezes vai parar lá.');
-                setTimeout(() => { sendBotMessage('Se mesmo assim não encontrar, nosso suporte resolve na hora:'); irParaSuporteWpp(); }, 2000); return;
-            }
-
-            // ── GATILHO: GARANTIA / REEMBOLSO ───────────────────────────────
-            if (msg.includes('garantia') || msg.includes('reembolso') || msg.includes('devolucao') || msg.includes('devolver') || msg.includes('arrependimento')) {
-                sendBotMessage('🛡️ *Garantia de 7 dias incondicional.* Se por qualquer motivo você não gostar do material, basta pedir o reembolso e devolvemos *100% do valor* — sem perguntas, sem burocracia.'); voltarMenu(2500); return;
-            }
-
-            // ── GATILHO: IMPRESSÃO / FORMATO ────────────────────────────────
-            if (msg.includes('imprimir') || msg.includes('impressao') || msg.includes('papel') || msg.includes('fisico') || msg.includes('formato') || msg.includes('pdf')) {
-                sendBotMessage('🖨️ *Sim!* Os arquivos são PDF de alta definição. Você pode baixar em qualquer dispositivo e imprimir em casa ou em gráfica — fica ótimo no papel!'); voltarMenu(2500); return;
-            }
-
-            // ── GATILHO: DISPOSITIVOS ────────────────────────────────────────
-            if (msg.includes('celular') || msg.includes('tablet') || msg.includes('computador') || msg.includes('pc') || msg.includes('iphone') || msg.includes('android') || msg.includes('ipad') || msg.includes('dispositivo')) {
-                sendBotMessage('📱 *Funciona em tudo!* Celular (Android e iPhone), tablet, iPad, computador e notebook — qualquer leitor de PDF abre normalmente.'); voltarMenu(2500); return;
-            }
-
-            // ── GATILHO: VÍDEO AULAS ─────────────────────────────────────────
-            if (msg.includes('video') || msg.includes('aula') || msg.includes('videoaula') || msg.includes('assistir') || msg.includes('curso')) {
-                sendBotMessage('❌ *Não temos vídeo aulas* — e isso é intencional.\n\nHoras de vídeo consomem tempo que você poderia usar estudando a lei em si. Nosso formato em PDF esquematizado é *comprovadamente mais rápido* para memorização de lei seca.'); voltarMenu(2500); return;
-            }
-
-            // ── GATILHO: COMPARTILHAR / RATEIO ───────────────────────────────
-            if (msg.includes('compartilhar') || msg.includes('rateio') || msg.includes('ratear') || msg.includes('dividir') || msg.includes('amigo') || msg.includes('colega') || msg.includes('passar para') || msg.includes('enviar para')) {
-                sendBotMessage('🚫 O acesso é *individual e intransferível*. Compartilhamento viola os termos de uso e resulta em bloqueio imediato sem direito a reembolso.\n\nMas com R$ 19,99 por matéria, cada um pode ter o próprio acesso sem rateio!'); voltarMenu(2500); return;
-            }
-
-            // ── GATILHO: ATUALIZAÇÃO ─────────────────────────────────────────
-            if (msg.includes('atualizado') || msg.includes('atualizacao') || msg.includes('desatualizado') || msg.includes('nova lei') || msg.includes('mudou a lei') || msg.includes('edital') || msg.includes('reforma')) {
-                chatFlow.DOUBT_EDITAL.execute(); return;
-            }
-
-            // ── GATILHO: PORTUGUÊS / OUTRAS MATÉRIAS ────────────────────────
-            if (msg.includes('portugues') || msg.includes('gramatica') || msg.includes('lingua portuguesa')) {
-                sendBotMessage('✍️ *Português* ainda não temos — mas está nos nossos planos! Em breve lançaremos um material de Português focado em concursos com o mesmo padrão visual do FocoLegis.');
-                sendBotMessage('Fique atento ao nosso WhatsApp e e-mails para ser avisado em primeira mão. 😊'); voltarMenu(3000); return;
-            }
-
-            // ── GATILHO: PROBLEMAS TÉCNICOS / BUGS ──────────────────────────
-            if (msg.includes('bug') || msg.includes('erro') || msg.includes('problema') || msg.includes('nao funciona') || msg.includes('travou') || msg.includes('nao consigo') || msg.includes('deu errado') || msg.includes('falhou') || msg.includes('recusado')) {
-                sendBotMessage('⚠️ Ocorreu algum problema? Fique tranquilo(a) — nosso suporte resolve na hora:');
-                irParaSuporteWpp(); return;
-            }
-
-            // ── GATILHO: FALAR COM HUMANO / WHATSAPP ─────────────────────────
-            if (msg.includes('falar com') || msg.includes('atendente') || msg.includes('humano') || msg.includes('suporte') || msg.includes('whatsapp') || msg.includes('whats') || msg.includes('zap')) {
-                irParaSuporteWpp(); return;
-            }
-
-            // ── GATILHO: SEGUNDA FASE OAB ────────────────────────────────────
-            if (msg.includes('segunda fase') || msg.includes('2a fase') || msg.includes('2 fase') || msg.includes('peticao') || msg.includes('peca') || msg.includes('pratica')) {
-                sendBotMessage('📝 *Segunda Fase da OAB:* Nossos materiais atuais focam na *1ª Fase* (lei seca e questões objetivas).\n\nPara a 2ª fase, que exige redação de peças, recomendamos complementar com um material específico de prática jurídica. Mas dominar a lei seca na 1ª fase é o primeiro passo essencial!');
-                voltarMenu(3500); return;
-            }
-
-            // ── FALLBACK ─────────────────────────────────────────────────────
-            sendBotMessage('Entendi! Para essa dúvida específica, o melhor é falar com nosso atendimento — um atendente humano resolve na hora:');
-            irParaSuporteWpp();
-
-            setTimeout(() => {
-                appendOptions([
-                    { text: '❓ Tenho outra dúvida', action: () => {
-                        userInput.disabled = false;
-                        userInput.placeholder = 'Digite sua outra dúvida...';
-                        userInput.focus();
-                        currentState = 'WAITING_FOR_FREE_TEXT';
-                    }},
-                    { text: '↩️ Voltar ao Menu Principal', action: () => selectOption('↩️ Voltar', 'RESET') }
-                ]);
-            }, 3500);
+    ASK_AGAIN: {
+        execute: () => {
+            enableFreeText('Digite sua outra dúvida...');
+            sendBotMessage('Pode mandar! Digite sua dúvida aqui embaixo. 😊');
         }
     }
 };
+
+// ── "IA" DE ATENDIMENTO: reconhecimento de intenção ─────────────────────────
+
+// Normaliza: minúsculas, sem acentos, sem pontuação, com espaço nas pontas
+function norm(text) {
+    return ' ' + text.toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9\s]/g, ' ')
+        .replace(/\s+/g, ' ').trim() + ' ';
+}
+
+// Procura palavras/expressões INTEIRAS. Termo terminado em "*" = prefixo (ex.: "concurs*")
+function has(m, terms) {
+    return terms.some(t => t.endsWith('*') ? m.includes(' ' + t.slice(0, -1)) : m.includes(' ' + t + ' '));
+}
+
+function shortMsg(m, max) { return m.trim().split(' ').length <= max; }
+
+function careerReply(icon, titulo, texto1, texto2) {
+    sayAll([`${icon} *${titulo}* ${texto1}`, texto2], voltarMenu);
+}
+
+const MATERIAS = [
+    { termos: ['processo penal', 'cpp'],                         nome: 'Código de Processo Penal' },
+    { termos: ['direito penal', 'codigo penal', 'penal', 'cp'],  nome: 'Direito Penal' },
+    { termos: ['processo civil', 'cpc'],                         nome: 'Processo Civil' },
+    { termos: ['direito civil', 'codigo civil', 'civil', 'cc'],  nome: 'Direito Civil' },
+    { termos: ['constitucional', 'constituicao', 'cf', 'cf 88'], nome: 'Direito Constitucional' },
+    { termos: ['tributario', 'ctn'],                             nome: 'Direito Tributário (CTN)' },
+    { termos: ['clt', 'trabalhista', 'processo do trabalho', 'direito do trabalho'], nome: 'CLT e Processo do Trabalho' },
+    { termos: ['administrativo'],                                nome: 'Direito Administrativo' },
+    { termos: ['estatuto da oab', 'eaoab', 'etica', 'etica profissional'], nome: 'Estatuto da OAB e Ética Profissional' }
+];
+
+// Ordem importa: a primeira intenção que combinar responde.
+const intents = [
+
+    // Pedido explícito de humano
+    { test: m => has(m, ['atendente', 'atendimento', 'humano', 'falar com*', 'whatsapp', 'whats', 'zap', 'zapzap', 'telefone', 'ligar', 'contato', 'suporte', 'pessoa de verdade']),
+      run: () => irParaSuporteWpp() },
+
+    // Pós-compra: paguei e não recebi
+    { test: m => has(m, ['nao recebi', 'nao chegou', 'nao chegaram', 'nao veio', 'nao apareceu', 'cade o material', 'cade meu material', 'cade meu pdf', 'nao liberou', 'nao foi liberado', 'spam', 'lixo eletronico'])
+              || (has(m, ['paguei', 'comprei', 'ja paguei', 'ja comprei', 'compra aprovada', 'pagamento aprovado']) && has(m, ['material', 'pdf', 'email', 'e mail', 'acesso', 'link', 'download', 'baixar', 'receber', 'recebi', 'liberar', 'liberou'])),
+      run: () => chatFlow.DELIVERY_PROBLEM.execute() },
+
+    // PDF/arquivo não abre
+    { test: m => has(m, ['pdf', 'arquivo', 'material', 'amostra', 'livro', 'apostila']) && has(m, ['nao abre', 'nao abriu', 'nao consigo abrir', 'nao baixa', 'nao baixou', 'nao consigo baixar', 'corrompido', 'em branco', 'erro ao abrir', 'travou']),
+      run: () => chatFlow.PDF_PROBLEM.execute() },
+
+    // Segurança / golpe
+    { test: m => has(m, ['seguro', 'segura', 'golpe', 'fraude', 'enganacao', 'site confiavel', 'e de verdade', 'e real']),
+      run: () => sayAll([
+          `*${userData.name}*, pergunta mais que válida! 🔒 O pagamento é feito no *checkout seguro da Hotmart*, plataforma de produtos digitais muito utilizada no Brasil — os dados do seu cartão são informados lá, não aqui.`,
+          'Além disso, você conta com a *garantia incondicional de 7 dias*: se não gostar, devolvemos *100% do valor*. ✅'
+      ], voltarMenu) },
+
+    // Pix com problema (QR code, copia e cola, expirou...)
+    { test: m => has(m, ['pix', 'qr code', 'qrcode', 'qr', 'copia e cola']) && has(m, ['nao gera', 'nao gerou', 'nao aparece', 'nao apareceu', 'nao carrega', 'nao funciona', 'nao funcionou', 'nao consigo', 'nao consegui', 'nao abre', 'expirou', 'expirado', 'erro', 'problema', 'falhou', 'falha', 'travou', 'nao compensou', 'nao caiu', 'nao aprovou', 'nao aprova', 'invalido', 'nao leu', 'nao le']),
+      run: () => chatFlow.PIX_PROBLEM.execute() },
+
+    // Cartão recusado
+    { test: m => has(m, ['recusado', 'recusada', 'recusou', 'negado', 'negada', 'nao autorizado', 'nao autorizada', 'transacao negada', 'cartao nao passa', 'cartao nao passou', 'nao aprova', 'nao aprovou', 'cartao invalido']),
+      run: () => chatFlow.CARD_REFUSED.execute() },
+
+    // Problema no pagamento: tela branca/preta, não carrega, trava...
+    { test: m => has(m, ['tela branca', 'tela preta', 'tela em branco', 'pagina branca', 'pagina preta', 'pagina em branco', 'site branco', 'site em branco', 'fica branco', 'fica preto', 'ficou branco', 'ficou preto', 'tudo branco', 'tudo preto', 'so branco', 'so preto', 'em branco',
+                       'nao carrega', 'nao carregou', 'nao carregando', 'carregando', 'fica girando', 'girando', 'loading', 'nao abre', 'nao abriu', 'pagina nao abre', 'link nao abre', 'site nao abre', 'nao redireciona',
+                       'nao consigo pagar', 'nao consigo comprar', 'nao consigo finalizar', 'nao consigo concluir', 'nao consegui pagar', 'nao consegui comprar', 'nao consegui finalizar', 'nao da pra pagar', 'nao da para pagar', 'nao finaliza', 'nao processa',
+                       'erro no pagamento', 'erro ao pagar', 'erro na compra', 'erro no checkout', 'erro no site', 'site fora do ar', 'fora do ar', 'pagina de pagamento', 'erro 404', 'erro 403', 'erro 500', 'erro 502', 'erro 503', 'acesso negado', 'congelou', 'congelada', 'travado'])
+              || (has(m, ['hotmart', 'checkout', 'pagamento', 'compra', 'pagar', 'comprar', 'link', 'site']) && has(m, ['erro', 'problema', 'nao funciona', 'nao funcionou', 'travou', 'nao consigo', 'falhou', 'bug', 'bugou', 'estranho', 'lento', 'demora', 'branco', 'branca', 'preto', 'preta', 'nao deu certo', 'deu errado'])),
+      run: () => chatFlow.PAY_TROUBLE.execute() },
+
+    // Problema técnico genérico (sem contexto claro)
+    { test: m => has(m, ['bug', 'bugou', 'erro', 'problema', 'nao funciona', 'travou', 'nao consigo', 'deu errado', 'nao deu certo', 'falhou', 'nao abre', 'nao carrega']),
+      run: () => chatFlow.TECH_MENU.execute() },
+
+    // Garantia / reembolso
+    { test: m => has(m, ['garantia', 'reembolso', 'devolucao', 'devolver', 'arrependimento', 'estorno', 'cancelar', 'cancelamento', 'dinheiro de volta']),
+      run: () => sayAll([
+          '🛡️ *Garantia de 7 dias incondicional.* Se por qualquer motivo você não gostar do material, basta pedir o reembolso e devolvemos *100% do valor* — sem perguntas, sem burocracia.',
+          'Precisa pedir o reembolso agora? Nosso atendente te orienta no passo a passo: 👇'
+      ], () => { appendLinkButton('📱 Falar com um Atendente no WhatsApp', WPP_URL); setTimeout(voltarMenu, 600); }) },
+
+    // Compartilhar / rateio
+    { test: m => has(m, ['compartilhar', 'compartilhamento', 'rateio', 'ratear', 'dividir', 'amigo', 'amiga', 'colega', 'passar para', 'enviar para', 'mais de uma pessoa', 'duas pessoas', 'varias pessoas']),
+      run: () => sayAll([`🚫 O acesso é *individual e intransferível*. Compartilhamento viola os termos de uso e resulta em bloqueio imediato sem direito a reembolso.\n\nMas com ${PRECO_LEI} por matéria, cada um pode ter o próprio acesso sem rateio!`], voltarMenu) },
+
+    // Atualização do material
+    { test: m => has(m, ['atualizado', 'atualizada', 'atualizacao', 'atualizacoes', 'desatualizado', 'desatualizada', 'nova lei', 'mudou a lei', 'reforma', 'edital atualizado', 'ultimo edital']),
+      run: () => chatFlow.DOUBT_EDITAL.execute() },
+
+    // Carreiras específicas
+    { test: m => has(m, ['magistratura', 'juiz', 'juiza', 'magistrado', 'magistrada']),
+      run: () => careerReply('⚖️', 'Para Magistratura!', 'Nosso material é amplamente usado por candidatos a Juiz Estadual e Federal.', 'As bancas de magistratura (VUNESP, FCC, CESPE) cobram muito a literalidade dos artigos — especialmente CP, CPP, CC, CPC, CF e Administrativo. Nosso esquema visual acelera drasticamente a memorização desse volume de conteúdo.') },
+
+    { test: m => has(m, ['ministerio publico', 'promotor', 'promotora', 'procurador', 'procuradora', 'mp', 'mpf', 'mpe', 'mpu']),
+      run: () => careerReply('🏛️', 'Para o Ministério Público!', 'MP Estadual e Federal estão entre os concursos onde mais usamos nossos materiais.', 'As provas do MP são extremamente técnicas e exigem domínio profundo da lei seca. Nossos comentários estratégicos e destaques de artigos te colocam na frente de quem estuda apenas pela doutrina.') },
+
+    { test: m => has(m, ['defensoria', 'defensor', 'defensora', 'dpe', 'dpu']),
+      run: () => careerReply('🛡️', 'Para a Defensoria Pública!', 'DPE e DPU são concursos que exigem muito de Direito Civil, Processo Civil, Penal e Constitucional — exatamente o foco do nosso combo.', 'Candidatos da defensoria relatam que o esquema visual dos artigos acelera muito a revisão pré-prova, quando o tempo é curto e o volume é alto.') },
+
+    { test: m => has(m, ['delegado', 'delegada', 'policia civil', 'policia federal', 'policial', 'agente', 'escrivao', 'escrivã', 'perito', 'papiloscopista', 'prf', 'pm', 'policia militar']),
+      run: () => careerReply('🚔', 'Para Carreiras Policiais!', 'Delegado, Agente, Escrivão e Perito — todas essas carreiras cobram fortemente Direito Penal, Processo Penal e Administrativo.', 'Nosso Código Penal Esquematizado e o Código de Processo Penal são os preferidos entre candidatos a Delegado. O Direito Administrativo também é essencial para a maioria dos editais policiais.') },
+
+    { test: m => has(m, ['tribunal', 'tribunais', 'tj', 'trf', 'trt', 'tre', 'tce', 'tcu', 'analista', 'tecnico judiciario', 'tecnico do judiciario', 'oficial de justica']),
+      run: () => careerReply('🏛️', 'Para Tribunais!', 'TJ, TRF, TRT, TCE e TCU têm provas com forte cobrança de lei seca — especialmente Processo Civil, Administrativo e Constitucional.', 'Nossos materiais de CPC, Administrativo e CF são os mais indicados para quem mira em tribunais. O esquema visual ajuda muito na revisão de artigos específicos cobrados nessas provas.') },
+
+    { test: m => has(m, ['concurso*', 'concursos', 'carreira*', 'edital', 'editais', 'fiscal', 'receita federal', 'sefaz', 'agu', 'pge', 'pgm', 'procuradoria', 'inss', 'servidor publico', 'cargo publico', 'militar']),
+      run: () => chatFlow.CONCURSOS_FLOW.execute() },
+
+    // Amostras
+    { test: m => has(m, ['amostra*', 'exemplo*', 'ver antes', 'como e o material', 'como sao', 'qualidade', 'ver o material', 'antes de comprar', 'gratuito', 'gratuita', 'gratis', 'baixar', 'pdf gratis', 'teste', 'degustacao', 'previa']),
+      run: () => chatFlow.AMSTR_FLOW.execute() },
+
+    // Objeção de preço
+    { test: m => has(m, ['caro', 'muito caro', 'nao tenho dinheiro', 'sem dinheiro', 'desconto', 'cupom', 'promo*', 'barato', 'mais barato', 'cobram', 'cobrado', 'apertado', 'financeiro']),
+      run: () => chatFlow.DOUBT_PRECO.execute() },
+
+    // Pergunta simples de preço
+    { test: m => has(m, ['quanto custa', 'quanto e', 'quanto fica', 'quanto sai', 'qual o valor', 'qual valor', 'qual o preco', 'qual preco', 'preco', 'precos', 'valor', 'valores']),
+      run: () => sayAll([
+          `💰 *Valores atuais:*\n\n⚖️ *${NOME_COMBO}:* ${PRECO_COMBO} (pagamento único)\n📚 *Leis individuais:* ${PRECO_LEI} cada\n\nTodos com *acesso vitalício*, *atualizações gratuitas* e *garantia de 7 dias*.`
+      ], () => {
+          appendOptions([
+              { text: `🔥 Quero o ${NOME_COMBO} (${PRECO_COMBO})`, action: () => selectOption('🔥 Quero o Combo', 'OAB_FLOW') },
+              { text: `📚 Ver Leis Individuais (${PRECO_LEI})`,     action: () => selectOption('📚 Leis Individuais', 'CHOOSE_CATALOG') },
+              { text: '↩️ Voltar ao Menu Principal',                action: () => selectOption('↩️ Voltar', 'RESET') }
+          ]);
+      }) },
+
+    // Acesso vitalício / validade
+    { test: m => has(m, ['vitalicio', 'vitalicia', 'validade', 'expira', 'expirar', 'prazo de acesso', 'quanto tempo de acesso', 'acesso para sempre', 'tempo de acesso']),
+      run: () => sayAll([`♾️ *Acesso vitalício, ${userData.name}!* Você paga uma única vez e o material é seu para sempre — sem mensalidade e sem data de expiração.\n\nE se a lei mudar, você recebe a *versão atualizada gratuitamente* no seu e-mail.`], voltarMenu) },
+
+    // Entrega (como recebo)
+    { test: m => has(m, ['como recebo', 'como recebe', 'como chega', 'como funciona a entrega', 'entrega', 'receber o material', 'onde baixo', 'como baixo', 'como acesso', 'como faco para acessar', 'prazo de entrega', 'quanto tempo demora', 'demora pra chegar', 'demora para chegar', 'imediato', 'na hora']),
+      run: () => chatFlow.DELIVERY_INFO.execute() },
+
+    // Falta de tempo
+    { test: m => has(m, ['tempo', 'corrido', 'corrida', 'agitado', 'agitada', 'reta final', 'poucos dias', 'uma semana', 'pouco tempo', 'rapido', 'rapida', 'urgente', 'as pressas', 'falta pouco', 'prova e semana que vem', 'prova e amanha']),
+      run: () => chatFlow.DOUBT_TEMPO.execute() },
+
+    // Dúvida se funciona / vale a pena
+    { test: m => has(m, ['funciona', 'realmente funciona', 'confiavel', 'vale a pena', 'compensa', 'nao sei se', 'tenho duvida se', 'incerto', 'melhor que', 'diferente de', 'resultado*', 'aprovacao', 'aprovados', 'depoimento*']),
+      run: () => sayAll([
+          `*${userData.name}*, entendo a dúvida — e ela é saudável antes de qualquer compra.`,
+          'Nosso diferencial é simples: em vez de te dar mais conteúdo, a gente te dá o *conteúdo certo* — filtrado, esquematizado e comentado.\n\nA literalidade da lei é o que as bancas cobram. Então é exatamente isso que entregamos, sem enrolação e sem 500 páginas de doutrina.',
+          'E se em *7 dias* você achar que não foi o que esperava, devolvemos *100% do valor*. Você não tem nada a perder — só a garantir sua aprovação. ✅'
+      ], voltarMenu) },
+
+    // Iniciante / do zero
+    { test: m => has(m, ['do zero', 'iniciante', 'comecando', 'comeco', 'nunca estudei', 'primeira vez', 'sem base', 'nao tenho base', 'dificuldade', 'leigo']),
+      run: () => chatFlow.DOUBT_BASE.execute() },
+
+    // Matéria específica
+    { test: m => MATERIAS.some(x => has(m, x.termos)),
+      run: () => {
+          const alvo = MATERIAS.find(x => has(norm(lastUserText), x.termos));
+          const nome = alvo ? alvo.nome : 'essa matéria';
+          sayAll([`Sim, *${userData.name}*! Temos o material de *${nome}*. ✅\n\nEle está incluso no *${NOME_COMBO} (${PRECO_COMBO})* e também pode ser comprado individualmente por *${PRECO_LEI}*.`], () => {
+              appendOptions([
+                  { text: `⚖️ Ver o ${NOME_COMBO} (${PRECO_COMBO})`, action: () => selectOption('⚖️ Ver Combo', 'OAB_FLOW') },
+                  { text: `📚 Ver Leis Individuais (${PRECO_LEI})`,   action: () => selectOption('📚 Leis Individuais', 'CHOOSE_CATALOG') },
+                  { text: '↩️ Voltar ao Menu Principal',              action: () => selectOption('↩️ Voltar', 'RESET') }
+              ]);
+          });
+      } },
+
+    // Matérias / combo
+    { test: m => has(m, ['materias', 'disciplinas', 'quais', 'completo', 'incompleto', 'todas', 'combo', 'pacote', 'o que inclui', 'o que vem', 'conteudo']),
+      run: () => sayAll([
+          `🎯 O *${NOME_COMBO}* cobre estrategicamente as matérias de *maior peso* na 1ª Fase da OAB e nos concursos:`,
+          '• Direito Penal e Processo Penal\n• Direito Civil e Processo Civil\n• Direito Constitucional\n• Direito Tributário\n• Direito e Processo do Trabalho\n• Direito Administrativo\n• Ética Profissional da OAB\n\nEstas matérias respondem por mais de *80% da nota* na 1ª Fase. Dominar o topo da prova é o caminho mais rápido para os 40 pontos.'
+      ], voltarMenu) },
+
+    // Compra
+    { test: m => has(m, ['comprar', 'adquirir', 'pagar', 'levar', 'pegar', 'quero o material', 'como compro', 'como adquiro', 'quero comprar', 'quero o combo', 'quero levar']),
+      run: () => sayAll([`Ótimo, *${userData.name}*! Você quer o Combo Completo ou uma lei individual?`], () => {
+          appendOptions([
+              { text: `⚖️ ${NOME_COMBO} (${PRECO_COMBO})`, action: () => selectOption(`⚖️ ${NOME_COMBO}`, 'OAB_FLOW') },
+              { text: `📚 Lei Individual (${PRECO_LEI})`,  action: () => selectOption('📚 Lei Individual', 'CHOOSE_CATALOG') }
+          ]);
+      }) },
+
+    // Formas de pagamento
+    { test: m => has(m, ['pix', 'transferencia']),
+      run: () => sayAll(['⚡ *Pix* é a forma mais rápida! Aprovação em menos de 1 minuto e o material já está no seu e-mail.'], voltarMenu) },
+
+    { test: m => has(m, ['boleto']),
+      run: () => sayAll(['💡 *Boleto* leva 1 a 2 dias úteis para compensar. Se quiser o material na hora, recomendo o *Pix*.'], voltarMenu) },
+
+    { test: m => has(m, ['parcela', 'parcelar', 'parcelado', 'parcelas', 'cartao', 'credito', 'debito', 'vezes', 'forma de pagamento', 'formas de pagamento', 'como pagar']),
+      run: () => sayAll(['💳 Sim! Você pode *parcelar no cartão de crédito* direto no checkout seguro da Hotmart — sem precisar de nada extra. Também aceitamos *Pix* (aprovação imediata) e *boleto*.'], voltarMenu) },
+
+    // Impressão / formato
+    { test: m => has(m, ['imprimir', 'impressao', 'imprimo', 'papel', 'fisico', 'formato', 'pdf', 'grafica']),
+      run: () => sayAll(['🖨️ *Sim!* Os arquivos são PDF de alta definição. Você pode baixar em qualquer dispositivo e imprimir em casa ou em gráfica — fica ótimo no papel!'], voltarMenu) },
+
+    // Dispositivos
+    { test: m => has(m, ['celular', 'tablet', 'computador', 'pc', 'notebook', 'iphone', 'android', 'ipad', 'dispositivo', 'kindle', 'mac']),
+      run: () => sayAll(['📱 *Funciona em tudo!* Celular (Android e iPhone), tablet, iPad, computador e notebook — qualquer leitor de PDF abre normalmente.'], voltarMenu) },
+
+    // Videoaulas
+    { test: m => has(m, ['video', 'videos', 'videoaula', 'videoaulas', 'aula', 'aulas', 'assistir', 'curso', 'cursinho']),
+      run: () => sayAll(['❌ *Não temos videoaulas* — e isso é intencional.\n\nHoras de vídeo consomem tempo que você poderia usar estudando a lei em si. Nosso formato em PDF esquematizado é *comprovadamente mais rápido* para memorização de lei seca.'], voltarMenu) },
+
+    // Português e outras matérias
+    { test: m => has(m, ['portugues', 'gramatica', 'lingua portuguesa', 'matematica', 'raciocinio logico', 'informatica', 'atualidades']),
+      run: () => sayAll([
+          '✍️ Essas matérias (como *Português*) ainda não temos — mas está nos nossos planos! Em breve lançaremos materiais focados em concursos com o mesmo padrão visual do FocoLegis.',
+          'Fique atento ao nosso WhatsApp e e-mails para ser avisado em primeira mão. 😊'
+      ], voltarMenu) },
+
+    // Segunda fase da OAB
+    { test: m => has(m, ['segunda fase', '2a fase', '2 fase', '2 f', 'peticao', 'peca', 'pecas', 'pratica', 'pratica juridica']),
+      run: () => sayAll(['📝 *Segunda Fase da OAB:* Nossos materiais atuais focam na *1ª Fase* (lei seca e questões objetivas).\n\nPara a 2ª fase, que exige redação de peças, recomendamos complementar com um material específico de prática jurídica. Mas dominar a lei seca na 1ª fase é o primeiro passo essencial!'], voltarMenu) },
+
+    // Agradecimento
+    { test: m => shortMsg(m, 4) && has(m, ['obrigado', 'obrigada', 'valeu', 'vlw', 'agradeco', 'show', 'top', 'perfeito', 'ok', 'beleza', 'certo', 'entendi', 'blz']),
+      run: () => sayAll([`Por nada, *${userData.name}*! 😊 Fico feliz em ajudar. Posso te ajudar com mais alguma coisa?`], voltarMenu) },
+
+    // Saudação
+    { test: m => shortMsg(m, 4) && has(m, ['oi', 'ola', 'bom dia', 'boa tarde', 'boa noite', 'e ai', 'eae', 'opa', 'tudo bem']),
+      run: () => sayAll([`Olá, *${userData.name}*! 👋 Em que posso te ajudar? Pode digitar sua dúvida ou escolher uma opção:`], voltarMenu) }
+];
+
+let lastUserText = '';
+
+function responderTextoLivre(text) {
+    lastUserText = text;
+    const m = norm(text);
+    for (const intent of intents) {
+        if (intent.test(m)) { intent.run(); return; }
+    }
+    // Fallback: não entendi → humano
+    sayAll(['Entendi! Para essa dúvida específica, o melhor é falar com nosso atendimento — um atendente humano resolve na hora:'], () => {
+        irParaSuporteWpp();
+    });
+}
 
 // ── ENGINE ───────────────────────────────────────────────────────────────────
 
@@ -527,8 +902,7 @@ function selectOption(chosenText, nextState) {
     appendMessage(chosenText, 'sent');
     setTimeout(() => {
         if (nextState === 'RESET') {
-            userInput.disabled = true;
-            userInput.placeholder = 'Escolha uma opção acima...';
+            disableInput();
             sendBotMessage(`Voltamos ao início, *${userData.name}*! Como posso te ajudar?`, 1000);
             setTimeout(() => { showMainMenu(); }, 1800);
         } else {
@@ -541,6 +915,7 @@ function selectOption(chosenText, nextState) {
 }
 
 function handleUserSend() {
+    if (userInput.disabled) return;
     const text = userInput.value.trim();
     if (!text) return;
     appendMessage(text, 'sent');
@@ -549,8 +924,7 @@ function handleUserSend() {
         if (currentState === 'WAITING_FOR_NAME') {
             chatFlow.WAITING_FOR_NAME.handle(text);
         } else if (currentState === 'WAITING_FOR_FREE_TEXT') {
-            userInput.disabled = true;
-            userInput.placeholder = 'Aguardando resposta...';
+            disableInput('Aguardando resposta...');
             chatFlow.HUMAN_SUPPORT.handle(text);
         }
     }, 500);
