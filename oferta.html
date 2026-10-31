@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oferta Exclusiva - Combo Completo OAB e Concursos | Foco Legis</title>
+    <title>Oferta Especial - Combo OAB e Concursos | Foco Legis</title>
 
-    <meta name="description" content="Gabarite a OAB 2026 e concursos de Tribunais, Polícia e Magistratura. Baixe o Combo Completo de Lei Seca comentada, resumos e códigos esquematizados.">
+    <meta name="description" content="Gabarite a OAB 2026 e concursos de Tribunais, Polícia e Magistratura. Baixe PDF de Lei Seca comentada, resumos e códigos esquematizados atualizados!">
+    <meta property="og:description" content="Material de estudo focado na aprovação: simulado, cronograma de estudos, gabarito, caderno de questões comentadas, mapas mentais e resumos.">
     <meta property="og:title" content="Oferta Exclusiva VIP | Foco Legis">    
 
     <script>
@@ -14,15 +15,16 @@
     </script>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+        body.modal-aberto { overflow: hidden; touch-action: none; }
         header { background-color: #1a252f; color: #ffffff; text-align: center; padding: 40px 20px; }
         header h1 { margin: 0; font-size: 2.2em; color: #f1c40f; }
-        .container { max-width: 600px; margin: 40px auto; padding: 0 20px; display: flex; flex-direction: column; align-items: center; }
+        .container { max-width: 500px; margin: 40px auto; padding: 0 20px; display: flex; flex-direction: column; align-items: center; }
         
         .card { 
             background-color: #ffffff; 
             border-radius: 12px; 
-            box-shadow: 0 8px 24px rgba(0,0,0,0.15); 
-            padding: 24px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+            padding: 20px; 
             text-align: center; 
             display: flex; 
             flex-direction: column; 
@@ -31,27 +33,34 @@
             box-sizing: border-box;
         }
 
-        .card img { width: 100%; max-width: 180px; height: auto; margin: 0 auto 15px auto; object-fit: cover; border-radius: 8px; }
-        .card h3 { font-size: 1.4em; margin: 10px 0; color: #1a252f; }
+        .card img { width: 100%; max-width: 160px; height: auto; margin: 0 auto 10px auto; object-fit: cover; border-radius: 8px; }
+        .card h3 { font-size: 1.3em; margin: 10px 0; color: #1a252f; }
         
-        .mini-beneficios { list-style: none; padding: 0; margin: 10px 0 15px 0; font-size: 0.85em; color: #444; text-align: left; display: inline-block; font-weight: 600; }
-        .mini-beneficios li { margin-bottom: 6px; line-height: 1.4; }
+        .mini-beneficios { list-style: none; padding: 0; margin: 8px 0 12px 0; font-size: 0.8em; color: #444; text-align: left; display: inline-block; font-weight: 600; }
+        .mini-beneficios li { margin-bottom: 4px; line-height: 1.3; }
 
-        .preco-antigo { color: #e74c3c; text-decoration: line-through; font-size: 1.1em; font-weight: bold; margin-bottom: 4px; display: block; }
-        .preco-novo { color: #27ae60; font-size: 2em; font-weight: bold; margin-bottom: 4px; display: block; }
-        .preco-parcelado { color: #666; font-size: 0.9em; margin-bottom: 15px; display: block; }
+        .preco-antigo { color: #e74c3c; text-decoration: line-through; font-size: 1.05em; font-weight: bold; margin-bottom: 2px; display: block; }
+        .preco-novo { color: #27ae60; font-size: 2.1em; font-weight: bold; margin-bottom: 4px; display: block; }
+        .preco-parcelado { color: #666; font-size: 0.85em; margin-bottom: 12px; display: block; }
+
+        .cupom-box { background: #fef3c7; border: 2px dashed #f59e0b; color: #92400e; padding: 8px; border-radius: 6px; font-weight: bold; font-size: 0.9em; margin-bottom: 12px; }
         
-        .cupom-box { background: #fef3c7; border: 2px dashed #f59e0b; color: #92400e; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 0.95em; margin-bottom: 15px; }
+        .btn-comprar { background-color: #27ae60; color: white; padding: 12px; border-radius: 6px; text-decoration: none; font-weight: bold; margin-top: 5px; display: block; border: none; cursor: pointer; font-size: 1.05em; text-align: center; box-sizing: border-box; }
+        .btn-amostra { border: 2px solid #34495e; color: #34495e; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; display: block; margin-top: 8px; cursor: pointer; font-size: 0.85em; text-align: center; box-sizing: border-box; }
 
-        .btn-comprar { background-color: #27ae60; color: white; padding: 14px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: 5px; display: block; border: none; cursor: pointer; font-size: 1.1em; text-align: center; box-sizing: border-box; box-shadow: 0 4px 12px rgba(39,174,96,0.3); }
-        .btn-comprar:hover { background-color: #219653; }
-
+        /* ── Card especial Combo OAB — neon vermelho pulsante ── */
         @keyframes neon-respirar {
             0%, 100% {
-                box-shadow: 0 0 8px 2px rgba(231,76,60,0.6), 0 0 18px 4px rgba(231,76,60,0.35);
+                box-shadow:
+                    0 0 6px 1px rgba(231,76,60,0.6),
+                    0 0 14px 3px rgba(231,76,60,0.35),
+                    0 0 28px 6px rgba(231,76,60,0.15);
             }
             50% {
-                box-shadow: 0 0 14px 4px rgba(231,76,60,0.95), 0 0 30px 8px rgba(231,76,60,0.6);
+                box-shadow:
+                    0 0 10px 3px rgba(231,76,60,0.95),
+                    0 0 24px 7px rgba(231,76,60,0.6),
+                    0 0 48px 12px rgba(231,76,60,0.3);
             }
         }
         .card-destaque {
@@ -63,26 +72,27 @@
         .badge-mais-vendido {
             background: #e74c3c;
             color: white;
-            font-size: 0.75em;
+            font-size: 0.7em;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            padding: 4px 10px;
+            padding: 3px 8px;
             border-radius: 20px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             display: inline-block;
         }
 
+        /* ── Contador de Urgência ── */
         .urgencia-box {
             background: linear-gradient(135deg, #1a252f 0%, #2c3e50 100%);
             border-radius: 8px 8px 0 0;
-            padding: 10px;
-            margin: -24px -24px 15px -24px;
+            padding: 8px 10px 7px;
+            margin: -20px -20px 12px -20px;
             text-align: center;
         }
         .urgencia-label {
             color: #f1c40f;
-            font-size: 0.7em;
+            font-size: 0.65em;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.8px;
@@ -91,7 +101,7 @@
         }
         .urgencia-timer {
             color: #ffffff;
-            font-size: 1.3em;
+            font-size: 1.25em;
             font-weight: 800;
             letter-spacing: 3px;
             font-family: 'Courier New', monospace;
@@ -101,23 +111,29 @@
             padding: 2px 6px;
             border-radius: 4px;
         }
+
+        .faq-section { max-width: 800px; margin: 40px auto; padding: 0 20px; }
+        .faq-title { text-align: center; color: #1a252f; font-size: 1.6em; margin-bottom: 24px; }
+        .faq-item { background: white; padding: 18px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); margin-bottom: 12px; }
+        .faq-item h3 { font-size: 1.05em; color: #2c3e50; margin-top: 0; margin-bottom: 8px; }
+        .faq-item p { font-size: 0.88em; color: #555; line-height: 1.5; margin: 0; }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Foco Legis - Condição Especial</h1>
-        <p>Aproveite seu desconto exclusivo garantido!</p>
+        <h1>Foco Legis - Condição Exclusiva VIP</h1>
+        <p>Aproveite a oferta especial para completar seus materiais!</p>
     </header>
 
     <div class="container">
         <div class="card card-destaque">
             <div class="urgencia-box">
-                <span class="urgencia-label">⚡ Condição exclusiva expira em</span>
+                <span class="urgencia-label">⚡ Condição especial expira em</span>
                 <div class="urgencia-timer" id="timer-combo-oab">--:--:--</div>
             </div>
 
-            <div style="background:#e74c3c; color:white; padding:4px; border-radius:4px; font-size:0.75em; font-weight:bold; margin-bottom:8px;">SUPER COMBO VIP 🔥🔥</div>
+            <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.75em; font-weight:bold; margin-bottom:4px;">SUPER COMBO 🔥🔥</div>
             <span class="badge-mais-vendido">⭐ Oferta Única</span>
             <img src="COMBOOAB.png" alt="Combo OAB">
             <h3>Principais OAB e Concursos</h3>
@@ -131,27 +147,69 @@
                 <li>✅ Código Tributário Nacional (CTN) Esquematizado</li>
                 <li>✅ CLT + Processo do Trabalho Comentados</li>
                 <li>✅ Estatuto da OAB + Código de Ética Comentados</li>
-                <li>✅ Acesso Vitalício com atualizações</li>
+                <li>✅ Acesso Vitalício com atualizações gratuitas</li>
             </ul>
 
             <div>
                 <span class="preco-antigo">R$ 179,91</span>
                 <span class="preco-novo">R$ 30,00</span>
                 <span class="preco-parcelado">ou em até 12x no cartão</span>
-                
+
                 <div class="cupom-box">
-                    🎟️ Cupom Aplicado: CLIENTEVIP50
+                    🎟️ Cupom Ativado: CLIENTEVIP50
                 </div>
 
-                <!-- Link da Hotmart com o cupom e identificador de origem OFERTA -->
-                <a href="https://pay.hotmart.com/F106332914S?checkoutMode=6&off=fjeyq5am&offDiscount=CLIENTEVIP50" target="_blank" class="btn-comprar" data-id="OFERTA_COMBOOAB">GARANTIR MEU COMBO POR R$ 30,00</a>
+                <!-- Novo link de checkout da Hotmart fornecido -->
+                <a href="https://pay.hotmart.com/F106332914S?checkoutMode=6&off=fjeyq5am&offDiscount=CLIENTEVIP50&bid=1793472979072" target="_blank" class="btn-comprar" data-id="OFERTA_COMBOOAB">COMPRAR COMBO POR R$ 30,00</a>
+                <a href="https://www.focolegis.com/FocoLegis%20-%20AMOSTRA%20-%20Direito%20Civil.pdf" target="_blank" class="btn-amostra" data-id="OFERTA_COMBOOAB">Amostra</a>
             </div>
         </div>
     </div>
 
+    <div class="faq-section">
+        <h2 class="faq-title">Perguntas Frequentes</h2>
+        
+        <div class="faq-item" style="border-left: 4px solid #1a252f;">
+            <h3>Como atingir a aprovação no Exame da OAB e Concursos Públicos?</h3>
+            <p>
+                Mais de <strong>70% das questões</strong> da prova da OAB e de concursos cobram a pura literalidade dos artigos. Nossa metodologia entrega cada artigo comentado e esquematizado em e-books diretos ao ponto, acelerando sua preparação.
+            </p>
+        </div>
+
+        <div class="faq-item" style="border-left: 4px solid #27ae60;">
+            <h3>Como recebo o material e em quais dispositivos posso estudar?</h3>
+            <p>
+                A entrega em PDF é <strong>100% automática e imediata</strong> no seu e-mail após a confirmação do pagamento (Pix ou Cartão de Crédito). O acesso é liberado para baixar e estudar no celular, tablet ou computador.
+            </p>
+        </div>
+
+        <div class="faq-item" style="border-left: 4px solid #f1c40f;">
+            <h3>O acesso é vitalício e o conteúdo recebe atualizações?</h3>
+            <p>
+                Sim! O seu prazo de acesso aos materiais é <strong>vitalício</strong> e inclui as atualizações gratuitas liberadas ao longo do ano.
+            </p>
+        </div>
+    </div>
+
     <script>
+        // URL do Google Apps Script para salvar dados / interações na planilha
+        const SCRIPT_URL = 'COLE_AQUI_A_URL_DO_SEU_WEB_APP_APPS_SCRIPT';
+
+        function registrarNaPlanilha(dadosEvento) {
+            if (!SCRIPT_URL || SCRIPT_URL.includes('COLE_AQUI')) return;
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dadosEvento)
+            }).catch(err => console.error('Erro ao integrar com planilha:', err));
+        }
+
         function iniciarContagemRegressiva() {
-            let tempoRestante = 2 * 60 * 60; // 2 horas
+            let tempoRestante = 2 * 60 * 60; // 2 Horas
             const timerElement = document.getElementById('timer-combo-oab');
             
             const intervalo = setInterval(() => {
@@ -176,11 +234,29 @@
 
         iniciarContagemRegressiva();
 
+        // Disparo de Pixel e Salvamento na Planilha ao clicar no botão de compra da OFERTA
         document.querySelectorAll('.btn-comprar').forEach(btn => {
             btn.addEventListener('click', function() {
+                const produtoId = this.getAttribute('data-id');
+
+                // Envio para o Meta Pixel
                 if (typeof fbq === 'function') {
-                    fbq('track', 'InitiateCheckout', { content_name: 'Combo OAB - Oferta R$ 30', page: 'OFERTA' });
+                    fbq('track', 'InitiateCheckout', { 
+                        content_name: 'Combo OAB - Oferta R$ 30', 
+                        page: 'OFERTA',
+                        product_id: produtoId 
+                    });
                 }
+
+                // Envio dos dados do evento para a sua planilha via Google Apps Script
+                registrarNaPlanilha({
+                    acao: 'CLIQUE_COMPRA',
+                    produto: produtoId,
+                    pagina: 'OFERTA.html',
+                    cupom: 'CLIENTEVIP50',
+                    preco: '30.00',
+                    dataHora: new Date().toISOString()
+                });
             });
         });
     </script>
