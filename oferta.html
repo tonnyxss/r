@@ -14,7 +14,6 @@
     </script>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
-        body.modal-aberto { overflow: hidden; touch-action: none; }
         header { background-color: #1a252f; color: #ffffff; text-align: center; padding: 40px 20px; }
         header h1 { margin: 0; font-size: 2.2em; color: #f1c40f; }
         .container { max-width: 600px; margin: 40px auto; padding: 0 20px; display: flex; flex-direction: column; align-items: center; }
@@ -30,7 +29,6 @@
             justify-content: space-between;
             width: 100%;
             box-sizing: border-box;
-            transition: all 0.3s ease;
         }
 
         .card img { width: 100%; max-width: 180px; height: auto; margin: 0 auto 15px auto; object-fit: cover; border-radius: 8px; }
@@ -48,17 +46,12 @@
         .btn-comprar { background-color: #27ae60; color: white; padding: 14px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: 5px; display: block; border: none; cursor: pointer; font-size: 1.1em; text-align: center; box-sizing: border-box; box-shadow: 0 4px 12px rgba(39,174,96,0.3); }
         .btn-comprar:hover { background-color: #219653; }
 
-        /* ── Card especial Combo OAB — neon vermelho pulsante ── */
         @keyframes neon-respirar {
             0%, 100% {
-                box-shadow:
-                    0 0 8px 2px rgba(231,76,60,0.6),
-                    0 0 18px 4px rgba(231,76,60,0.35);
+                box-shadow: 0 0 8px 2px rgba(231,76,60,0.6), 0 0 18px 4px rgba(231,76,60,0.35);
             }
             50% {
-                box-shadow:
-                    0 0 14px 4px rgba(231,76,60,0.95),
-                    0 0 30px 8px rgba(231,76,60,0.6);
+                box-shadow: 0 0 14px 4px rgba(231,76,60,0.95), 0 0 30px 8px rgba(231,76,60,0.6);
             }
         }
         .card-destaque {
@@ -80,7 +73,6 @@
             display: inline-block;
         }
 
-        /* ── Contador de Urgência ── */
         .urgencia-box {
             background: linear-gradient(135deg, #1a252f 0%, #2c3e50 100%);
             border-radius: 8px 8px 0 0;
@@ -114,7 +106,7 @@
 <body>
 
     <header>
-        <h1>Foco Legis - Condição Especial OFERTA</h1>
+        <h1>Foco Legis - Condição Especial</h1>
         <p>Aproveite seu desconto exclusivo garantido!</p>
     </header>
 
@@ -151,18 +143,15 @@
                     🎟️ Cupom Aplicado: CLIENTEVIP50
                 </div>
 
-                <!-- URL redirecionando para a Hotmart com o cupom aplicado e rastreamento em OFERTA -->
-                <a href="https://pay.hotmart.com/F106332914S?checkoutMode=10&cupom=CLIENTEVIP50" target="_blank" class="btn-comprar" data-id="OFERTA_COMBOOAB">GARANTIR MEU COMBO POR R$ 30,00</a>
+                <!-- Link da Hotmart com o cupom e identificador de origem OFERTA -->
+                <a href="https://pay.hotmart.com/F106332914S?checkoutMode=6&off=fjeyq5am&offDiscount=CLIENTEVIP50" target="_blank" class="btn-comprar" data-id="OFERTA_COMBOOAB">GARANTIR MEU COMBO POR R$ 30,00</a>
             </div>
         </div>
     </div>
 
     <script>
-        // Script do contador regressivo de urgência
         function iniciarContagemRegressiva() {
-            // Define 2 horas de validade para a oferta na página OFERTA
-            let tempoRestante = 2 * 60 * 60; 
-
+            let tempoRestante = 2 * 60 * 60; // 2 horas
             const timerElement = document.getElementById('timer-combo-oab');
             
             const intervalo = setInterval(() => {
@@ -187,11 +176,8 @@
 
         iniciarContagemRegressiva();
 
-        // Rastreamento de eventos atualizado para OFERTA (planilhas / analytics)
         document.querySelectorAll('.btn-comprar').forEach(btn => {
             btn.addEventListener('click', function() {
-                console.log('Evento de clique registrado na página OFERTA para o produto:', this.getAttribute('data-id'));
-                // Se desejar disparar evento do Facebook Pixel específico para a página OFERTA:
                 if (typeof fbq === 'function') {
                     fbq('track', 'InitiateCheckout', { content_name: 'Combo OAB - Oferta R$ 30', page: 'OFERTA' });
                 }
