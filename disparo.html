@@ -114,10 +114,36 @@
       gap: 8px;
     }
 
+    .client-title-area {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
     .client-name {
       font-weight: bold;
       font-size: 18px;
       color: #111827;
+    }
+
+    .copy-btn {
+      background: #f3f4f6;
+      border: 1px solid var(--border);
+      padding: 4px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      color: #374151;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: background 0.2s;
+    }
+
+    .copy-btn:hover {
+      background: #e5e7eb;
     }
 
     .client-info {
@@ -165,6 +191,15 @@
       font-weight: 600;
     }
 
+    .badge-count {
+      background: #fef3c7;
+      color: #92400e;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
     .stats-bar {
       margin-bottom: 16px;
       font-weight: 600;
@@ -200,7 +235,6 @@
       return first.charAt(0).toUpperCase() + first.slice(1).toLowerCase();
     }
 
-    // Lista de produtos isolados (excluindo "PRINCIPAIS OAB E CONCURSOS")
     const knownProducts = [
       "DIREITO E PROCESSO DO TRABALHO",
       "COMBO PENAL E PROCESSO PENAL",
@@ -220,10 +254,12 @@
       line = line.trim();
       if (!line) return null;
 
-      // Ignora se não estiver Aprovado ou se já tiver a marcação ENVIADO
-      if (!line.includes('Aprovado') || line.includes('ENVIADO')) return null;
+      // REGRAS DE EXCLUSÃO DE STATUS: Descarta imediatamente se tiver Reembolsado, Cancelado ou ENVIADO
+      if (/reembolsado|cancelado|enviado/i.test(line)) return null;
 
-      // Extrai e-mail usando regex
+      // Garante que a linha contém obrigatoriamente a palavra Aprovado
+      if (!/aprovado/i.test(line)) return null;
+
       const emailRegex = /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/i;
       const emailMatch = line.match(emailRegex);
       if (!emailMatch) return null;
@@ -232,8 +268,10 @@
       const emailIndex = line.indexOf(email);
       
       const beforeEmail = line.substring(0, emailIndex);
-      let rawName = beforeEmail.replace(/^\d{2}\/\d{2}\/\d{4}(?:\s*-\s*|\s+)\d{2}:\d{2}:\d{2}\s*Aprovado/i, '');
-      rawName = rawName.replace(/Aprovado/i, '').trim();
+      
+      // Remove data, hora e a palavra Aprovado do início para isolar o nome
+      let rawName = beforeEmail.replace(/^\d{2}\/\d{2}\/\d{4}(?:\s*-\s*|\s+)\d{2}:\d{2}:\d{2}\s*/i, '');
+      rawName = rawName.replace(/Aprovado/gi, '').trim();
 
       const afterEmail = line.substring(emailIndex + email.length);
 
@@ -243,7 +281,6 @@
       const rawPhone = phoneMatch[1];
       let phone = rawPhone.startsWith('55') ? rawPhone : '55' + rawPhone;
 
-      // Identifica o produto isolado correspondente
       let foundProduct = "";
       for (let prod of knownProducts) {
         if (afterEmail.toUpperCase().includes(prod)) {
@@ -252,7 +289,6 @@
         }
       }
 
-      // Se for o combo principal ou não achar nenhum produto isolado válido, descarta a linha
       if (!foundProduct || foundProduct === "PRINCIPAIS OAB E CONCURSOS") {
         return null;
       }
@@ -266,12 +302,16 @@
       };
     }
 
-    function buildMessage(firstName, product) {
+    function buildMessage(firstName, productsList) {
+      let prodText = productsList.length === 1 
+        ? `a disciplina isolada de *${productsList[0]}*` 
+        : `as disciplinas isoladas: *${productsList.join(', ')}*`;
+
       return `Olá, ${firstName}, tudo bem?
 
-Vi que você comprou a disciplina isolada de *${product}* na FocoLegis.
+Vi que você comprou ${prodText} na FocoLegis.
 
-Tenho uma oferta irrecusável para você: O nosso combo completo OAB e Concursos, apenas para você, está saindo a *R$ 30,00* !!
+Tenho uma oferta irrecusável para você: O nosso combo completo OAB e Concursos, apenas para você, está saindo a R$ 30,00 !!
 
 Teria interesse?
 
@@ -292,6 +332,16 @@ Conteúdo do Material:
 - Administração FocoLegis.com`;
     }
 
+    function copyToClipboard(text, btnElement) {
+      navigator.clipboard.writeText(text).then(() => {
+        const originalText = btnElement.innerHTML;
+        btnElement.innerHTML = '📋 Copiado!';
+        setTimeout(() => {
+          btnElement.innerHTML = originalText;
+        }, 1500);
+      });
+    }
+
     function processData() {
       const rawText = document.getElementById('inputData').value;
       const resultsDiv = document.getElementById('results');
@@ -299,40 +349,65 @@ Conteúdo do Material:
       resultsDiv.innerHTML = '';
 
       const lines = rawText.split(/\r?\n/).filter(l => l.trim().length > 0);
-      let totalProcessed = 0;
+      const clientsMap = {};
 
       lines.forEach(line => {
         const data = parseLine(line);
         if (data) {
-          totalProcessed++;
-          const messageText = buildMessage(data.firstName, data.product);
-          const encodedMessage = encodeURIComponent(messageText);
-          const whatsappUrl = `https://web.whatsapp.com/send?phone=${data.phone}&text=${encodedMessage}`;
-
-          const clientCard = document.createElement('div');
-          clientCard.className = 'client-card';
-          clientCard.innerHTML = `
-            <div class="client-header">
-              <div>
-                <span class="client-name">${data.fullName}</span> 
-                <span class="badge">${data.product}</span>
-              </div>
-              <div class="client-info">Tel: ${data.phone} | E-mail: ${data.email}</div>
-            </div>
-            <div class="message-preview">${messageText}</div>
-            <a href="${whatsappUrl}" target="_blank" class="whatsapp-btn">
-              <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-              Enviar Mensagem no WhatsApp (${data.firstName})
-            </a>
-          `;
-          resultsDiv.appendChild(clientCard);
+          const key = data.email || data.phone;
+          
+          if (!clientsMap[key]) {
+            clientsMap[key] = {
+              fullName: data.fullName,
+              firstName: data.firstName,
+              email: data.email,
+              phone: data.phone,
+              products: []
+            };
+          }
+          
+          if (!clientsMap[key].products.includes(data.product)) {
+            clientsMap[key].products.push(data.product);
+          }
         }
       });
 
-      statsDiv.textContent = `Total de compradores de disciplinas isoladas encontrados: ${totalProcessed}`;
+      const clientsArray = Object.values(clientsMap);
+      let totalProcessed = clientsArray.length;
+
+      clientsArray.forEach(client => {
+        const messageText = buildMessage(client.firstName, client.products);
+        const encodedMessage = encodeURIComponent(messageText);
+        const whatsappUrl = `https://web.whatsapp.com/send?phone=${client.phone}&text=${encodedMessage}`;
+
+        const productsBadges = client.products.map(p => `<span class="badge">${p}</span>`).join(' ');
+        const countBadge = client.products.length > 1 ? `<span class="badge-count">${client.products.length} compras</span>` : '';
+
+        const clientCard = document.createElement('div');
+        clientCard.className = 'client-card';
+        clientCard.innerHTML = `
+          <div class="client-header">
+            <div class="client-title-area">
+              <span class="client-name">${client.fullName}</span>
+              <button class="copy-btn" onclick="copyToClipboard('${client.fullName}', this)">📋 Copiar Nome</button>
+              ${countBadge}
+              ${productsBadges}
+            </div>
+            <div class="client-info">Tel: ${client.phone} | E-mail: ${client.email}</div>
+          </div>
+          <div class="message-preview">${messageText}</div>
+          <a href="${whatsappUrl}" target="_blank" class="whatsapp-btn">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            Enviar Mensagem no WhatsApp (${client.firstName})
+          </a>
+        `;
+        resultsDiv.appendChild(clientCard);
+      });
+
+      statsDiv.textContent = `Total de clientes únicos aprovados encontrados: ${totalProcessed}`;
 
       if (totalProcessed === 0) {
-        resultsDiv.innerHTML = '<p style="text-align:center; color: #ef4444;">Nenhuma venda de disciplina isolada válida foi encontrada.</p>';
+        resultsDiv.innerHTML = '<p style="text-align:center; color: #ef4444;">Nenhuma venda de disciplina isolada aprovada foi encontrada.</p>';
       }
     }
   </script>
