@@ -250,15 +250,9 @@
       "PORTUGUÊS"
     ];
 
-    function parseLine(line) {
+    function extractLineInfo(line) {
       line = line.trim();
       if (!line) return null;
-
-      // REGRAS DE EXCLUSÃO DE STATUS: Descarta imediatamente se tiver Reembolsado, Cancelado ou ENVIADO
-      if (/reembolsado|cancelado|enviado/i.test(line)) return null;
-
-      // Garante que a linha contém obrigatoriamente a palavra Aprovado
-      if (!/aprovado/i.test(line)) return null;
 
       const emailRegex = /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/i;
       const emailMatch = line.match(emailRegex);
@@ -268,13 +262,17 @@
       const emailIndex = line.indexOf(email);
       
       const beforeEmail = line.substring(0, emailIndex);
-      
-      // Remove data, hora e a palavra Aprovado do início para isolar o nome
       let rawName = beforeEmail.replace(/^\d{2}\/\d{2}\/\d{4}(?:\s*-\s*|\s+)\d{2}:\d{2}:\d{2}\s*/i, '');
-      rawName = rawName.replace(/Aprovado/gi, '').trim();
+      
+      // Identifica o status na linha
+      let status = "Outro";
+      if (/reembolsado/i.test(line)) status = "Reembolsado";
+      else if (/cancelado/i.test(line)) status = "Cancelado";
+      else if (/aprovado/i.test(line)) status = "Aprovado";
+
+      rawName = rawName.replace(/Aprovado|Reembolsado|Cancelado/gi, '').trim();
 
       const afterEmail = line.substring(emailIndex + email.length);
-
       const phoneMatch = afterEmail.match(/(\d{10,13})/);
       if (!phoneMatch) return null;
 
@@ -289,16 +287,14 @@
         }
       }
 
-      if (!foundProduct || foundProduct === "PRINCIPAIS OAB E CONCURSOS") {
-        return null;
-      }
-
       return {
         fullName: capitalize(rawName),
         firstName: getFirstName(rawName),
         email: email,
         phone: phone,
-        product: foundProduct
+        product: foundProduct,
+        status: status,
+        hasEnviado: /enviado/i.test(line)
       };
     }
 
@@ -349,25 +345,45 @@ Conteúdo do Material:
       resultsDiv.innerHTML = '';
 
       const lines = rawText.split(/\r?\n/).filter(l => l.trim().length > 0);
+      
+      const blacklistedKeys = new Set();
+      const parsedLines = [];
+
+      // 1ª Passagem: Identifica chaves (e-mail/telefone) que possuem Reembolsado ou Cancelado
+      lines.forEach(line => {
+        const info = extractLineInfo(line);
+        if (info) {
+          const key = info.email || info.phone;
+          if (info.status === 'Reembolsado' || info.status === 'Cancelado') {
+            blacklistedKeys.add(key);
+          }
+          parsedLines.push(info);
+        }
+      });
+
       const clientsMap = {};
 
-      lines.forEach(line => {
-        const data = parseLine(line);
-        if (data) {
-          const key = data.email || data.phone;
-          
+      // 2ª Passagem: Agrupa apenas os Aprovados válidos (e que não estão na blacklist)
+      parsedLines.forEach(info => {
+        const key = info.email || info.phone;
+
+        // Se o cliente tem qualquer histórico de reembolso/cancelamento ou já foi enviado, ignora
+        if (blacklistedKeys.has(key) || info.hasEnviado) return;
+
+        // Considera apenas status Aprovado e produtos isolados válidos
+        if (info.status === 'Aprovado' && info.product && info.product !== "PRINCIPAIS OAB E CONCURSOS") {
           if (!clientsMap[key]) {
             clientsMap[key] = {
-              fullName: data.fullName,
-              firstName: data.firstName,
-              email: data.email,
-              phone: data.phone,
+              fullName: info.fullName,
+              firstName: info.firstName,
+              email: info.email,
+              phone: info.phone,
               products: []
             };
           }
           
-          if (!clientsMap[key].products.includes(data.product)) {
-            clientsMap[key].products.push(data.product);
+          if (!clientsMap[key].products.includes(info.product)) {
+            clientsMap[key].products.push(info.product);
           }
         }
       });
@@ -407,7 +423,7 @@ Conteúdo do Material:
       statsDiv.textContent = `Total de clientes únicos aprovados encontrados: ${totalProcessed}`;
 
       if (totalProcessed === 0) {
-        resultsDiv.innerHTML = '<p style="text-align:center; color: #ef4444;">Nenhuma venda de disciplina isolada aprovada foi encontrada.</p>';
+        resultsDiv.innerHTML = '<p style="text-align:center; color: #ef4444;">Nenhuma venda válida encontrada (ou todas possuem cancelamentos/reembolsos associados).</p>';
       }
     }
   </script>
