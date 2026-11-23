@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Foco Legis - Lei Seca Comentada e Esquematizada!</title>
+    <title>FocoLegis | Lei Comentada e Esquematizada!</title>
 
 <meta name="description" content="Gabarite a OAB 2026 e concursos de Tribunais, Polícia e Magistratura. Baixe PDF grátis de Lei Seca comentada, resumos e códigos esquematizados atualizados!">
 <meta property="og:description" content="Material de estudo focado na aprovação: simulado, cronograma de estudos, gabarito, caderno de questões comentadas, mapas mentais e resumos para Concurso TJ, TRF, MP, Delegado e Exame da OAB Segunda Fase. Download de jurisprudência atualizada STF e STJ, informativos resumidos e Vade Mecum in PDF grátis.">
@@ -159,7 +159,7 @@
             background: linear-gradient(135deg, #1a252f 0%, #2c3e50 100%);
             border-radius: 4px 4px 0 0;
             padding: 8px 10px 7px;
-            margin: -17px -17px 10px -17px; /* -15px padding + -2px borda card-destaque */
+            margin: -17px -17px 10px -17px;
             text-align: center;
         }
         .urgencia-label {
@@ -184,7 +184,7 @@
             border-radius: 4px;
         }
         @media (max-width: 600px) {
-            .urgencia-box { margin: -12px -12px 8px -12px; border-radius: 4px 4px 0 0; } /* -10px padding + -2px borda */
+            .urgencia-box { margin: -12px -12px 8px -12px; border-radius: 4px 4px 0 0; }
             .urgencia-timer { font-size: 1.05em; letter-spacing: 2px; }
         }
 
@@ -351,6 +351,167 @@
                 padding: 8px 12px;
             }
         }
+
+        /* ── Modal de Upsell (Oferta Lado a Lado) ── */
+        .upsell-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.88);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            padding: 15px;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+        .upsell-container {
+            width: 100%;
+            max-width: 780px;
+            text-align: center;
+            animation: upsellFadeIn 0.25s ease-out;
+            margin: auto;
+        }
+        @keyframes upsellFadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .upsell-header-texto {
+            color: #ffffff;
+            margin-bottom: 18px;
+        }
+        .upsell-header-texto h2 {
+            margin: 0 0 5px;
+            color: #f1c40f;
+            font-size: 1.5em;
+        }
+        .upsell-header-texto p {
+            margin: 0;
+            font-size: 0.95em;
+            color: #ecf0f1;
+        }
+        .upsell-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.12fr;
+            gap: 18px;
+            align-items: stretch;
+        }
+        .upsell-card {
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 18px 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        }
+        .upsell-card-atual {
+            border: 2px solid #bdc3c7;
+            opacity: 0.96;
+        }
+        .upsell-card-combo {
+            border: 3px solid #f1c40f;
+            box-shadow: 0 0 25px rgba(241, 196, 15, 0.45);
+        }
+        .upsell-badge-escolha {
+            background: #7f8c8d;
+            color: white;
+            font-size: 0.72em;
+            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 0 auto 10px;
+            text-transform: uppercase;
+        }
+        .upsell-badge-melhor {
+            background: linear-gradient(135deg, #f39c12, #e74c3c);
+            color: #fff;
+            font-size: 0.78em;
+            font-weight: 800;
+            padding: 5px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 0 auto 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.4);
+        }
+        .upsell-card img {
+            width: 110px;
+            height: auto;
+            margin: 0 auto 10px;
+            border-radius: 6px;
+        }
+        .upsell-card h3 {
+            font-size: 1.05em;
+            margin: 5px 0 10px;
+            color: #1a252f;
+        }
+        .upsell-btn-secundario {
+            background: #7f8c8d;
+            color: #fff;
+            padding: 11px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.88em;
+            display: block;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+        .upsell-btn-secundario:hover {
+            background: #636e72;
+        }
+        .upsell-btn-destaque {
+            background: #27ae60;
+            color: #fff;
+            padding: 13px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 0.95em;
+            display: block;
+            margin-top: 10px;
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
+            transition: transform 0.15s, background 0.2s;
+        }
+        .upsell-btn-destaque:hover {
+            background: #219150;
+            transform: translateY(-1px);
+        }
+        .btn-voltar-site {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.45);
+            color: #ecf0f1;
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 22px;
+            transition: all 0.2s;
+        }
+        .btn-voltar-site:hover {
+            background: rgba(255,255,255,0.15);
+            border-color: #fff;
+            color: #fff;
+        }
+
+        @media (max-width: 650px) {
+            .upsell-grid {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+            .upsell-card-combo {
+                order: -1;
+            }
+            .upsell-header-texto h2 { font-size: 1.25em; }
+            .upsell-card img { width: 85px; }
+        }
     </style>
 </head>
 <body>
@@ -399,8 +560,44 @@
             </div>
 
         </div><div class="divisor-materiais"><span>Mais Materiais</span></div>
-
         <div class="grid-produtos">
+
+            <div class="card">
+                <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">COMBO 🔥</div>
+                <img src="RL+PT+INF.png" alt="Combo Triplo: Português, Informática e Raciocínio Lógico">
+                <h3>Combo Triplo:<br>Português <br>+<br> Informática <br>+<br> Raciocínio Lógico</h3>
+                <ul class="mini-beneficios">
+                    <li>✅ Acesso Vitalício</li>
+                    <li>✅ Atualizações gratuitas</li>
+                    <li>✅ Acesso imediato</li>
+                </ul>
+                <div>
+                    <span class="preco-antigo">R$ 60,00</span>
+                    <span class="preco-novo">R$ 39,99</span>
+                    <button class="btn-detalhes" data-id="ComboTriplo">Detalhes</button>
+                    <a href="https://pay.hotmart.com/H108332508L" target="_blank" class="btn-comprar" data-id="COMBOTRIPLO">Comprar</a>
+                    <a href="FocoLegis%20-%20AMOSTRA%20-%20RL.pdf" target="_blank" class="btn-amostra" data-id="COMBOTRIPLO">Amostra</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">COMBO 🔥</div>
+                <img src="COMBOPENAL.png" alt="Combo CP e CPP">
+                <h3>Código Penal + Processo Penal</h3>
+                <ul class="mini-beneficios">
+                    <li>✅ Acesso Vitalício</li>
+                    <li>✅ Atualizações gratuitas</li>
+                    <li>✅ Acesso imediato</li>
+                </ul>
+                <div>
+                    <span class="preco-antigo">R$ 39,98</span>
+                    <span class="preco-novo">R$ 29,99</span>
+                    <button class="btn-detalhes" data-id="ComboPenal">Detalhes</button>
+                    <a href="https://pay.hotmart.com/F105957304E?checkoutMode=10" target="_blank" class="btn-comprar" data-id="COMBOPENAL">Comprar</a>
+                    <a href="https://www.focolegis.com/FocoLegis%20-%20AMOSTRA%20-%20Direito%20Penal.pdf" target="_blank" class="btn-amostra" data-id="COMBOPENAL">Amostra</a>
+                </div>
+            </div>
+
             <div class="card">
                 <div style="background:#8e44ad; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">NOVIDADE ⚡</div>
                 <img src="PORTUGUES.png" alt="Português para Concursos">
@@ -418,8 +615,6 @@
                 </div>
             </div>
 
-
-            <!-- NOVOS MATERIAIS: BOXES INDIVIDUAIS E COMBO TRIPLO -->
             <div class="card">
                 <div style="background:#8e44ad; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">NOVIDADE ⚡</div>
                 <img src="CAPA INFORMÁTICA.png" alt="Informática para Concursos">
@@ -451,42 +646,6 @@
                     <button class="btn-detalhes" data-id="RaciocinioLogico">Detalhes</button>
                     <a href="https://pay.hotmart.com/B108331981F" target="_blank" class="btn-comprar" data-id="RACIOCINIOLOGICO">Comprar</a>
                     <a href="FocoLegis%20-%20AMOSTRA%20-%20RL.pdf" target="_blank" class="btn-amostra" data-id="RACIOCINIOLOGICO">Amostra</a>
-                </div>
-            </div>
-
-            <div class="card">
-                <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">COMBO 🔥</div>
-                <img src="RL+PT+INF.png" alt="Combo Triplo: Português, Informática e Raciocínio Lógico">
-                <h3>Combo Triplo</h3>
-                <ul class="mini-beneficios">
-                    <li>✅ Português + Informática + RL</li>
-                    <li>✅ Acesso Vitalício</li>
-                    <li>✅ Atualizações gratuitas</li>
-                    <li>✅ Acesso imediato</li>
-                </ul>
-                <div>
-                    <span class="preco-novo">R$ 39,99</span>
-                    <button class="btn-detalhes" data-id="ComboTriplo">Detalhes</button>
-                    <a href="https://pay.hotmart.com/H108332508L" target="_blank" class="btn-comprar" data-id="COMBOTRIPLO">Comprar</a>
-                    <a href="FocoLegis%20-%20AMOSTRA%20-%20RL.pdf" target="_blank" class="btn-amostra" data-id="COMBOTRIPLO">Amostra</a>
-                </div>
-            </div>
-
-            <div class="card">
-                <div style="background:#e74c3c; color:white; padding:3px; border-radius:4px; font-size:0.7em; font-weight:bold; margin-bottom:10px;">COMBO 🔥</div>
-                <img src="COMBOPENAL.png" alt="Combo CP e CPP">
-                <h3>Código Penal + Processo Penal</h3>
-                <ul class="mini-beneficios">
-                    <li>✅ Acesso Vitalício</li>
-                    <li>✅ Atualizações gratuitas</li>
-                    <li>✅ Acesso imediato</li>
-                </ul>
-                <div>
-                    <span class="preco-antigo">R$ 39,98</span>
-                    <span class="preco-novo">R$ 29,99</span>
-                    <button class="btn-detalhes" data-id="ComboPenal">Detalhes</button>
-                    <a href="https://pay.hotmart.com/F105957304E?checkoutMode=10" target="_blank" class="btn-comprar" data-id="COMBOPENAL">Comprar</a>
-                    <a href="https://www.focolegis.com/FocoLegis%20-%20AMOSTRA%20-%20Direito%20Penal.pdf" target="_blank" class="btn-amostra" data-id="COMBOPENAL">Amostra</a>
                 </div>
             </div>
 
@@ -554,7 +713,7 @@
                 <div>
                     <span class="preco-novo">R$ 19,99</span>
                     <button class="btn-detalhes" data-id="Administrativo">Detalhes</button>
-                    <a href="https://pay.hotmart.com/C107516077M" target="_blank" class="btn-comprar" data-id="ADMINISTRATIVO">Comprar</a>
+                    <a href="https://pay.hotmart.com/C107516077M?checkoutMode=10" target="_blank" class="btn-comprar" data-id="ADMINISTRATIVO">Comprar</a>
                     <a href="https://www.focolegis.com/FocoLegis%20-%20AMOSTRA%20-%20Direito%20Administrativo.pdf" target="_blank" class="btn-amostra" data-id="ADMINISTRATIVO">Amostra</a>
                 </div>
             </div>
@@ -706,7 +865,7 @@
                 <br><br>
                 Estamos constantemente expandindo nosso catálogo de códigos esquematizados e apostilas em PDF para atender novos editais.
                 <br><br>
-                Entre em contato conosco pelo <strong>WhatsApp de atendimento</strong> e envie a sua sugerão de conteúdo para a Ordem dos Advogados do Brasil (OAB) ou concursos públicos jurídicos.
+                Entre em contato conosco pelo <strong>WhatsApp de atendimento</strong> e envie a sua sugestão de conteúdo para a Ordem dos Advogados do Brasil (OAB) ou concursos públicos jurídicos.
             </p>
         </div>
     </div>
@@ -730,6 +889,54 @@
             <h3 id="detalhes-titulo" style="text-align: center; margin-top: 0; color: #1a252f; font-size: 1.3em; font-weight: bold; border-bottom: 2px solid #f4f7f6; padding-bottom: 10px;">Detalhes do Produto</h3>
             <div id="detalhes-corpo" style="margin: 20px 0;"></div>
             <button class="btn-fechar-modal" onclick="fecharModal('modal-detalhes')">Fechar Detalhes</button>
+        </div>
+    </div>
+
+    <!-- MODAL DE UPSELL (OFERTA ESPECIAL ANTES DO CHECKOUT) -->
+    <div class="upsell-overlay" id="modal-upsell">
+        <div class="upsell-container">
+            <div class="upsell-header-texto">
+                <h2>⚠️ Espere! Veja essa oportunidade antes de finalizar</h2>
+                <p>Leve todas as matérias principais por apenas uma pequena diferença:</p>
+            </div>
+
+            <div class="upsell-grid">
+                <!-- Lado Esquerdo: Produto que o usuário clicou -->
+                <div class="upsell-card upsell-card-atual">
+                    <div>
+                        <span class="upsell-badge-escolha">Sua escolha atual</span>
+                        <img id="upsell-atual-img" src="" alt="Produto Escolhido">
+                        <h3 id="upsell-atual-titulo">Nome do Produto</h3>
+                        <p style="font-size: 0.8em; color: #666; margin: 5px 0;">Apenas 1 material avulso</p>
+                    </div>
+                    <div>
+                        <span class="preco-novo" id="upsell-atual-preco" style="color: #555; font-size: 1.2em;">R$ 19,99</span>
+                        <a href="#" target="_blank" id="upsell-atual-link" class="upsell-btn-secundario">Continuar só com este</a>
+                    </div>
+                </div>
+
+                <!-- Lado Direito: Combo Principais OAB e Concursos -->
+                <div class="upsell-card upsell-card-combo">
+                    <div>
+                        <span class="upsell-badge-melhor">🏆 MELHOR CUSTO-BENEFÍCIO</span>
+                        <img src="COMBOOAB.png" alt="Combo Principais OAB e Concursos">
+                        <h3>Combo Principais OAB e Concursos (9 Matérias)</h3>
+                        <ul class="mini-beneficios" style="font-size: 0.75em; margin: 6px auto;">
+                            <li>✅ <strong>9 Códigos Completos</strong> (CP, CPP, CF, CC, CPC, CTN, CLT, Ética e Adm)</li>
+                            <li>✅ Economia de mais de <strong>R$ 120,00</strong></li>
+                            <li>✅ Acesso Vitalício + Atualizações Gratuitas</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <span class="preco-antigo">R$ 179,91</span>
+                        <span class="preco-novo" style="font-size: 1.6em; margin-bottom: 2px;">R$ 59,99</span>
+                        <span style="display:block; font-size: 0.78em; color: #555; margin-bottom: 6px;">ou 12x de R$ 6,20</span>
+                        <a href="https://pay.hotmart.com/F106332914S?checkoutMode=10" target="_blank" id="upsell-combo-link" class="upsell-btn-destaque">QUERO O COMBO COMPLETO 🔥</a>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-voltar-site" onclick="fecharUpsell()">← Voltar ao site</button>
         </div>
     </div>
 
@@ -986,7 +1193,6 @@
         var search = window.location.search;
         var ua     = navigator.userAgent.toLowerCase();
 
-        // 0. ?ref= — parâmetro manual, maior prioridade
         var refParam = new URLSearchParams(search).get('ref');
         if (refParam) return '?utm_source=' + encodeURIComponent(refParam) + '&utm_medium=ref';
 
@@ -1075,22 +1281,17 @@
 
         var fallbackTimer = setTimeout(enviarPageView, TIMEOUT_GEO);
 
-        // Cascata de 4 APIs — todas com CORS liberado e sem chave obrigatória
-        // Ordem: ipinfo.io (50k/mês) → icanhazip+ipapi.co → freeipapi → sem geo
         var apis = [
             {
-                // ipinfo.io — 50.000 req/mês grátis, retorna IPv4 e cidade direto
                 url: 'https://ipinfo.io/json',
                 parse: function(d) { return { ip: d.ip, estado: d.region, cidade: d.city }; },
                 ok:    function(d) { return d && d.ip && d.ip.indexOf(':') === -1; }
             },
             {
-                // icanhazip — pega só o IPv4 puro, depois busca geo no ipapi.co
                 url: 'https://ipv4.icanhazip.com',
                 raw: true
             },
             {
-                // freeipapi — 60 req/min grátis, parâmetro ipv=4 força IPv4
                 url: 'https://freeipapi.com/api/json?ipv=4',
                 parse: function(d) { return { ip: d.ipAddress, estado: d.regionName, cidade: d.cityName }; },
                 ok:    function(d) { return d && d.ipAddress && d.ipAddress.indexOf(':') === -1; }
@@ -1103,7 +1304,6 @@
             if (idx >= apis.length) { enviarPageView(); return; }
             var api = apis[idx++];
 
-            // icanhazip retorna texto puro (só o IP), depois busca geo separado
             if (api.raw) {
                 fetch(api.url)
                     .then(function(r) { return r.text(); })
@@ -1145,7 +1345,6 @@
     })();
 
     document.addEventListener('DOMContentLoaded', function() {
-        // Mostra o balão "Dúvidas? Me chame!" automaticamente após 3s
         var wppBtn = document.getElementById('wpp-float-btn');
         if (wppBtn) {
             wppBtn.addEventListener('click', function() {
@@ -1158,19 +1357,16 @@
             }, 3000);
         }
 
-
         // ── Contador de urgência do Combo OAB ──
         (function() {
             var el = document.getElementById('timer-combo-oab');
             if (!el) return;
 
             var STORAGE_KEY = 'focolegis_timer_v2';
-            // Tempo inicial: 4h 42min 17s em milissegundos
             var INICIO_MS = (4 * 3600 + 42 * 60 + 17) * 1000;
 
             var expiry = localStorage.getItem(STORAGE_KEY);
             if (!expiry || Date.now() > parseInt(expiry, 10)) {
-                // Primeira visita ou expirou: começa do tempo inicial
                 expiry = Date.now() + INICIO_MS;
                 localStorage.setItem(STORAGE_KEY, expiry);
             }
@@ -1179,7 +1375,6 @@
             function atualizar() {
                 var diff = expiry - Date.now();
                 if (diff <= 0) {
-                    // Quando zera, reinicia do tempo inicial para manter urgência
                     expiry = Date.now() + INICIO_MS;
                     localStorage.setItem(STORAGE_KEY, expiry);
                     diff = INICIO_MS;
@@ -1265,13 +1460,57 @@
             });
         });
 
+        // ── Controle do Modal de Upsell ──
+        window.fecharUpsell = function() {
+            document.getElementById('modal-upsell').style.display = 'none';
+            document.body.classList.remove('modal-aberto');
+        };
+
+        document.getElementById('modal-upsell').addEventListener('click', function(e) {
+            if (e.target === this) fecharUpsell();
+        });
+
+        document.getElementById('upsell-atual-link').addEventListener('click', function() {
+            var id = this.getAttribute('data-id');
+            enviarParaPlanilha({ type: 'checkout_upsell_recusado', produto: id });
+        });
+
+        document.getElementById('upsell-combo-link').addEventListener('click', function() {
+            enviarParaPlanilha({ type: 'checkout_upsell_aceito', produto: 'COMBOOAB' });
+            if (typeof fbq === 'function') {
+                fbq('track', 'InitiateCheckout', { content_name: 'COMBOOAB_UPSELL' });
+            }
+        });
+
         document.querySelectorAll('.btn-comprar, .btn-amostra').forEach(function(b) {
-            b.addEventListener('click', function() {
+            b.addEventListener('click', function(e) {
                 var id   = b.getAttribute('data-id');
                 var tipo = b.classList.contains('btn-comprar') ? 'checkout' : 'amostra';
                 enviarParaPlanilha({ type: tipo, produto: id });
                 if (typeof fbq === 'function') {
                     fbq('track', tipo === 'checkout' ? 'InitiateCheckout' : 'ViewContent', { content_name: id });
+                }
+
+                // Intercepta checkout de qualquer produto que NÃO seja COMBOOAB
+                if (tipo === 'checkout' && id !== 'COMBOOAB') {
+                    e.preventDefault();
+
+                    var card = b.closest('.card');
+                    var imgSrc = card.querySelector('img').getAttribute('src');
+                    var titulo = card.querySelector('h3').innerText.replace(/\n/g, ' ');
+                    var preco  = card.querySelector('.preco-novo').innerText;
+                    var linkCheckout = b.getAttribute('href');
+
+                    document.getElementById('upsell-atual-img').setAttribute('src', imgSrc);
+                    document.getElementById('upsell-atual-titulo').innerText = titulo;
+                    document.getElementById('upsell-atual-preco').innerText = preco;
+
+                    var btnContinuar = document.getElementById('upsell-atual-link');
+                    btnContinuar.setAttribute('href', linkCheckout);
+                    btnContinuar.setAttribute('data-id', id);
+
+                    document.getElementById('modal-upsell').style.display = 'flex';
+                    document.body.classList.add('modal-aberto');
                 }
             });
         });
@@ -1356,7 +1595,6 @@
             }, 500);
         }
 
-        // Aparece pela primeira vez após 5s
         setTimeout(function() {
             if (fechado) return;
             var d = depoimentos[idx];
@@ -1369,10 +1607,8 @@
             }, 5000);
         }, 5000);
 
-        // Rotaciona a cada 12s
         setInterval(mostrarProximo, 12000);
 
-        // Botão fechar
         btnFech.addEventListener('click', function() {
             fechado = true;
             popup.classList.remove('visivel');
