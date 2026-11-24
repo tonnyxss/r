@@ -14,20 +14,36 @@
     fbq('init', '1974259026792087');
     </script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+        html {
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+            color: #333;
+            font-size: 14px;
+            overflow-x: hidden;
+        }
         /* Trava scroll do fundo quando qualquer modal está aberto */
         body.modal-aberto { overflow: hidden; touch-action: none; }
-        header { background-color: #1a252f; color: #ffffff; text-align: center; padding: 40px 20px; }
-        header h1 { margin: 0; font-size: 2.2em; color: #f1c40f; }
-        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; display: flex; flex-direction: column; align-items: center; }
+
+        header { background-color: #1a252f; color: #ffffff; text-align: center; padding: 26px 16px; }
+        header h1 { margin: 0; font-size: 1.75em; color: #f1c40f; line-height: 1.2; }
+        header p { margin: 6px 0 0; font-size: 0.92em; color: #ecf0f1; }
+
+        .container { max-width: 1120px; margin: 24px auto; padding: 0 14px; display: flex; flex-direction: column; align-items: center; box-sizing: border-box; }
         
         /* Grid principal (os 2 primeiros — sempre 2 colunas) */
         .grid-principal {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
             width: 100%;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
 
         /* Divisor MAIS MATERIAIS */
@@ -36,11 +52,11 @@
             align-items: center;
             text-align: center;
             color: #999;
-            font-size: 0.75em;
+            font-size: 0.7em;
             font-weight: 700;
             letter-spacing: 1px;
             text-transform: uppercase;
-            margin: 20px 0 15px;
+            margin: 16px 0 12px;
             width: 100%;
         }
         .divisor-materiais::before,
@@ -50,75 +66,78 @@
             border-top: 1px solid #ddd;
         }
         .divisor-materiais span {
-            padding: 0 14px;
+            padding: 0 12px;
         }
 
         /* Grid secundário (demais produtos) */
         .grid-produtos { 
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
-            gap: 15px; 
+            gap: 12px; 
             width: 100%;
         }
 
         .card { 
             background-color: #ffffff; 
             border-radius: 8px; 
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
-            padding: 15px; 
+            box-shadow: 0 3px 7px rgba(0,0,0,0.09); 
+            padding: 12px; 
             text-align: center; 
             display: flex; 
             flex-direction: column; 
             justify-content: space-between;
-            min-height: 380px; 
-            transition: all 0.3s ease;
+            min-height: 330px; 
+            transition: all 0.25s ease;
+            min-width: 0;
+            box-sizing: border-box;
         }
 
-        .card img { width: 100%; max-width: 140px; height: auto; margin: 0 auto 10px auto; object-fit: cover; border-radius: 8px; }
-        .card h3 { font-size: 1.1em; margin: 10px 0; }
+        .card img { width: 100%; max-width: 112px; height: auto; margin: 0 auto 8px auto; object-fit: cover; border-radius: 6px; }
+        .card h3 { font-size: 0.96em; margin: 6px 0; line-height: 1.25; }
         
-        .mini-beneficios { list-style: none; padding: 0; margin: 4px 0 8px 0; font-size: 0.68em; color: #444; text-align: left; display: inline-block; font-weight: 600; }
-        .mini-beneficios li { margin-bottom: 2px; line-height: 1.25; white-space: nowrap; }
+        .mini-beneficios { list-style: none; padding: 0; margin: 3px 0 6px 0; font-size: 0.64em; color: #444; text-align: left; display: inline-block; font-weight: 600; }
+        .mini-beneficios li { margin-bottom: 2px; line-height: 1.2; white-space: nowrap; }
 
-        .preco-antigo { color: #e74c3c; text-decoration: line-through; font-size: 0.9em; font-weight: bold; margin-bottom: 2px; display: block; }
-        .preco-novo { color: #27ae60; font-size: 1.3em; font-weight: bold; margin-bottom: 10px; display: block; }
+        .preco-antigo { color: #e74c3c; text-decoration: line-through; font-size: 0.8em; font-weight: bold; margin-bottom: 1px; display: block; }
+        .preco-novo { color: #27ae60; font-size: 1.15em; font-weight: bold; margin-bottom: 8px; display: block; }
+        .preco-parcelado { font-size: 0.72em; color: #666; display: block; margin-bottom: 4px; }
         
-        .btn-comprar { background-color: #27ae60; color: white; padding: 10px; border-radius: 5px; text-decoration: none; font-weight: bold; margin-top: 5px; display: block; border: none; cursor: pointer; font-size: 0.9em; text-align: center; box-sizing: border-box; }
-        .btn-amostra { border: 2px solid #34495e; color: #34495e; padding: 8px; border-radius: 5px; text-decoration: none; font-weight: bold; display: block; margin-top: 5px; cursor: pointer; font-size: 0.85em; text-align: center; box-sizing: border-box; }
-        .btn-detalhes { background-color: #7f8c8d; color: white; padding: 10px; border-radius: 5px; text-decoration: none; font-weight: bold; display: block; margin-top: 5px; cursor: pointer; font-size: 0.9em; border: none; text-align: center; width: 100%; box-sizing: border-box; }
+        .btn-comprar { background-color: #27ae60; color: white; padding: 8px; border-radius: 5px; text-decoration: none; font-weight: bold; margin-top: 4px; display: block; border: none; cursor: pointer; font-size: 0.82em; text-align: center; box-sizing: border-box; }
+        .btn-amostra { border: 1.5px solid #34495e; color: #34495e; padding: 6px; border-radius: 5px; text-decoration: none; font-weight: bold; display: block; margin-top: 4px; cursor: pointer; font-size: 0.78em; text-align: center; box-sizing: border-box; }
+        .btn-detalhes { background-color: #7f8c8d; color: white; padding: 8px; border-radius: 5px; text-decoration: none; font-weight: bold; display: block; margin-top: 4px; cursor: pointer; font-size: 0.82em; border: none; text-align: center; width: 100%; box-sizing: border-box; }
         
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 2000; }
-        .modal-content { background: white; padding: 30px; border-radius: 10px; text-align: center; width: 90%; max-width: 400px; position: relative; box-sizing: border-box; max-height: 90vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
-        .btn-download { background-color: #27ae60; color: white; padding: 12px; border-radius: 5px; width: 100%; border: none; cursor: pointer; font-weight: bold; text-decoration: none; display: block; margin-top: 10px; box-sizing: border-box; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; height: 100dvh; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 12px; box-sizing: border-box; }
+        .modal-content { background: white; padding: 22px; border-radius: 10px; text-align: center; width: 92%; max-width: 400px; position: relative; box-sizing: border-box; max-height: 88dvh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        .btn-download { background-color: #27ae60; color: white; padding: 10px; border-radius: 5px; width: 100%; border: none; cursor: pointer; font-weight: bold; text-decoration: none; display: block; margin-top: 8px; box-sizing: border-box; font-size: 0.88em; }
         .btn-download.disabled { background-color: #ccc !important; cursor: not-allowed; }
-        .btn-fechar-modal { background: #e74c3c; color: white; border: none; padding: 10px 25px; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 15px; font-size: 0.95em; width: 100%; display: block; box-sizing: border-box; }
+        .btn-fechar-modal { background: #e74c3c; color: white; border: none; padding: 9px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 12px; font-size: 0.88em; width: 100%; display: block; box-sizing: border-box; }
 
-        .info-block { background: #f8f9fa; border-left: 3px solid #7f8c8d; padding: 10px 12px; margin-bottom: 10px; border-radius: 0 6px 6px 0; }
-        .info-block-title { font-weight: bold; color: #1a252f; font-size: 0.95em; margin-bottom: 3px; display: block; }
-        .info-block-text { color: #555; font-size: 0.9em; margin: 0; display: block; }
+        .info-block { background: #f8f9fa; border-left: 3px solid #7f8c8d; padding: 8px 10px; margin-bottom: 8px; border-radius: 0 6px 6px 0; }
+        .info-block-title { font-weight: bold; color: #1a252f; font-size: 0.88em; margin-bottom: 2px; display: block; }
+        .info-block-text { color: #555; font-size: 0.82em; margin: 0; display: block; }
         
-        .content-list { margin: 5px 0 5px 15px; padding: 0; list-style-type: square; color: #555; font-size: 0.9em; }
-        .content-list li { margin-bottom: 3px; }
+        .content-list { margin: 4px 0 4px 14px; padding: 0; list-style-type: square; color: #555; font-size: 0.82em; }
+        .content-list li { margin-bottom: 2px; }
 
-        .faq-section { max-width: 900px; margin: 50px auto; padding: 0 20px; }
-        .faq-title { text-align: center; color: #1a252f; font-size: 1.8em; margin-bottom: 30px; }
-        .faq-item { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); margin-bottom: 15px; }
-        .faq-item h3 { font-size: 1.1em; color: #2c3e50; margin-top: 0; margin-bottom: 10px; }
-        .faq-item p { font-size: 0.9em; color: #555; line-height: 1.6; margin: 0; }
+        .faq-section { max-width: 860px; margin: 34px auto; padding: 0 14px; box-sizing: border-box; }
+        .faq-title { text-align: center; color: #1a252f; font-size: 1.4em; margin-bottom: 20px; }
+        .faq-item { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 3px 7px rgba(0,0,0,0.05); margin-bottom: 12px; }
+        .faq-item h3 { font-size: 1em; color: #2c3e50; margin-top: 0; margin-bottom: 8px; }
+        .faq-item p { font-size: 0.84em; color: #555; line-height: 1.5; margin: 0; }
 
         /* ── Card especial Combo OAB — neon vermelho pulsante ── */
         @keyframes neon-respirar {
             0%, 100% {
                 box-shadow:
-                    0 0 6px 1px rgba(231,76,60,0.6),
-                    0 0 14px 3px rgba(231,76,60,0.35),
-                    0 0 28px 6px rgba(231,76,60,0.15);
+                    0 0 5px 1px rgba(231,76,60,0.55),
+                    0 0 12px 2px rgba(231,76,60,0.3),
+                    0 0 22px 5px rgba(231,76,60,0.12);
             }
             50% {
                 box-shadow:
-                    0 0 10px 3px rgba(231,76,60,0.95),
-                    0 0 24px 7px rgba(231,76,60,0.6),
-                    0 0 48px 12px rgba(231,76,60,0.3);
+                    0 0 8px 2px rgba(231,76,60,0.9),
+                    0 0 20px 6px rgba(231,76,60,0.55),
+                    0 0 38px 10px rgba(231,76,60,0.25);
             }
         }
         .card-destaque {
@@ -136,13 +155,13 @@
                 display: block;
                 background: #e74c3c;
                 color: white;
-                font-size: 0.6em;
+                font-size: 0.56em;
                 font-weight: 800;
                 text-transform: uppercase;
                 letter-spacing: 0.5px;
-                padding: 2px 7px;
+                padding: 2px 6px;
                 border-radius: 20px;
-                margin-bottom: 4px;
+                margin-bottom: 3px;
                 animation: pulsar 1.8s ease-in-out infinite;
                 width: fit-content;
                 margin-left: auto;
@@ -150,7 +169,7 @@
             }
             @keyframes pulsar {
                 0%, 100% { transform: scale(1); opacity: 1; }
-                50%       { transform: scale(1.07); opacity: 0.85; }
+                50%       { transform: scale(1.06); opacity: 0.85; }
             }
         }
 
@@ -158,41 +177,41 @@
         .urgencia-box {
             background: linear-gradient(135deg, #1a252f 0%, #2c3e50 100%);
             border-radius: 4px 4px 0 0;
-            padding: 8px 10px 7px;
-            margin: -17px -17px 10px -17px; /* -15px padding + -2px borda card-destaque */
+            padding: 6px 8px;
+            margin: -14px -14px 8px -14px;
             text-align: center;
         }
         .urgencia-label {
             color: #f1c40f;
-            font-size: 0.62em;
+            font-size: 0.58em;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.8px;
+            letter-spacing: 0.7px;
             display: block;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
         }
         .urgencia-timer {
             color: #ffffff;
-            font-size: 1.2em;
+            font-size: 1em;
             font-weight: 800;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
             font-family: 'Courier New', monospace;
         }
         .urgencia-timer span {
             background: rgba(241,196,15,0.2);
-            padding: 2px 6px;
+            padding: 1px 5px;
             border-radius: 4px;
         }
         @media (max-width: 600px) {
-            .urgencia-box { margin: -12px -12px 8px -12px; border-radius: 4px 4px 0 0; } /* -10px padding + -2px borda */
-            .urgencia-timer { font-size: 1.05em; letter-spacing: 2px; }
+            .urgencia-box { margin: -10px -10px 6px -10px; border-radius: 4px 4px 0 0; padding: 5px 6px; }
+            .urgencia-timer { font-size: 0.92em; letter-spacing: 1.5px; }
         }
 
         /* ── Botão WhatsApp Flutuante ── */
         .whatsapp-float {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            bottom: 16px;
+            right: 16px;
             z-index: 1000;
             display: flex;
             align-items: center;
@@ -203,9 +222,9 @@
         .whatsapp-float .wpp-balao {
             background: #fff;
             color: #1a252f;
-            font-size: 0.75em;
+            font-size: 0.72em;
             font-weight: 600;
-            padding: 6px 10px;
+            padding: 5px 9px;
             border-radius: 12px 12px 0 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.18);
             white-space: nowrap;
@@ -220,8 +239,8 @@
             transform: translateX(0);
         }
         .whatsapp-float .wpp-icone {
-            width: 48px;
-            height: 48px;
+            width: 42px;
+            height: 42px;
             background: #25d366;
             border-radius: 50%;
             display: flex;
@@ -232,60 +251,67 @@
             transition: transform 0.2s ease;
         }
         .whatsapp-float:hover .wpp-icone {
-            transform: scale(1.08);
+            transform: scale(1.06);
         }
         .whatsapp-float .wpp-icone svg {
-            width: 26px;
-            height: 26px;
+            width: 22px;
+            height: 22px;
             fill: #fff;
         }
 
         @media (max-width: 600px) {
-            .whatsapp-float { bottom: 14px; right: 14px; }
-            .whatsapp-float .wpp-icone { width: 44px; height: 44px; }
-            .whatsapp-float .wpp-icone svg { width: 23px; height: 23px; }
-            .whatsapp-float .wpp-balao { font-size: 0.7em; padding: 5px 8px; }
-        }
-
-        @media (max-width: 600px) {
-            header h1 { font-size: 1.6em; }
-            .container { margin: 20px auto; padding: 0 10px; }
-            .grid-principal { gap: 10px; }
-            .grid-produtos { gap: 10px; grid-template-columns: repeat(2, 1fr); }
-            .card { padding: 10px; min-height: 390px; }
-            .card h3 { font-size: 0.95em; margin: 6px 0; }
+            header { padding: 20px 12px; }
+            header h1 { font-size: 1.32em; }
+            header p { font-size: 0.8em; }
+            .container { margin: 14px auto; padding: 0 8px; }
+            .grid-principal { gap: 8px; }
+            .grid-produtos { gap: 8px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .card { padding: 9px; min-height: 330px; }
+            .card img { max-width: 88px; margin-bottom: 6px; }
+            .card h3 { font-size: 0.84em; margin: 4px 0; }
+            .mini-beneficios { font-size: 0.58em; margin: 2px 0 5px 0; }
+            .preco-antigo { font-size: 0.72em; }
+            .preco-novo { font-size: 1.02em; margin-bottom: 6px; }
+            .btn-comprar { padding: 7px 6px; font-size: 0.76em; }
+            .btn-amostra { padding: 5px 6px; font-size: 0.72em; }
+            .btn-detalhes { padding: 7px 6px; font-size: 0.76em; }
 
             /* Card 1 (Grátis) — borda azul sutil */
             .grid-principal .card:nth-child(1) {
                 border: 2px solid #3498db;
-                box-shadow: 0 6px 16px rgba(52,152,219,0.25);
+                box-shadow: 0 4px 12px rgba(52,152,219,0.22);
             }
 
             /* Card 2 (Combo OAB) — destaque dourado */
             .grid-principal .card:nth-child(2) {
-                box-shadow: 0 8px 24px rgba(241,196,15,0.35);
-                transform: translateY(-2px);
+                box-shadow: 0 6px 18px rgba(241,196,15,0.3);
+                transform: translateY(-1px);
             }
             .grid-principal .card:nth-child(2) img { max-width: 100%; }
-            .grid-principal .card:nth-child(2) h3 { font-size: 1em; font-weight: 800; color: #1a252f; }
-            .grid-principal .card:nth-child(2) .preco-novo { font-size: 1.4em; color: #27ae60; }
+            .grid-principal .card:nth-child(2) h3 { font-size: 0.88em; font-weight: 800; color: #1a252f; }
+            .grid-principal .card:nth-child(2) .preco-novo { font-size: 1.18em; color: #27ae60; }
+
+            .whatsapp-float { bottom: 12px; right: 12px; }
+            .whatsapp-float .wpp-icone { width: 40px; height: 40px; }
+            .whatsapp-float .wpp-icone svg { width: 20px; height: 20px; }
+            .whatsapp-float .wpp-balao { font-size: 0.66em; padding: 4px 7px; }
         }
 
         /* ── Popup de prova social ── */
         .social-proof {
             position: fixed;
-            bottom: 80px;
-            left: 16px;
+            bottom: 66px;
+            left: 12px;
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-            padding: 10px 14px;
-            max-width: 230px;
+            border-radius: 10px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.14);
+            padding: 8px 11px;
+            max-width: 210px;
             z-index: 999;
             display: flex;
             align-items: center;
-            gap: 10px;
-            transform: translateX(-260px);
+            gap: 8px;
+            transform: translateX(-250px);
             transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             border-left: 3px solid #27ae60;
         }
@@ -293,12 +319,12 @@
             transform: translateX(0);
         }
         .social-proof-avatar {
-            width: 38px;
-            height: 38px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             background: linear-gradient(135deg, #1a252f, #2c3e50);
             color: white;
-            font-size: 1em;
+            font-size: 0.88em;
             font-weight: bold;
             display: flex;
             align-items: center;
@@ -313,7 +339,7 @@
             margin-bottom: 1px;
         }
         .social-proof-nome {
-            font-size: 0.78em;
+            font-size: 0.72em;
             font-weight: 700;
             color: #1a252f;
             white-space: nowrap;
@@ -321,34 +347,273 @@
             text-overflow: ellipsis;
         }
         .social-proof-estrelas {
-            font-size: 0.7em;
+            font-size: 0.65em;
             color: #f1c40f;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
             flex-shrink: 0;
         }
         .social-proof-texto {
-            font-size: 0.72em;
+            font-size: 0.68em;
             color: #555;
-            line-height: 1.35;
+            line-height: 1.3;
         }
         .social-proof-fechar {
             position: absolute;
-            top: 5px;
-            right: 7px;
+            top: 4px;
+            right: 6px;
             background: none;
             border: none;
             color: #aaa;
-            font-size: 0.75em;
+            font-size: 0.7em;
             cursor: pointer;
             line-height: 1;
             padding: 0;
         }
         @media (max-width: 600px) {
             .social-proof {
-                bottom: 70px;
-                left: 10px;
-                max-width: 200px;
-                padding: 8px 12px;
+                bottom: 58px;
+                left: 8px;
+                max-width: 185px;
+                padding: 7px 9px;
+            }
+        }
+
+        /* ── Modal de Upsell (Oferta Lado a Lado — Compacto e Centralizado) ── */
+        .upsell-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            height: 100dvh;
+            background: rgba(0, 0, 0, 0.88);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            padding: 10px 10px 18px 10px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .upsell-container {
+            width: 100%;
+            max-width: 620px;
+            max-height: 92dvh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            text-align: center;
+            animation: upsellFadeIn 0.22s ease-out;
+            margin: auto;
+            padding: 4px 2px;
+            box-sizing: border-box;
+        }
+        @keyframes upsellFadeIn {
+            from { opacity: 0; transform: scale(0.96); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .upsell-header-texto {
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+        .upsell-header-texto h2 {
+            margin: 0 0 3px;
+            color: #f1c40f;
+            font-size: 1.05em;
+            line-height: 1.25;
+        }
+        .upsell-header-texto p {
+            margin: 0;
+            font-size: 0.78em;
+            color: #ecf0f1;
+            line-height: 1.3;
+        }
+        .upsell-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            align-items: stretch;
+        }
+        .upsell-card {
+            background: #ffffff;
+            border-radius: 9px;
+            padding: 11px 9px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+            min-width: 0;
+            box-sizing: border-box;
+        }
+        .upsell-card-atual {
+            border: 1.5px solid #bdc3c7;
+            opacity: 0.96;
+        }
+        .upsell-card-combo {
+            border: 2.5px solid #f1c40f;
+            box-shadow: 0 0 18px rgba(241, 196, 15, 0.35);
+        }
+        .upsell-urgencia-box {
+            background: linear-gradient(135deg, #1a252f 0%, #2c3e50 100%);
+            border-radius: 6px 6px 0 0;
+            padding: 4px 6px;
+            margin: -11px -9px 7px -9px;
+            text-align: center;
+        }
+        .upsell-urgencia-label {
+            color: #f1c40f;
+            font-size: 0.54em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
+            margin-bottom: 1px;
+        }
+        .upsell-urgencia-timer {
+            color: #ffffff;
+            font-size: 0.84em;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            font-family: 'Courier New', monospace;
+        }
+        .upsell-urgencia-timer span {
+            background: rgba(241,196,15,0.2);
+            padding: 1px 4px;
+            border-radius: 3px;
+        }
+        .upsell-badge-escolha {
+            background: #7f8c8d;
+            color: white;
+            font-size: 0.6em;
+            font-weight: bold;
+            padding: 2px 7px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 0 auto 6px;
+            text-transform: uppercase;
+        }
+        .upsell-badge-melhor {
+            background: linear-gradient(135deg, #f39c12, #e74c3c);
+            color: #fff;
+            font-size: 0.62em;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 0 auto 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            box-shadow: 0 2px 6px rgba(231, 76, 60, 0.35);
+        }
+        .upsell-card img {
+            width: 100%;
+            max-width: 72px;
+            height: auto;
+            margin: 0 auto 6px;
+            border-radius: 5px;
+        }
+        .upsell-card h3 {
+            font-size: 0.84em;
+            margin: 3px 0 6px;
+            color: #1a252f;
+            line-height: 1.2;
+        }
+        .upsell-card .mini-beneficios {
+            font-size: 0.58em;
+            margin: 2px auto 5px;
+        }
+        .upsell-card .mini-beneficios li {
+            white-space: normal;
+            line-height: 1.25;
+            margin-bottom: 2px;
+        }
+        .upsell-btn-secundario {
+            background: #7f8c8d;
+            color: #fff;
+            padding: 7px 6px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.72em;
+            display: block;
+            margin-top: 6px;
+            transition: background 0.2s;
+            line-height: 1.2;
+        }
+        .upsell-btn-secundario:hover {
+            background: #636e72;
+        }
+        .upsell-btn-destaque {
+            background: #27ae60;
+            color: #fff;
+            padding: 8px 6px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 0.76em;
+            display: block;
+            margin-top: 6px;
+            box-shadow: 0 3px 10px rgba(39, 174, 96, 0.35);
+            transition: transform 0.15s, background 0.2s;
+            line-height: 1.2;
+        }
+        .upsell-btn-destaque:hover {
+            background: #219150;
+            transform: translateY(-1px);
+        }
+        .btn-voltar-site {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.5);
+            color: #ffffff;
+            padding: 7px 18px;
+            border-radius: 6px;
+            font-size: 0.78em;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.2s;
+        }
+        .btn-voltar-site:hover {
+            background: rgba(255,255,255,0.2);
+            border-color: #fff;
+        }
+
+        @media (max-width: 520px) {
+            .upsell-container {
+                max-width: 390px;
+            }
+            .upsell-grid {
+                gap: 7px;
+            }
+            .upsell-card {
+                padding: 9px 7px;
+            }
+            .upsell-urgencia-box {
+                margin: -9px -7px 6px -7px;
+                padding: 4px 4px;
+            }
+            .upsell-urgencia-timer {
+                font-size: 0.76em;
+                letter-spacing: 1px;
+            }
+            .upsell-card img {
+                max-width: 58px;
+            }
+            .upsell-card h3 {
+                font-size: 0.76em;
+            }
+            .upsell-card .preco-antigo {
+                font-size: 0.68em;
+            }
+            .upsell-card .preco-novo {
+                font-size: 0.98em !important;
+                margin-bottom: 3px !important;
+            }
+            .upsell-btn-secundario,
+            .upsell-btn-destaque {
+                font-size: 0.68em;
+                padding: 7px 4px;
             }
         }
     </style>
@@ -412,7 +677,7 @@
                 </ul>
                 <div>
                     <span class="preco-antigo">R$ 60,00</span>
-					<span class="preco-novo">R$ 39,99</span>
+                    <span class="preco-novo">R$ 39,99</span>
                     <button class="btn-detalhes" data-id="ComboTriplo">Detalhes</button>
                     <a href="https://pay.hotmart.com/H108332508L" target="_blank" class="btn-comprar" data-id="COMBOTRIPLO">Comprar</a>
                     <a href="FocoLegis%20-%20AMOSTRA%20-%20RL.pdf" target="_blank" class="btn-amostra" data-id="COMBOTRIPLO">Amostra</a>
@@ -731,6 +996,60 @@
         </div>
     </div>
 
+    <!-- MODAL DE UPSELL (OFERTA ESPECIAL ANTES DO CHECKOUT) -->
+    <div class="upsell-overlay" id="modal-upsell">
+        <div class="upsell-container">
+            <div class="upsell-header-texto">
+                <h2>⚠️ Espere! Veja essa oportunidade antes de finalizar</h2>
+                <p>Leve todas as matérias principais por apenas uma pequena diferença:</p>
+            </div>
+
+            <div class="upsell-grid">
+                <!-- Lado Esquerdo: Produto que o usuário clicou -->
+                <div class="upsell-card upsell-card-atual">
+                    <div>
+                        <span class="upsell-badge-escolha">Sua escolha atual</span>
+                        <br>
+                        <img id="upsell-atual-img" src="" alt="Produto Escolhido">
+                        <h3 id="upsell-atual-titulo">Nome do Produto</h3>
+                        <p style="font-size: 0.7em; color: #666; margin: 3px 0;">Apenas o material escolhido.</p>
+                    </div>
+                    <div>
+                        <span class="preco-novo" id="upsell-atual-preco" style="color: #555; font-size: 1.05em; margin-bottom: 5px;">R$ 19,99</span>
+                        <a href="#" target="_blank" id="upsell-atual-link" class="upsell-btn-secundario">Continuar só com este</a>
+                    </div>
+                </div>
+
+                <!-- Lado Direito: Combo Principais OAB e Concursos -->
+                <div class="upsell-card upsell-card-combo">
+                    <div>
+                        <div class="upsell-urgencia-box">
+                            <span class="upsell-urgencia-label">⚡ Oferta expira em</span>
+                            <div class="upsell-urgencia-timer" id="timer-upsell-combo">--:--:--</div>
+                        </div>
+                        <span class="upsell-badge-melhor">🏆 MELHOR CUSTO-BENEFÍCIO</span>
+                        <br>
+                        <img src="COMBOOAB.png" alt="Combo Principais OAB e Concursos">
+                        <h3>Combo: Principais OAB e Concursos (9 Matérias)</h3>
+                        <ul class="mini-beneficios">
+                            <li>✅ <strong>9 Códigos Completos</strong> (CP, CPP, CF, CC, CPC, CTN, CLT, Ética e Adm)</li>
+                            <li>✅ Economia de mais de <strong>R$ 120,00</strong></li>
+                            <li>✅ Acesso Vitalício + Atualizações Gratuitas</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <span class="preco-antigo">R$ 179,91</span>
+                        <span class="preco-novo" style="font-size: 1.25em; margin-bottom: 2px;">R$ 59,99</span>
+                        <span style="display:block; font-size: 0.68em; color: #555; margin-bottom: 4px;">ou 12x de R$ 6,20</span>
+                        <a href="https://pay.hotmart.com/F106332914S?checkoutMode=10" target="_blank" id="upsell-combo-link" class="upsell-btn-destaque">QUERO O COMBO COMPLETO 🔥</a>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-voltar-site" onclick="fecharUpsell()">← Voltar ao site</button>
+        </div>
+    </div>
+
 <script>
     const scriptURL = 'https://script.google.com/macros/s/AKfycbykkgRcsWcXGVSqB17HGiWwdpvhH36iKUxogcplafKh9ndCddpHTiUzYmnxmSjnkUIpRw/exec';
     const visitorId = 'ACC-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5);
@@ -751,9 +1070,9 @@
             ]
         },
         "ComboOAB": {
-            titulo: "Combo Completo OAB — 9 Matérias",
+            titulo: "Combo: Principais OAB e Concursos — 9 Matérias",
             lei: "CP, CPP, CF/1988, CC/2002, CPC/2015, CTN, CLT, Lei nº 8.906/1994, Código de Ética OAB e Lei nº 9.784/1999 (Direito Administrativo)",
-            foco: "Pacote completo para a 1ª Fase OAB. Cobre todas as matérias cobradas pela FGV em um único combo com desconto.",
+            foco: "Pacote das Principais disciplinas para a 1ª Fase da OAB e de Concursos Públicos.",
             metodo: "Tudo que cai na prova em um único pacote: cada código comentado e esquematizado para você dominar a lei seca sem enrolação.",
             conteudo: [
                 "Código Penal Completo (Parte Geral e Especial)",
@@ -984,7 +1303,6 @@
         var search = window.location.search;
         var ua     = navigator.userAgent.toLowerCase();
 
-        // 0. ?ref= — parâmetro manual, maior prioridade
         var refParam = new URLSearchParams(search).get('ref');
         if (refParam) return '?utm_source=' + encodeURIComponent(refParam) + '&utm_medium=ref';
 
@@ -1073,22 +1391,17 @@
 
         var fallbackTimer = setTimeout(enviarPageView, TIMEOUT_GEO);
 
-        // Cascata de 4 APIs — todas com CORS liberado e sem chave obrigatória
-        // Ordem: ipinfo.io (50k/mês) → icanhazip+ipapi.co → freeipapi → sem geo
         var apis = [
             {
-                // ipinfo.io — 50.000 req/mês grátis, retorna IPv4 e cidade direto
                 url: 'https://ipinfo.io/json',
                 parse: function(d) { return { ip: d.ip, estado: d.region, cidade: d.city }; },
                 ok:    function(d) { return d && d.ip && d.ip.indexOf(':') === -1; }
             },
             {
-                // icanhazip — pega só o IPv4 puro, depois busca geo no ipapi.co
                 url: 'https://ipv4.icanhazip.com',
                 raw: true
             },
             {
-                // freeipapi — 60 req/min grátis, parâmetro ipv=4 força IPv4
                 url: 'https://freeipapi.com/api/json?ipv=4',
                 parse: function(d) { return { ip: d.ipAddress, estado: d.regionName, cidade: d.cityName }; },
                 ok:    function(d) { return d && d.ipAddress && d.ipAddress.indexOf(':') === -1; }
@@ -1101,7 +1414,6 @@
             if (idx >= apis.length) { enviarPageView(); return; }
             var api = apis[idx++];
 
-            // icanhazip retorna texto puro (só o IP), depois busca geo separado
             if (api.raw) {
                 fetch(api.url)
                     .then(function(r) { return r.text(); })
@@ -1143,7 +1455,6 @@
     })();
 
     document.addEventListener('DOMContentLoaded', function() {
-        // Mostra o balão "Dúvidas? Me chame!" automaticamente após 3s
         var wppBtn = document.getElementById('wpp-float-btn');
         if (wppBtn) {
             wppBtn.addEventListener('click', function() {
@@ -1156,19 +1467,19 @@
             }, 3000);
         }
 
-
-        // ── Contador de urgência do Combo OAB ──
+        // ── Contador de urgência do Combo OAB (e Upsell) ──
         (function() {
-            var el = document.getElementById('timer-combo-oab');
-            if (!el) return;
+            var els = [
+                document.getElementById('timer-combo-oab'),
+                document.getElementById('timer-upsell-combo')
+            ].filter(Boolean);
+            if (!els.length) return;
 
             var STORAGE_KEY = 'focolegis_timer_v2';
-            // Tempo inicial: 4h 42min 17s em milissegundos
             var INICIO_MS = (4 * 3600 + 42 * 60 + 17) * 1000;
 
             var expiry = localStorage.getItem(STORAGE_KEY);
             if (!expiry || Date.now() > parseInt(expiry, 10)) {
-                // Primeira visita ou expirou: começa do tempo inicial
                 expiry = Date.now() + INICIO_MS;
                 localStorage.setItem(STORAGE_KEY, expiry);
             }
@@ -1177,7 +1488,6 @@
             function atualizar() {
                 var diff = expiry - Date.now();
                 if (diff <= 0) {
-                    // Quando zera, reinicia do tempo inicial para manter urgência
                     expiry = Date.now() + INICIO_MS;
                     localStorage.setItem(STORAGE_KEY, expiry);
                     diff = INICIO_MS;
@@ -1186,7 +1496,8 @@
                 var m = Math.floor((diff % 3600000) / 60000);
                 var s = Math.floor((diff % 60000) / 1000);
                 var pad = function(n) { return n < 10 ? '0' + n : '' + n; };
-                el.innerHTML = '<span>' + pad(h) + '</span>:<span>' + pad(m) + '</span>:<span>' + pad(s) + '</span>';
+                var htmlTimer = '<span>' + pad(h) + '</span>:<span>' + pad(m) + '</span>:<span>' + pad(s) + '</span>';
+                els.forEach(function(el) { el.innerHTML = htmlTimer; });
             }
 
             atualizar();
@@ -1263,13 +1574,59 @@
             });
         });
 
+        // ── Controle do Modal de Upsell ──
+        window.fecharUpsell = function() {
+            document.getElementById('modal-upsell').style.display = 'none';
+            document.body.classList.remove('modal-aberto');
+        };
+
+        document.getElementById('modal-upsell').addEventListener('click', function(e) {
+            if (e.target === this) fecharUpsell();
+        });
+
+        document.getElementById('upsell-atual-link').addEventListener('click', function() {
+            var id = this.getAttribute('data-id');
+            enviarParaPlanilha({ type: 'checkout_upsell_recusado', produto: id });
+        });
+
+        document.getElementById('upsell-combo-link').addEventListener('click', function() {
+            enviarParaPlanilha({ type: 'checkout_upsell_aceito', produto: 'COMBOOAB' });
+            if (typeof fbq === 'function') {
+                fbq('track', 'InitiateCheckout', { content_name: 'COMBOOAB_UPSELL' });
+            }
+        });
+
         document.querySelectorAll('.btn-comprar, .btn-amostra').forEach(function(b) {
-            b.addEventListener('click', function() {
+            b.addEventListener('click', function(e) {
                 var id   = b.getAttribute('data-id');
                 var tipo = b.classList.contains('btn-comprar') ? 'checkout' : 'amostra';
                 enviarParaPlanilha({ type: tipo, produto: id });
                 if (typeof fbq === 'function') {
                     fbq('track', tipo === 'checkout' ? 'InitiateCheckout' : 'ViewContent', { content_name: id });
+                }
+
+                // Intercepta checkout de qualquer produto que NÃO seja COMBOOAB
+                if (tipo === 'checkout' && id !== 'COMBOOAB') {
+                    e.preventDefault();
+
+                    var card = b.closest('.card');
+                    var imgSrc = card.querySelector('img').getAttribute('src');
+                    var titulo = card.querySelector('h3').innerText.replace(/\n/g, ' ');
+                    var preco  = card.querySelector('.preco-novo').innerText;
+                    var linkCheckout = b.getAttribute('href');
+
+                    document.getElementById('upsell-atual-img').setAttribute('src', imgSrc);
+                    document.getElementById('upsell-atual-titulo').innerText = titulo;
+                    document.getElementById('upsell-atual-preco').innerText = preco;
+
+                    var btnContinuar = document.getElementById('upsell-atual-link');
+                    btnContinuar.setAttribute('href', linkCheckout);
+                    btnContinuar.setAttribute('data-id', id);
+
+                    var overlayUpsell = document.getElementById('modal-upsell');
+                    overlayUpsell.style.display = 'flex';
+                    overlayUpsell.scrollTop = 0;
+                    document.body.classList.add('modal-aberto');
                 }
             });
         });
@@ -1354,7 +1711,6 @@
             }, 500);
         }
 
-        // Aparece pela primeira vez após 5s
         setTimeout(function() {
             if (fechado) return;
             var d = depoimentos[idx];
@@ -1367,10 +1723,8 @@
             }, 5000);
         }, 5000);
 
-        // Rotaciona a cada 12s
         setInterval(mostrarProximo, 12000);
 
-        // Botão fechar
         btnFech.addEventListener('click', function() {
             fechado = true;
             popup.classList.remove('visivel');
