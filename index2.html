@@ -362,13 +362,14 @@
             align-items: center;
             justify-content: center;
             z-index: 3000;
-            padding: 15px;
+            padding: 12px;
             box-sizing: border-box;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
         .upsell-container {
             width: 100%;
-            max-width: 780px;
+            max-width: 720px;
             text-align: center;
             animation: upsellFadeIn 0.25s ease-out;
             margin: auto;
@@ -379,34 +380,35 @@
         }
         .upsell-header-texto {
             color: #ffffff;
-            margin-bottom: 18px;
+            margin-bottom: 12px;
         }
         .upsell-header-texto h2 {
-            margin: 0 0 5px;
+            margin: 0 0 4px;
             color: #f1c40f;
-            font-size: 1.5em;
+            font-size: clamp(1.05em, 2.5vw, 1.4em);
         }
         .upsell-header-texto p {
             margin: 0;
-            font-size: 0.95em;
+            font-size: clamp(0.8em, 1.8vw, 0.92em);
             color: #ecf0f1;
         }
         .upsell-grid {
             display: grid;
-            grid-template-columns: 1fr 1.12fr;
-            gap: 18px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
             align-items: stretch;
         }
         .upsell-card {
             background: #ffffff;
             border-radius: 10px;
-            padding: 18px 15px;
+            padding: 14px 12px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             text-align: center;
             position: relative;
             box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+            min-width: 0;
         }
         .upsell-card-atual {
             border: 2px solid #bdc3c7;
@@ -416,51 +418,80 @@
             border: 3px solid #f1c40f;
             box-shadow: 0 0 25px rgba(241, 196, 15, 0.45);
         }
+        .upsell-urgencia-box {
+            background: linear-gradient(135deg, #1a252f 0%, #2c3e50 100%);
+            border-radius: 7px 7px 0 0;
+            padding: 6px 8px;
+            margin: -14px -12px 10px -12px;
+            text-align: center;
+        }
+        .upsell-urgencia-label {
+            color: #f1c40f;
+            font-size: 0.6em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            display: block;
+            margin-bottom: 2px;
+        }
+        .upsell-urgencia-timer {
+            color: #ffffff;
+            font-size: 1em;
+            font-weight: 800;
+            letter-spacing: 2px;
+            font-family: 'Courier New', monospace;
+        }
+        .upsell-urgencia-timer span {
+            background: rgba(241,196,15,0.2);
+            padding: 1px 5px;
+            border-radius: 4px;
+        }
         .upsell-badge-escolha {
             background: #7f8c8d;
             color: white;
-            font-size: 0.72em;
+            font-size: 0.68em;
             font-weight: bold;
-            padding: 4px 10px;
+            padding: 3px 9px;
             border-radius: 20px;
             display: inline-block;
-            margin: 0 auto 10px;
+            margin: 0 auto 8px;
             text-transform: uppercase;
         }
         .upsell-badge-melhor {
             background: linear-gradient(135deg, #f39c12, #e74c3c);
             color: #fff;
-            font-size: 0.78em;
+            font-size: 0.72em;
             font-weight: 800;
-            padding: 5px 12px;
+            padding: 4px 10px;
             border-radius: 20px;
             display: inline-block;
-            margin: 0 auto 10px;
+            margin: 0 auto 8px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.4px;
             box-shadow: 0 2px 8px rgba(231, 76, 60, 0.4);
         }
         .upsell-card img {
-            width: 110px;
+            width: 100%;
+            max-width: 96px;
             height: auto;
-            margin: 0 auto 10px;
+            margin: 0 auto 8px;
             border-radius: 6px;
         }
         .upsell-card h3 {
-            font-size: 1.05em;
-            margin: 5px 0 10px;
+            font-size: clamp(0.88em, 1.8vw, 1.02em);
+            margin: 4px 0 8px;
             color: #1a252f;
         }
         .upsell-btn-secundario {
             background: #7f8c8d;
             color: #fff;
-            padding: 11px;
+            padding: 9px 10px;
             border-radius: 6px;
             text-decoration: none;
             font-weight: bold;
-            font-size: 0.88em;
+            font-size: clamp(0.76em, 1.5vw, 0.85em);
             display: block;
-            margin-top: 10px;
+            margin-top: 8px;
             transition: background 0.2s;
         }
         .upsell-btn-secundario:hover {
@@ -469,13 +500,13 @@
         .upsell-btn-destaque {
             background: #27ae60;
             color: #fff;
-            padding: 13px;
+            padding: 11px 10px;
             border-radius: 6px;
             text-decoration: none;
             font-weight: 800;
-            font-size: 0.95em;
+            font-size: clamp(0.8em, 1.6vw, 0.92em);
             display: block;
-            margin-top: 10px;
+            margin-top: 8px;
             box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
             transition: transform 0.15s, background 0.2s;
         }
@@ -487,12 +518,12 @@
             background: transparent;
             border: 1px solid rgba(255,255,255,0.45);
             color: #ecf0f1;
-            padding: 10px 24px;
+            padding: 8px 20px;
             border-radius: 6px;
-            font-size: 0.9em;
+            font-size: 0.85em;
             font-weight: 600;
             cursor: pointer;
-            margin-top: 22px;
+            margin-top: 14px;
             transition: all 0.2s;
         }
         .btn-voltar-site:hover {
@@ -501,16 +532,60 @@
             color: #fff;
         }
 
-        @media (max-width: 650px) {
+        @media (max-width: 768px) {
+            .upsell-container {
+                max-width: 440px;
+            }
             .upsell-grid {
                 grid-template-columns: 1fr;
-                gap: 14px;
+                gap: 10px;
             }
             .upsell-card-combo {
                 order: -1;
             }
-            .upsell-header-texto h2 { font-size: 1.25em; }
-            .upsell-card img { width: 85px; }
+            .upsell-card {
+                padding: 11px 10px;
+            }
+            .upsell-urgencia-box {
+                margin: -11px -10px 8px -10px;
+                padding: 5px 8px;
+            }
+            .upsell-urgencia-timer {
+                font-size: 0.95em;
+            }
+            .upsell-card img {
+                max-width: 72px;
+                margin-bottom: 6px;
+            }
+            .upsell-card .mini-beneficios li {
+                white-space: normal;
+                font-size: 0.92em;
+            }
+            .btn-voltar-site {
+                margin-top: 10px;
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        @media (max-height: 700px) and (min-width: 769px) {
+            .upsell-card {
+                padding: 10px 10px;
+            }
+            .upsell-urgencia-box {
+                margin: -10px -10px 6px -10px;
+                padding: 4px 6px;
+            }
+            .upsell-card img {
+                max-width: 70px;
+                margin-bottom: 5px;
+            }
+            .upsell-header-texto {
+                margin-bottom: 8px;
+            }
+            .btn-voltar-site {
+                margin-top: 10px;
+            }
         }
     </style>
 </head>
@@ -905,13 +980,12 @@
                 <div class="upsell-card upsell-card-atual">
                     <div>
                         <span class="upsell-badge-escolha">Sua escolha atual</span>
-			<br>
                         <img id="upsell-atual-img" src="" alt="Produto Escolhido">
                         <h3 id="upsell-atual-titulo">Nome do Produto</h3>
-                        <p style="font-size: 0.8em; color: #666; margin: 5px 0;">Apenas 1 material avulso</p>
+                        <p style="font-size: 0.78em; color: #666; margin: 4px 0;">Apenas 1 material avulso</p>
                     </div>
                     <div>
-                        <span class="preco-novo" id="upsell-atual-preco" style="color: #555; font-size: 1.2em;">R$ 19,99</span>
+                        <span class="preco-novo" id="upsell-atual-preco" style="color: #555; font-size: 1.15em; margin-bottom: 6px;">R$ 19,99</span>
                         <a href="#" target="_blank" id="upsell-atual-link" class="upsell-btn-secundario">Continuar só com este</a>
                     </div>
                 </div>
@@ -919,11 +993,14 @@
                 <!-- Lado Direito: Combo Principais OAB e Concursos -->
                 <div class="upsell-card upsell-card-combo">
                     <div>
+                        <div class="upsell-urgencia-box">
+                            <span class="upsell-urgencia-label">⚡ Oferta expira em</span>
+                            <div class="upsell-urgencia-timer" id="timer-upsell-combo">--:--:--</div>
+                        </div>
                         <span class="upsell-badge-melhor">🏆 MELHOR CUSTO-BENEFÍCIO</span>
-			<br>
                         <img src="COMBOOAB.png" alt="Combo Principais OAB e Concursos">
                         <h3>Combo Principais OAB e Concursos (9 Matérias)</h3>
-                        <ul class="mini-beneficios" style="font-size: 0.75em; margin: 6px auto;">
+                        <ul class="mini-beneficios" style="font-size: 0.72em; margin: 4px auto;">
                             <li>✅ <strong>9 Códigos Completos</strong> (CP, CPP, CF, CC, CPC, CTN, CLT, Ética e Adm)</li>
                             <li>✅ Economia de mais de <strong>R$ 120,00</strong></li>
                             <li>✅ Acesso Vitalício + Atualizações Gratuitas</li>
@@ -931,8 +1008,8 @@
                     </div>
                     <div>
                         <span class="preco-antigo">R$ 179,91</span>
-                        <span class="preco-novo" style="font-size: 1.6em; margin-bottom: 2px;">R$ 59,99</span>
-                        <span style="display:block; font-size: 0.78em; color: #555; margin-bottom: 6px;">ou 12x de R$ 6,20</span>
+                        <span class="preco-novo" style="font-size: 1.5em; margin-bottom: 2px;">R$ 59,99</span>
+                        <span style="display:block; font-size: 0.75em; color: #555; margin-bottom: 4px;">ou 12x de R$ 6,20</span>
                         <a href="https://pay.hotmart.com/F106332914S?checkoutMode=10" target="_blank" id="upsell-combo-link" class="upsell-btn-destaque">QUERO O COMBO COMPLETO 🔥</a>
                     </div>
                 </div>
@@ -1359,10 +1436,13 @@
             }, 3000);
         }
 
-        // ── Contador de urgência do Combo OAB ──
+        // ── Contador de urgência do Combo OAB (e Upsell) ──
         (function() {
-            var el = document.getElementById('timer-combo-oab');
-            if (!el) return;
+            var els = [
+                document.getElementById('timer-combo-oab'),
+                document.getElementById('timer-upsell-combo')
+            ].filter(Boolean);
+            if (!els.length) return;
 
             var STORAGE_KEY = 'focolegis_timer_v2';
             var INICIO_MS = (4 * 3600 + 42 * 60 + 17) * 1000;
@@ -1385,7 +1465,8 @@
                 var m = Math.floor((diff % 3600000) / 60000);
                 var s = Math.floor((diff % 60000) / 1000);
                 var pad = function(n) { return n < 10 ? '0' + n : '' + n; };
-                el.innerHTML = '<span>' + pad(h) + '</span>:<span>' + pad(m) + '</span>:<span>' + pad(s) + '</span>';
+                var htmlTimer = '<span>' + pad(h) + '</span>:<span>' + pad(m) + '</span>:<span>' + pad(s) + '</span>';
+                els.forEach(function(el) { el.innerHTML = htmlTimer; });
             }
 
             atualizar();
